@@ -5,13 +5,10 @@ struct Projectile {
     sprite: Sprite
 }
 
-#[derive(Component)]
-struct Speed(u32);
-
 #[derive(Bundle)]
 struct PlayerProjectileBundle {
     projectile: Projectile,
-    speed: Speed,
+    speed: u32,
     player: Player,
     transform: Transform
 }
