@@ -1,3 +1,7 @@
+use bevy::prelude::*;
+use crate::character::enemy::Enemy;
+use crate::character::player;
+use crate::character::player::Player;
 
 #[derive(Component)]
 struct Projectile {

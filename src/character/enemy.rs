@@ -1,3 +1,6 @@
+use bevy::prelude::*;
+use crate::character::Health;
+
 #[derive(Bundle)]
 struct EnemyBundle {
     health: Health,
@@ -7,6 +10,5 @@ struct EnemyBundle {
 }
 
 
-
 #[derive(Component)]
-struct Enemy;
+pub struct Enemy;
