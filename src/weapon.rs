@@ -1,5 +1,6 @@
 use bevy::prelude::Component;
 use enum_dispatch::enum_dispatch;
+use crate::projectile::{ProjectileBundle};
 use crate::weapon::bow::Bow;
 
 pub mod bow;
@@ -12,6 +13,6 @@ pub enum Weapon {
 
 #[enum_dispatch]
 pub trait Shootable {
-    fn shoot(&self);
+    fn shoot(&self) -> ProjectileBundle;
 }
 

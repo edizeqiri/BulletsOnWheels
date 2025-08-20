@@ -21,3 +21,4 @@ fn square_sprite(color: Color) -> Sprite {
         ..Default::default()
     }
 }
+

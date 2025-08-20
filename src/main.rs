@@ -1,18 +1,25 @@
-mod weapon;
 mod character;
 mod projectile;
+mod weapon;
+
+use crate::character::player::Player;
 use crate::weapon::Shootable;
 use crate::weapon::Weapon;
+use bevy::input::keyboard::Key::Play;
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
-use crate::character::player::Player;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use bevy::ecs::bundle::DynamicBundle;
+use crate::projectile::{move_projectile, Projectile};
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(logger()))
+        .insert_resource(Time::<Fixed>::from_duration(Duration::from_secs(1)))
         .add_systems(Startup, setup_camera)
         .add_systems(Startup, init_player)
-        .add_systems(FixedUpdate ,shoot_every_second)
+        .add_systems(FixedUpdate, shoot_every_second)
+        .add_systems(Update, projectile_system)
         .run();
 }
 
@@ -32,12 +39,17 @@ fn init_player(mut commands: Commands) {
     commands.spawn(character::get_random_player());
 }
 
-fn shoot_every_second(
-    mut commands: Commands,
-    query: Query<(&Weapon,With<Player>)>
-) {
+fn shoot_every_second(mut commands: Commands, query: Query<&Weapon, With<Player>>,time: Res<Time<Fixed>>) {
     for weapon in &query {
-        weapon.shoot()
+        commands.spawn((weapon.shoot(), Player));
     }
 }
 
+fn projectile_system(
+    mut commands: Commands,
+    query: Query<(&Projectile, &mut Transform)>
+) {
+    for (projectile, transform) in query {
+        move_projectile(projectile, transform);
+    }
+}
