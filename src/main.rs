@@ -11,11 +11,13 @@ use bevy::prelude::*;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use bevy::ecs::bundle::DynamicBundle;
 use crate::projectile::{move_projectile, Projectile};
+use bevy_rapier2d::prelude::*;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(logger()))
         .insert_resource(Time::<Fixed>::from_duration(Duration::from_secs(1)))
+        .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
         .add_systems(Startup, setup_camera)
         .add_systems(Startup, init_player)
         .add_systems(FixedUpdate, shoot_every_second)
@@ -53,3 +55,4 @@ fn projectile_system(
         move_projectile(projectile, transform);
     }
 }
+

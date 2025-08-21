@@ -2,8 +2,16 @@ pub mod enemy;
 pub mod player;
 
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::*;
 use crate::character::player::{create_player, PlayerBundle};
+const PLAYER_GROUP: Group = Group::GROUP_1;
+const ENEMY_GROUP: Group = Group::GROUP_2;
 
+
+fn collider() -> Collider {
+    Collider::ball(20.0)
+
+}
 #[derive(Component)]
 struct Health {
     current: u32,
