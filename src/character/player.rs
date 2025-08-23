@@ -1,31 +1,23 @@
-use crate::weapon::Weapon;
+use crate::character::{square_sprite, ENEMY_GROUP, PLAYER_GROUP};
+use bevy::color::palettes::css::BLUE;
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::{Collider, CollisionGroups};
-use crate::character::{collider, square_sprite, Health, ENEMY_GROUP, PLAYER_GROUP};
-use crate::weapon::bow::Bow;
+use bevy_rapier2d::prelude::CollisionGroups;
 
 #[derive(Component)]
 pub struct Player;
 
 #[derive(Bundle)]
 pub struct PlayerBundle {
-    health: Health,
+    collision_groups: CollisionGroups,
     player: Player,
-    weapon: Weapon,
-    collider: Collider,
-    collider_group: CollisionGroups,
-    transform: Transform,
-    sprite: Sprite,
+    sprite: Sprite
+
 }
 
-pub fn create_player() -> PlayerBundle {
+pub fn player_additions() -> PlayerBundle {
     PlayerBundle {
-        health: Health { current: 0, max: 1 },
+        collision_groups: CollisionGroups::new(PLAYER_GROUP, ENEMY_GROUP),
         player: Player,
-        weapon: Weapon::Bow(Bow {}),
-        collider: collider(),
-        collider_group: CollisionGroups::new(PLAYER_GROUP, ENEMY_GROUP),
-        transform: Default::default(),
-        sprite: square_sprite(Color::Srgba(Srgba::BLUE)),
+        sprite: square_sprite(Color::Srgba(BLUE))
     }
 }

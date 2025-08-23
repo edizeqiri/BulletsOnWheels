@@ -1,13 +1,14 @@
-use bevy::log::info;
-use crate::projectile::{create_projectile, ProjectileBundle};
+use crate::projectile::{ProjectileBundle, create_projectile};
 use crate::weapon::Shootable;
+use bevy::log::info;
+use bevy::math::Vec2;
 
 #[derive(Debug)]
-pub struct Bow{}
+pub struct Bow {}
 
 impl Shootable for Bow {
-    fn shoot(&self) -> ProjectileBundle {
+    fn shoot(&self, speed: f32, direction: Vec2) -> ProjectileBundle {
         info!("Shooting Bow!");
-        create_projectile(1.0,1.0)
+        create_projectile(1, speed, direction)
     }
 }

@@ -1,3 +1,4 @@
+use bevy::math::Vec2;
 use bevy::prelude::Component;
 use enum_dispatch::enum_dispatch;
 use crate::projectile::{ProjectileBundle};
@@ -13,6 +14,6 @@ pub enum Weapon {
 
 #[enum_dispatch]
 pub trait Shootable {
-    fn shoot(&self) -> ProjectileBundle;
+    fn shoot(&self, speed: f32, direction: Vec2) -> ProjectileBundle;
 }
 
