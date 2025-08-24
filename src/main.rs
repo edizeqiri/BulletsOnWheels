@@ -15,6 +15,7 @@ fn main() {
         .add_plugins(gamepad::plugin)
         .add_plugins(setup::plugin)
         .add_plugins(weapon::plugin)
+        .add_plugins(character::plugin)
         .run();
 }
 

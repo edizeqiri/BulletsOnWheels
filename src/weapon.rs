@@ -6,6 +6,7 @@ use crate::weapon::gun::Gun;
 use bevy::color::palettes::basic::GREEN;
 use bevy::math::Vec2;
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::CollisionGroups;
 use enum_dispatch::enum_dispatch;
 
 pub mod bow;
@@ -33,6 +34,7 @@ pub trait Shootable {
 #[derive(Event)]
 pub struct ShootEvent {
     pub shooter: Entity,
+    pub collision_groups: CollisionGroups,
 }
 
 #[derive(Component, Clone)]
@@ -44,7 +46,12 @@ pub(crate) fn shoot_on_event(
     mut shooter_query: Query<(&Weapons, &Aim, &mut WeaponCooldowns, &Transform)>,
 ) {
     for event in shoot_event.read() {
-        shoot_all_weapons(&mut commands, &mut shooter_query, event.shooter);
+        shoot_all_weapons(
+            &mut commands,
+            &mut shooter_query,
+            event.shooter,
+            event.collision_groups,
+        );
     }
 }
 
@@ -52,6 +59,7 @@ pub fn shoot_all_weapons(
     commands: &mut Commands,
     shooter_query: &mut Query<(&Weapons, &Aim, &mut WeaponCooldowns, &Transform)>,
     shooter: Entity,
+    collision_groups: CollisionGroups,
 ) {
     if let Ok((weapons, aim, mut cooldowns, transform)) = shooter_query.get_mut(shooter) {
         // Zip weapons with their cooldowns
@@ -60,7 +68,7 @@ pub fn shoot_all_weapons(
                 commands.spawn((
                     weapon.shoot(aim.vec),
                     square_sprite(Color::Srgba(GREEN)),
-                    player_collision_groups(),
+                    collision_groups,
                     transform.clone(),
                 ));
                 cooldown.reset();

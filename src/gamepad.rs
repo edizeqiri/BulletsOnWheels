@@ -1,5 +1,5 @@
-use crate::character::Aim;
 use crate::character::player::Player;
+use crate::character::{Aim, player_collision_groups};
 use crate::weapon::ShootEvent;
 use bevy::input::gamepad::GamepadEvent;
 use bevy::prelude::*;
@@ -12,8 +12,6 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
         (
-            //gamepad_connections,
-            //gamepad_input_events,
             (gamepad_aim, gamepad_shoot, gamepad_movement, gamepad_debug)
                 .run_if(any_with_component::<Player>),
         ),
@@ -56,7 +54,10 @@ fn gamepad_shoot(
     for event in gamepad_event.read() {
         if let GamepadEvent::Button(button_event) = event {
             if let GamepadButton::East | GamepadButton::RightTrigger = button_event.button {
-                event_writer.write(ShootEvent { shooter: player });
+                event_writer.write(ShootEvent {
+                    shooter: player,
+                    collision_groups: player_collision_groups(),
+                });
             }
         }
     }

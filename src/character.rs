@@ -2,15 +2,15 @@ pub mod enemy;
 mod enemy_ai;
 pub mod player;
 
-use crate::weapon::Shootable;
-use crate::weapon::bow::Bow;
-use crate::weapon::cooldown::WeaponCooldowns;
-use crate::weapon::{ShootEvent, Weapon, Weapons};
-use bevy::color::palettes::basic::GREEN;
+use crate::weapon::Weapons;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 pub const PLAYER_GROUP: Group = Group::GROUP_1;
 pub const ENEMY_GROUP: Group = Group::GROUP_2;
+
+pub(super) fn plugin(app: &mut App) {
+    app.add_plugins(enemy_ai::plugin);
+}
 
 pub fn player_collision_groups() -> CollisionGroups {
     CollisionGroups::new(PLAYER_GROUP, ENEMY_GROUP)
