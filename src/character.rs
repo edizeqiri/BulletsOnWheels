@@ -1,6 +1,6 @@
 pub mod enemy;
-pub mod player;
 mod enemy_ai;
+pub mod player;
 
 use crate::weapon::bow::Bow;
 use crate::weapon::{Weapon, Weapons};
@@ -9,7 +9,6 @@ use bevy_rapier2d::prelude::*;
 
 pub const PLAYER_GROUP: Group = Group::GROUP_1;
 pub const ENEMY_GROUP: Group = Group::GROUP_2;
-
 
 pub fn player_collision_groups() -> CollisionGroups {
     CollisionGroups::new(PLAYER_GROUP, ENEMY_GROUP)
@@ -21,7 +20,6 @@ pub fn enemy_collision_groups() -> CollisionGroups {
 
 fn collider() -> Collider {
     Collider::ball(10.0)
-
 }
 
 #[derive(Component)]
@@ -30,15 +28,15 @@ pub struct Health {
     max: u32,
 }
 
-#[derive(Component,Copy, Clone)]
+#[derive(Component, Copy, Clone)]
 pub struct Aim {
-    pub vec: Vec2
+    pub vec: Vec2,
 }
 
 impl Default for Aim {
     fn default() -> Self {
         Self {
-            vec: Vec2::new(0.,0.)
+            vec: Vec2::new(0., 0.),
         }
     }
 }
@@ -56,23 +54,26 @@ pub struct CharacterBundle {
     gravity_scale: GravityScale,
     locked_axes: LockedAxes,
     damping: Damping,
-    aim: Aim
+    aim: Aim,
 }
 
 pub fn create_character(transform: Transform, weapons: Weapons) -> CharacterBundle {
     CharacterBundle {
         health: Health { current: 0, max: 1 },
         weapon: weapons,
-        velocity: Velocity::linear(Vec2::new(0.,0.)),
+        velocity: Velocity::linear(Vec2::new(0., 0.)),
         body: RigidBody::Dynamic,
         sensor: Sensor,
         collider: collider(),
         transform,
         active_events: ActiveEvents::COLLISION_EVENTS,
         locked_axes: LockedAxes::ROTATION_LOCKED, // Prevent spinning
-        gravity_scale: GravityScale(0.0), // Disable gravity
-        damping: Damping { linear_damping: 10.0, angular_damping: 10.0 }, // High damping
-        aim: Aim::default()
+        gravity_scale: GravityScale(0.0),         // Disable gravity
+        damping: Damping {
+            linear_damping: 10.0,
+            angular_damping: 10.0,
+        }, // High damping
+        aim: Aim::default(),
     }
 }
 
@@ -83,4 +84,3 @@ pub fn square_sprite(color: Color) -> Sprite {
         ..Default::default()
     }
 }
-

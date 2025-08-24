@@ -1,5 +1,5 @@
-use crate::character::player::Player;
 use crate::character::Aim;
+use crate::character::player::Player;
 use crate::weapon::ShootEvent;
 use bevy::input::gamepad::GamepadEvent;
 use bevy::prelude::*;

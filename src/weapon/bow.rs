@@ -7,7 +7,7 @@ use bevy::math::Vec2;
 pub struct Bow {
     damage: u32,
     speed: f32,
-    fire_rate: f32
+    fire_rate: f32,
 }
 
 impl Shootable for Bow {
@@ -20,11 +20,11 @@ impl Shootable for Bow {
 }
 
 impl Bow {
-    pub fn new(damage: u32, speed: f32,fire_rate: f32) -> Self {
+    pub fn new(damage: u32, speed: f32, fire_rate: f32) -> Self {
         Self {
             damage,
             speed,
-            fire_rate
+            fire_rate,
         }
     }
 }

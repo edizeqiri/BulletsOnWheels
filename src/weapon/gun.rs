@@ -1,12 +1,12 @@
-use bevy::math::Vec2;
-use crate::projectile::{create_projectile, ProjectileBundle};
+use crate::projectile::{ProjectileBundle, create_projectile};
 use crate::weapon::Shootable;
+use bevy::math::Vec2;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Gun {
     damage: u32,
     speed: f32,
-    fire_rate: f32
+    fire_rate: f32,
 }
 
 impl Shootable for Gun {
@@ -19,11 +19,11 @@ impl Shootable for Gun {
 }
 
 impl Gun {
-    pub fn new(damage: u32, speed: f32,fire_rate: f32) -> Self {
+    pub fn new(damage: u32, speed: f32, fire_rate: f32) -> Self {
         Self {
             damage,
             speed,
-            fire_rate
+            fire_rate,
         }
     }
 }

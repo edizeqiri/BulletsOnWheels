@@ -1,12 +1,12 @@
-use std::time::Duration;
+use crate::character::{Aim, player_collision_groups, square_sprite};
+use crate::weapon::Shootable;
+use crate::weapon::{ShootEvent, Weapons};
 use bevy::color::Color;
 use bevy::color::palettes::basic::GREEN;
 use bevy::log::info;
 use bevy::prelude::{Commands, Component, EventReader, Query, Res, Timer, TimerMode, Transform};
 use bevy::time::Time;
-use crate::character::{player_collision_groups, square_sprite, Aim};
-use crate::weapon::{ShootEvent, Weapons};
-use crate::weapon::Shootable;
+use std::time::Duration;
 
 #[derive(Component, Clone)]
 pub struct WeaponCooldown {
@@ -19,10 +19,11 @@ pub struct WeaponCooldowns(pub Vec<WeaponCooldown>);
 impl WeaponCooldowns {
     pub fn new(weapons: &Weapons) -> Self {
         Self(
-            weapons.0
+            weapons
+                .0
                 .iter()
                 .map(|weapon| WeaponCooldown::new(weapon.fire_rate()))
-                .collect()
+                .collect(),
         )
     }
 }
@@ -30,10 +31,7 @@ impl WeaponCooldowns {
 impl WeaponCooldown {
     pub fn new(fire_rate: f32) -> Self {
         Self {
-            timer: Timer::new(
-                Duration::from_secs_f32(1.0 / fire_rate),
-                TimerMode::Once
-            ),
+            timer: Timer::new(Duration::from_secs_f32(1.0 / fire_rate), TimerMode::Once),
         }
     }
 
@@ -71,7 +69,7 @@ pub(crate) fn shoot_on_event(
                         weapon.shoot(aim.vec),
                         square_sprite(Color::Srgba(GREEN)),
                         player_collision_groups(),
-                        transform.clone()
+                        transform.clone(),
                     ));
                     cooldown.reset();
                     info!("Got ShootingEvent and Shot with {:?} ", weapon);

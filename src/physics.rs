@@ -1,15 +1,15 @@
 use crate::character::enemy::Enemy;
 use crate::character::player::Player;
 use crate::character::{
-    enemy_collision_groups, player_collision_groups, square_sprite, Aim, Health,
+    Aim, Health, enemy_collision_groups, player_collision_groups, square_sprite,
 };
 use crate::projectile::Projectile;
 use crate::weapon::Shootable;
 use crate::weapon::Weapons;
 use crate::weapon::{ShootEvent, Weapon};
 use bevy::app::{App, FixedUpdate, Update};
-use bevy::color::palettes::basic::{GREEN, YELLOW};
 use bevy::color::Color;
+use bevy::color::palettes::basic::{GREEN, YELLOW};
 use bevy::log::info;
 use bevy::math::Vec2;
 use bevy::prelude::{Commands, EventReader, Fixed, Query, Res, Time, With};
@@ -25,14 +25,9 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(FixedUpdate, shoot_every_second)
         .add_systems(
             Update,
-            (
-                handle_sensor_collision,
-                debug_all_collision_events,
-                
-            ),
+            (handle_sensor_collision, debug_all_collision_events),
         );
 }
-
 
 fn shoot_every_second(mut commands: Commands, enemy_query: Query<&Weapon, With<Enemy>>) {
     for weapon in &enemy_query {

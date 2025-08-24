@@ -1,9 +1,9 @@
 mod character;
 mod gamepad;
-mod projectile;
-mod weapon;
 mod physics;
+mod projectile;
 mod setup;
+mod weapon;
 
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
