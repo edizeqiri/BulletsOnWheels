@@ -1,4 +1,3 @@
-use crate::character::{square_sprite, ENEMY_GROUP, PLAYER_GROUP};
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
@@ -29,5 +28,3 @@ pub fn create_projectile(damage: u32, speed: f32, direction: Vec2) -> Projectile
         active_events: ActiveEvents::COLLISION_EVENTS,
     }
 }
-
-

@@ -21,3 +21,4 @@ pub fn player_additions() -> PlayerBundle {
         sprite: square_sprite(Color::Srgba(BLUE))
     }
 }
+

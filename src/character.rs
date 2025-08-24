@@ -2,7 +2,7 @@ pub mod enemy;
 pub mod player;
 
 use crate::weapon::bow::Bow;
-use crate::weapon::Weapon;
+use crate::weapon::{Weapon, Weapons};
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
@@ -29,10 +29,15 @@ pub struct Health {
     max: u32,
 }
 
+#[derive(Component,Copy, Clone)]
+pub struct Aim {
+    pub vec: Vec2
+}
+
 #[derive(Bundle)]
 pub struct CharacterBundle {
     health: Health,
-    weapon: Weapon,
+    weapon: Weapons,
     body: RigidBody,
     sensor: Sensor,
     collider: Collider,
@@ -41,20 +46,22 @@ pub struct CharacterBundle {
     gravity_scale: GravityScale,
     locked_axes: LockedAxes,
     damping: Damping,
+    aim: Aim
 }
 
 pub fn create_character(transform: Transform) -> CharacterBundle {
     CharacterBundle {
         health: Health { current: 0, max: 1 },
-        weapon: Weapon::Bow(Bow {}),
+        weapon: Weapons(Vec::new()),
         body: RigidBody::Dynamic,
         sensor: Sensor,
         collider: collider(),
-        transform: transform,
+        transform,
         active_events: ActiveEvents::COLLISION_EVENTS,
         locked_axes: LockedAxes::ROTATION_LOCKED, // Prevent spinning
         gravity_scale: GravityScale(0.0), // Disable gravity
         damping: Damping { linear_damping: 10.0, angular_damping: 10.0 }, // High damping
+        aim: Aim{vec: transform.translation.xx()}
     }
 }
 

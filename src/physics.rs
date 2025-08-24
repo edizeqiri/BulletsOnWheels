@@ -1,0 +1,79 @@
+use crate::character::enemy::Enemy;
+use crate::character::player::Player;
+use crate::character::{
+    enemy_collision_groups, player_collision_groups, square_sprite, Aim, Health,
+};
+use crate::projectile::Projectile;
+use crate::weapon::Shootable;
+use crate::weapon::Weapons;
+use crate::weapon::{ShootEvent, Weapon};
+use bevy::app::{App, FixedUpdate, Update};
+use bevy::color::palettes::basic::{GREEN, YELLOW};
+use bevy::color::Color;
+use bevy::log::info;
+use bevy::math::Vec2;
+use bevy::prelude::{Commands, EventReader, Fixed, Query, Res, Time, With};
+use bevy_rapier2d::pipeline::CollisionEvent;
+use bevy_rapier2d::plugin::{NoUserData, RapierPhysicsPlugin};
+use bevy_rapier2d::prelude::RapierDebugRenderPlugin;
+use std::time::Duration;
+
+pub(super) fn plugin(app: &mut App) {
+    app.insert_resource(Time::<Fixed>::from_duration(Duration::from_secs(3)))
+        .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
+        .add_plugins(RapierDebugRenderPlugin::default())
+        .add_systems(FixedUpdate, shoot_every_second)
+        .add_systems(
+            Update,
+            (
+                handle_sensor_collision,
+                debug_all_collision_events,
+                
+            ),
+        );
+}
+
+
+fn shoot_every_second(mut commands: Commands, enemy_query: Query<&Weapon, With<Enemy>>) {
+    for weapon in &enemy_query {
+        commands.spawn((
+            weapon.shoot(Vec2::new(1., 0.)),
+            square_sprite(Color::Srgba(YELLOW)),
+            enemy_collision_groups(),
+        ));
+    }
+}
+
+fn handle_sensor_collision(
+    mut collision_events: EventReader<CollisionEvent>,
+    mut commands: Commands,
+    projectile_query: Query<&Projectile>,
+    mut health_query: Query<&mut Health>,
+) {
+    for collision_event in collision_events.read() {
+        if let CollisionEvent::Started(entity1, entity2, _) = collision_event {
+            if let Ok(bullet) = projectile_query.get(*entity1) {
+                if let Ok(mut health) = health_query.get_mut(*entity2) {
+                    health.current = health.current.saturating_sub(bullet.damage);
+                    commands.entity(*entity1).despawn();
+                }
+            } else if let Ok(bullet) = projectile_query.get(*entity2) {
+                if let Ok(mut health) = health_query.get_mut(*entity1) {
+                    health.current = health.current.saturating_sub(bullet.damage);
+                    commands.entity(*entity2).despawn();
+                }
+            }
+        }
+    }
+}
+
+fn debug_all_collision_events(mut collision_events: EventReader<CollisionEvent>) {
+    let event_count = collision_events.len();
+    if event_count > 0 {
+        info!("=== {} collision events this frame ===", event_count);
+    }
+
+    for (i, event) in collision_events.read().enumerate() {
+        info!("Event {}: {:?}", i, event);
+    }
+}
