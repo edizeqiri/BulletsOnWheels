@@ -2,11 +2,13 @@ pub mod enemy;
 mod enemy_ai;
 pub mod player;
 
+use crate::weapon::Shootable;
 use crate::weapon::bow::Bow;
-use crate::weapon::{Weapon, Weapons};
+use crate::weapon::cooldown::WeaponCooldowns;
+use crate::weapon::{ShootEvent, Weapon, Weapons};
+use bevy::color::palettes::basic::GREEN;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-
 pub const PLAYER_GROUP: Group = Group::GROUP_1;
 pub const ENEMY_GROUP: Group = Group::GROUP_2;
 
