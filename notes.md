@@ -1,8 +1,8 @@
 # TODOs
 
-- Weapon pick up system
-- Spawn and death of characters
-- 
+- [ ] Weapon pick up system
+- [ ] Spawn and death of characters
+- [ ] Enemy AI
 
 # Notes
 ## Hitboxes

@@ -1,5 +1,6 @@
 pub mod enemy;
 pub mod player;
+mod enemy_ai;
 
 use crate::weapon::bow::Bow;
 use crate::weapon::{Weapon, Weapons};
