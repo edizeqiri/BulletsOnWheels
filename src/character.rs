@@ -9,6 +9,7 @@ use bevy_rapier2d::prelude::*;
 pub const PLAYER_GROUP: Group = Group::GROUP_1;
 pub const ENEMY_GROUP: Group = Group::GROUP_2;
 
+
 pub fn player_collision_groups() -> CollisionGroups {
     CollisionGroups::new(PLAYER_GROUP, ENEMY_GROUP)
 }

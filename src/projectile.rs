@@ -16,7 +16,6 @@ pub struct ProjectileBundle {
     collider: Collider,
     active_events: ActiveEvents,
     transform: Transform,
-    sprite: Sprite,
 }
 
 pub fn create_projectile(damage: u32, speed: f32, direction: Vec2) -> ProjectileBundle {
@@ -25,7 +24,6 @@ pub fn create_projectile(damage: u32, speed: f32, direction: Vec2) -> Projectile
         body: RigidBody::KinematicVelocityBased,
         velocity: Velocity::linear(speed * direction),
         sensor: Sensor,
-        sprite: square_sprite(Color::Srgba(Srgba::GREEN)),
         transform: Default::default(),
         collider: Collider::ball(10.0),
         active_events: ActiveEvents::COLLISION_EVENTS,

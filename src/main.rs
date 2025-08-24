@@ -4,7 +4,7 @@ mod weapon;
 
 use crate::character::enemy::{Enemy, enemy_additions};
 use crate::character::player::{Player, player_additions};
-use crate::character::{CharacterBundle, Health, enemy_collision_groups, player_collision_groups};
+use crate::character::{CharacterBundle, Health, enemy_collision_groups, player_collision_groups, square_sprite};
 use crate::projectile::Projectile;
 use crate::weapon::Shootable;
 use crate::weapon::Weapon;
@@ -14,6 +14,7 @@ use bevy::log::LogPlugin;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use bevy::color::palettes::css::{GREEN, YELLOW};
 
 fn main() {
     App::new()
@@ -44,11 +45,11 @@ fn init(mut commands: Commands) {
     commands.spawn((
         character::create_character(Transform::from_xyz(100.0, 0.0, 0.0)),
         player_additions(),
-    )).insert(Sensor);
+    ));
     commands.spawn((
         character::create_character(Transform::from_xyz(-100.0, 0.0, 0.0)),
         enemy_additions(),
-    )).insert(Sensor);
+    ));
 }
 
 fn shoot_every_second(
@@ -59,17 +60,17 @@ fn shoot_every_second(
 ) {
     for weapon in &player_query {
         commands.spawn((
-            weapon.shoot(50.0, Vec2::new(1., 0.)),
-
-            //player_collision_groups(),
+            weapon.shoot(50.0, Vec2::new(-1., 0.)),
+            square_sprite(Color::Srgba(GREEN)),
+            player_collision_groups(),
         ));
     }
 
     for weapon in &enemy_query {
         commands.spawn((
-            weapon.shoot(100.0, Vec2::new(-1., 0.)),
-
-            //enemy_collision_groups()
+            weapon.shoot(100.0, Vec2::new(1., 0.)),
+            square_sprite(Color::Srgba(YELLOW)),
+            enemy_collision_groups()
         ));
     }
 }
