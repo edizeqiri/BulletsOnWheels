@@ -1,5 +1,6 @@
 use crate::projectile::ProjectileBundle;
 use crate::weapon::bow::Bow;
+use crate::weapon::gun::Gun;
 use crate::weapon::cooldown::{shoot_on_event, update_weapon_cooldowns};
 use bevy::math::Vec2;
 use bevy::prelude::*;
@@ -7,6 +8,7 @@ use enum_dispatch::enum_dispatch;
 
 pub mod bow;
 pub mod cooldown;
+pub mod gun;
 
 pub(super) fn plugin(app: &mut App) {
     app
@@ -18,6 +20,7 @@ pub(super) fn plugin(app: &mut App) {
 #[derive(Component, Copy, Clone,Debug)]
 pub enum Weapon {
     Bow(Bow),
+    Gun(Gun)
 }
 
 #[enum_dispatch]

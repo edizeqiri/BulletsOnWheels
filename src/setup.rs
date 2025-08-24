@@ -8,6 +8,8 @@ use crate::character::player::player_additions;
 use crate::weapon::bow::Bow;
 use crate::weapon::cooldown::WeaponCooldowns;
 use crate::weapon::{Weapon, Weapons};
+use crate::weapon::gun::Gun;
+
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Startup, setup_camera)
         .add_systems(Startup, init);
@@ -20,7 +22,8 @@ fn setup_camera(mut commands: Commands) {
 fn init(mut commands: Commands) {
 
     let weapons = Weapons(vec![
-        Weapon::Bow(Bow::new(1,1000.,0.5))
+        Weapon::Bow(Bow::new(1,1000.,0.5)),
+        Weapon::Gun(Gun::new(1,250.,5.))
     ]);
 
     let cooldowns = WeaponCooldowns::new(&weapons);
