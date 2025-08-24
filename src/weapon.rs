@@ -9,11 +9,13 @@ pub mod bow;
 pub mod cooldown;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
+    app
+        .add_event::<ShootEvent>()
+        .add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
 }
 
 #[enum_dispatch(Shootable)]
-#[derive(Component, Copy, Clone)]
+#[derive(Component, Copy, Clone,Debug)]
 pub enum Weapon {
     Bow(Bow),
 }

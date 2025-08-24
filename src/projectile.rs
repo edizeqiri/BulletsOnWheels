@@ -14,16 +14,14 @@ pub struct ProjectileBundle {
     sensor: Sensor,
     collider: Collider,
     active_events: ActiveEvents,
-    transform: Transform,
 }
 
 pub fn create_projectile(damage: u32, speed: f32, direction: Vec2) -> ProjectileBundle {
     ProjectileBundle {
         projectile: Projectile { damage },
         body: RigidBody::KinematicVelocityBased,
-        velocity: Velocity::linear(speed * direction),
+        velocity: Velocity::linear(speed * direction.normalize()),
         sensor: Sensor,
-        transform: Default::default(),
         collider: Collider::ball(10.0),
         active_events: ActiveEvents::COLLISION_EVENTS,
     }

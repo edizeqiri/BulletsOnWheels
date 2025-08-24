@@ -34,10 +34,19 @@ pub struct Aim {
     pub vec: Vec2
 }
 
+impl Default for Aim {
+    fn default() -> Self {
+        Self {
+            vec: Vec2::new(0.,0.)
+        }
+    }
+}
+
 #[derive(Bundle)]
 pub struct CharacterBundle {
     health: Health,
     weapon: Weapons,
+    velocity: Velocity,
     body: RigidBody,
     sensor: Sensor,
     collider: Collider,
@@ -49,10 +58,11 @@ pub struct CharacterBundle {
     aim: Aim
 }
 
-pub fn create_character(transform: Transform) -> CharacterBundle {
+pub fn create_character(transform: Transform, weapons: Weapons) -> CharacterBundle {
     CharacterBundle {
         health: Health { current: 0, max: 1 },
-        weapon: Weapons(Vec::new()),
+        weapon: weapons,
+        velocity: Velocity::linear(Vec2::new(0.,0.)),
         body: RigidBody::Dynamic,
         sensor: Sensor,
         collider: collider(),
@@ -61,7 +71,7 @@ pub fn create_character(transform: Transform) -> CharacterBundle {
         locked_axes: LockedAxes::ROTATION_LOCKED, // Prevent spinning
         gravity_scale: GravityScale(0.0), // Disable gravity
         damping: Damping { linear_damping: 10.0, angular_damping: 10.0 }, // High damping
-        aim: Aim{vec: transform.translation.xx()}
+        aim: Aim::default()
     }
 }
 

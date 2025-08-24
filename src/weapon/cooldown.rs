@@ -1,7 +1,8 @@
 use std::time::Duration;
 use bevy::color::Color;
 use bevy::color::palettes::basic::GREEN;
-use bevy::prelude::{Commands, Component, EventReader, Query, Res, Timer, TimerMode};
+use bevy::log::info;
+use bevy::prelude::{Commands, Component, EventReader, Query, Res, Timer, TimerMode, Transform};
 use bevy::time::Time;
 use crate::character::{player_collision_groups, square_sprite, Aim};
 use crate::weapon::{ShootEvent, Weapons};
@@ -59,10 +60,10 @@ pub(crate) fn update_weapon_cooldowns(
 pub(crate) fn shoot_on_event(
     mut commands: Commands,
     mut shoot_event: EventReader<ShootEvent>,
-    mut shooter_query: Query<(&Weapons, &Aim, &mut WeaponCooldowns)>,
+    mut shooter_query: Query<(&Weapons, &Aim, &mut WeaponCooldowns, &Transform)>,
 ) {
     for event in shoot_event.read() {
-        if let Ok((weapons, aim, mut cooldowns)) = shooter_query.get_mut(event.shooter) {
+        if let Ok((weapons, aim, mut cooldowns, transform)) = shooter_query.get_mut(event.shooter) {
             // Zip weapons with their cooldowns
             for (weapon, cooldown) in weapons.0.iter().zip(cooldowns.0.iter_mut()) {
                 if cooldown.can_shoot() {
@@ -70,8 +71,10 @@ pub(crate) fn shoot_on_event(
                         weapon.shoot(aim.vec),
                         square_sprite(Color::Srgba(GREEN)),
                         player_collision_groups(),
+                        transform.clone()
                     ));
                     cooldown.reset();
+                    info!("Got ShootingEvent and Shot with {:?} ", weapon);
                 }
             }
         }
