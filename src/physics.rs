@@ -23,10 +23,7 @@ pub(super) fn plugin(app: &mut App) {
         .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
         .add_plugins(RapierDebugRenderPlugin::default())
         .add_systems(FixedUpdate, shoot_every_second)
-        .add_systems(
-            Update,
-            (handle_sensor_collision, debug_all_collision_events),
-        );
+        .add_systems(Update, handle_sensor_collision);
 }
 
 fn shoot_every_second(mut commands: Commands, enemy_query: Query<&Weapon, With<Enemy>>) {

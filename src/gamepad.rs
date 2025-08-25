@@ -1,5 +1,5 @@
 use crate::character::player::Player;
-use crate::character::{Aim, player_collision_groups};
+use crate::character::{Aim, ShootingState, player_collision_groups};
 use crate::weapon::ShootEvent;
 use bevy::input::gamepad::GamepadEvent;
 use bevy::prelude::*;
@@ -11,10 +11,13 @@ use bevy_rapier2d::prelude::Velocity;
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
-        (
-            (gamepad_aim, gamepad_shoot, gamepad_movement, gamepad_debug)
-                .run_if(any_with_component::<Player>),
-        ),
+        ((
+            gamepad_aim,
+            gamepad_input_system,
+            shoot_system,
+            gamepad_movement,
+        )
+            .run_if(any_with_component::<Player>),),
     );
 }
 
@@ -42,27 +45,43 @@ fn gamepad_movement(
     }
 }
 
-fn gamepad_shoot(
+fn gamepad_input_system(
     mut gamepad_event: EventReader<GamepadEvent>,
-    mut event_writer: EventWriter<ShootEvent>,
-    player_aim_query: Query<Entity, With<Player>>,
+    mut player_query: Query<&mut ShootingState, With<Player>>,
 ) {
-    let Ok(player) = player_aim_query.single() else {
-        return; // No player or multiple players, skip this frame
+    let Ok(mut shooting_state) = player_query.get_single_mut() else {
+        return;
     };
 
     for event in gamepad_event.read() {
         if let GamepadEvent::Button(button_event) = event {
             if let GamepadButton::East | GamepadButton::RightTrigger = button_event.button {
-                event_writer.write(ShootEvent {
-                    shooter: player,
-                    collision_groups: player_collision_groups(),
-                });
+                shooting_state.is_shooting = button_event.state.is_pressed();
             }
         }
     }
 }
 
+fn shoot_system(
+    mut event_writer: EventWriter<ShootEvent>,
+    player_query: Query<(Entity, &ShootingState), With<Player>>,
+    mut shoot_timer: Local<f32>,
+    time: Res<Time>,
+) {
+    let Ok((player, shooting_state)) = player_query.get_single() else {
+        return;
+    };
+
+    *shoot_timer -= time.delta_secs();
+
+    if shooting_state.is_shooting && *shoot_timer <= 0.0 {
+        event_writer.send(ShootEvent {
+            shooter: player,
+            collision_groups: player_collision_groups(),
+        });
+        *shoot_timer = 0.01;
+    }
+}
 fn gamepad_debug(mut gamepad_event: EventReader<GamepadEvent>) {
     for event in gamepad_event.read() {
         match event {

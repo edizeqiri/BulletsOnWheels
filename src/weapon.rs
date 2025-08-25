@@ -72,7 +72,6 @@ pub fn shoot_all_weapons(
                     transform.clone(),
                 ));
                 cooldown.reset();
-                info!("Got ShootingEvent and Shot with {:?} ", weapon);
             }
         }
     }

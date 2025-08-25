@@ -30,6 +30,11 @@ pub struct Health {
     max: u32,
 }
 
+#[derive(Component, Default)]
+pub struct ShootingState {
+    pub(crate) is_shooting: bool,
+}
+
 #[derive(Component, Copy, Clone)]
 pub struct Aim {
     pub vec: Vec2,
@@ -57,6 +62,7 @@ pub struct CharacterBundle {
     locked_axes: LockedAxes,
     damping: Damping,
     aim: Aim,
+    shooting_state: ShootingState,
 }
 
 pub fn create_character(transform: Transform, weapons: Weapons) -> CharacterBundle {
@@ -76,6 +82,7 @@ pub fn create_character(transform: Transform, weapons: Weapons) -> CharacterBund
             angular_damping: 10.0,
         }, // High damping
         aim: Aim::default(),
+        shooting_state: ShootingState::default(),
     }
 }
 
