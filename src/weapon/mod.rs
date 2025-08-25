@@ -1,4 +1,4 @@
-use crate::character::{Aim, player_collision_groups, square_sprite};
+use crate::character::{Aim, square_sprite};
 use crate::projectile::ProjectileBundle;
 use crate::weapon::bow::Bow;
 use crate::weapon::cooldown::{WeaponCooldowns, update_weapon_cooldowns};
@@ -12,7 +12,6 @@ use enum_dispatch::enum_dispatch;
 pub mod bow;
 pub mod cooldown;
 pub mod gun;
-
 pub(super) fn plugin(app: &mut App) {
     app.add_event::<ShootEvent>()
         .add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
@@ -69,7 +68,7 @@ pub fn shoot_all_weapons(
                     weapon.shoot(aim.vec),
                     square_sprite(Color::Srgba(GREEN)),
                     collision_groups,
-                    transform.clone(),
+                    *transform,
                 ));
                 cooldown.reset();
             }

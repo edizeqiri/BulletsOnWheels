@@ -1,5 +1,4 @@
 use crate::character;
-use crate::character::Aim;
 use crate::character::enemy::enemy_additions;
 use crate::character::player::player_additions;
 use crate::weapon::bow::Bow;
@@ -7,7 +6,6 @@ use crate::weapon::cooldown::WeaponCooldowns;
 use crate::weapon::gun::Gun;
 use crate::weapon::{Weapon, Weapons};
 use bevy::app::{App, Startup};
-use bevy::math::Vec2;
 use bevy::prelude::{Camera2d, Commands, Name, Transform};
 
 pub(super) fn plugin(app: &mut App) {
@@ -16,7 +14,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn setup_camera(mut commands: Commands) {
-    commands.spawn(Camera2d::default());
+    commands.spawn(Camera2d);
 }
 
 fn init(mut commands: Commands) {
@@ -35,8 +33,8 @@ fn init(mut commands: Commands) {
     ));
     commands.spawn((
         Name::new("Enemy"),
-        character::create_character(Transform::from_xyz(-100.0, 0.0, 0.0), weapons),
+        character::create_character(Transform::from_xyz(-100.0, 0.0, 0.0), weapons.clone()),
         enemy_additions(),
-        cooldowns,
+        cooldowns.clone(),
     ));
 }

@@ -1,18 +1,13 @@
 use crate::character::enemy::Enemy;
-use crate::character::player::Player;
-use crate::character::{
-    Aim, Health, enemy_collision_groups, player_collision_groups, square_sprite,
-};
+use crate::character::{Health, enemy_collision_groups, square_sprite};
 use crate::projectile::Projectile;
 use crate::weapon::Shootable;
-use crate::weapon::Weapons;
-use crate::weapon::{ShootEvent, Weapon};
+use crate::weapon::Weapon;
 use bevy::app::{App, FixedUpdate, Update};
 use bevy::color::Color;
-use bevy::color::palettes::basic::{GREEN, YELLOW};
-use bevy::log::info;
+use bevy::color::palettes::basic::YELLOW;
 use bevy::math::Vec2;
-use bevy::prelude::{Commands, EventReader, Fixed, Query, Res, Time, With};
+use bevy::prelude::{Commands, EventReader, Fixed, Query, Time, With};
 use bevy_rapier2d::pipeline::CollisionEvent;
 use bevy_rapier2d::plugin::{NoUserData, RapierPhysicsPlugin};
 use bevy_rapier2d::prelude::RapierDebugRenderPlugin;
@@ -49,23 +44,12 @@ fn handle_sensor_collision(
                     health.current = health.current.saturating_sub(bullet.damage);
                     commands.entity(*entity1).despawn();
                 }
-            } else if let Ok(bullet) = projectile_query.get(*entity2) {
-                if let Ok(mut health) = health_query.get_mut(*entity1) {
-                    health.current = health.current.saturating_sub(bullet.damage);
-                    commands.entity(*entity2).despawn();
-                }
+            } else if let Ok(bullet) = projectile_query.get(*entity2)
+                && let Ok(mut health) = health_query.get_mut(*entity1)
+            {
+                health.current = health.current.saturating_sub(bullet.damage);
+                commands.entity(*entity2).despawn();
             }
         }
-    }
-}
-
-fn debug_all_collision_events(mut collision_events: EventReader<CollisionEvent>) {
-    let event_count = collision_events.len();
-    if event_count > 0 {
-        info!("=== {} collision events this frame ===", event_count);
-    }
-
-    for (i, event) in collision_events.read().enumerate() {
-        info!("Event {}: {:?}", i, event);
     }
 }

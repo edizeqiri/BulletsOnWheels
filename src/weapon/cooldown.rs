@@ -1,10 +1,6 @@
-use crate::character::{Aim, player_collision_groups, square_sprite};
 use crate::weapon::Shootable;
-use crate::weapon::{ShootEvent, Weapons};
-use bevy::color::Color;
-use bevy::color::palettes::basic::GREEN;
-use bevy::log::info;
-use bevy::prelude::{Commands, Component, EventReader, Query, Res, Timer, TimerMode, Transform};
+use crate::weapon::Weapons;
+use bevy::prelude::{Component, Query, Res, Timer, TimerMode};
 use bevy::time::Time;
 use std::time::Duration;
 

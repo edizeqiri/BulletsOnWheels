@@ -1,6 +1,5 @@
 use crate::projectile::{ProjectileBundle, create_projectile};
 use crate::weapon::Shootable;
-use bevy::log::info;
 use bevy::math::Vec2;
 
 #[derive(Debug, Copy, Clone)]

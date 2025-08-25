@@ -27,7 +27,7 @@ fn collider() -> Collider {
 #[derive(Component)]
 pub struct Health {
     pub current: u32,
-    max: u32,
+    //pub(crate) max: u32,
 }
 
 #[derive(Component, Default)]
@@ -54,7 +54,7 @@ pub struct CharacterBundle {
     weapon: Weapons,
     velocity: Velocity,
     body: RigidBody,
-    sensor: Sensor,
+    //sensor: Sensor,
     collider: Collider,
     active_events: ActiveEvents,
     transform: Transform,
@@ -67,11 +67,11 @@ pub struct CharacterBundle {
 
 pub fn create_character(transform: Transform, weapons: Weapons) -> CharacterBundle {
     CharacterBundle {
-        health: Health { current: 0, max: 1 },
+        health: Health { current: 0 },
         weapon: weapons,
         velocity: Velocity::linear(Vec2::new(0., 0.)),
         body: RigidBody::Dynamic,
-        sensor: Sensor,
+        //sensor: Sensor,
         collider: collider(),
         transform,
         active_events: ActiveEvents::COLLISION_EVENTS,
