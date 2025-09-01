@@ -89,7 +89,7 @@ pub fn create_character(transform: Transform, weapons: Weapons) -> CharacterBund
 pub fn square_sprite(color: Color) -> Sprite {
     Sprite {
         color,
-        custom_size: Some(Vec2::new(50.0, 50.0)),
+        custom_size: Some(Vec2::new(20.0, 20.0)),
         ..Default::default()
     }
 }
