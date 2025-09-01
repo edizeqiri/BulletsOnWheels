@@ -1,8 +1,8 @@
-use crate::terrain::walls::spawn_perimeter_walls;
-use bevy::prelude::{App, Startup};
+use bevy::prelude::App;
 
+mod map;
 mod walls;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Startup, spawn_perimeter_walls);
+    app.add_plugins(walls::plugin).add_plugins(map::plugin);
 }

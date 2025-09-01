@@ -2,7 +2,9 @@
 
 - [ ] Weapon pick up system
 - [ ] Spawn and death of characters
-- [ ] Enemy AI
+- [ ] Endless Road
+- [x] Enemy AI
+- [x] Walls with fixed body
 
 # Notes
 ## Hitboxes
@@ -28,11 +30,14 @@ and the `Shootable` trait function `fire_rate`
 
 ## Enemies
 
-
+- Enemies will follow the `Transform` of `Player` by substracting the player vector with their own.
+  - The same for aiming
+- Added 20% Speed reduction for movement to not copy the moves
+- Enemies shoot by creating `ShootEvent`. Thus, they behave the same as a player.
 
 ## Base Level Room
 
-- [ ] Square room with 2 enemies
+- [x] Square room with 2 enemies
 - [ ] Shoot both down to start the game menu
 
 ## Menu (Game States)

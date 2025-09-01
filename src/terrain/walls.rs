@@ -3,6 +3,11 @@ use bevy::prelude::*;
 use bevy_rapier2d::dynamics::RigidBody;
 use bevy_rapier2d::geometry::{ActiveEvents, Collider};
 
+pub(super) fn plugin(app: &mut App) {
+    app.add_systems(Startup,spawn_perimeter_walls);
+
+}
+
 #[derive(Component)]
 struct Wall;
 
