@@ -52,14 +52,13 @@ fn gamepad_input_system(
     for event in gamepad_event.read() {
         if let GamepadEvent::Button(button_event) = event {
             if matches!(
-            button_event.button,
-            GamepadButton::East | GamepadButton::RightTrigger
-        ) {
+                button_event.button,
+                GamepadButton::East | GamepadButton::RightTrigger
+            ) {
                 shooting_state.is_shooting = button_event.state.is_pressed();
             }
         }
     }
-
 }
 
 fn shoot_system(

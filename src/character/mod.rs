@@ -65,7 +65,6 @@ pub struct CharacterBundle {
     shooting_state: ShootingState,
 }
 
-
 pub fn create_character(transform: Transform, weapons: Weapons) -> CharacterBundle {
     CharacterBundle {
         health: Health { current: 0 },
