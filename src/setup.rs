@@ -32,8 +32,14 @@ fn init(mut commands: Commands) {
         cooldowns.clone(),
     ));
     commands.spawn((
-        Name::new("Enemy"),
+        Name::new("Enemy1"),
         character::create_character(Transform::from_xyz(-100.0, 0.0, 0.0), weapons.clone()),
+        enemy_additions(),
+        cooldowns.clone(),
+    ));
+    commands.spawn((
+        Name::new("Enemy2"),
+        character::create_character(Transform::from_xyz(200.0, 0.0, 0.0), weapons.clone()),
         enemy_additions(),
         cooldowns.clone(),
     ));

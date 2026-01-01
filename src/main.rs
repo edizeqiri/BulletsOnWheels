@@ -30,6 +30,7 @@ fn logger() -> LogPlugin {
         filter: "info,wgpu_core=error,wgpu_hal=error,rustydefense=debug".into(),
         level: bevy::log::Level::DEBUG,
         custom_layer: |_| None,
+        fmt_layer: |_| None,
     }
 }
 

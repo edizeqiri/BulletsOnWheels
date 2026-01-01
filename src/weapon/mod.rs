@@ -1,4 +1,4 @@
-use crate::character::{Aim, square_sprite};
+use crate::character::{Aim, Health, square_sprite};
 use crate::projectile::ProjectileBundle;
 use crate::weapon::bow::Bow;
 use crate::weapon::cooldown::{WeaponCooldowns, update_weapon_cooldowns};
@@ -12,6 +12,7 @@ use enum_dispatch::enum_dispatch;
 pub mod bow;
 pub mod cooldown;
 pub mod gun;
+
 pub(super) fn plugin(app: &mut App) {
     app.add_event::<ShootEvent>()
         .add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
@@ -30,7 +31,7 @@ pub trait Shootable {
     fn fire_rate(&self) -> f32;
 }
 
-#[derive(Event)]
+#[derive(Message)]
 pub struct ShootEvent {
     pub shooter: Entity,
     pub collision_groups: CollisionGroups,
@@ -41,7 +42,7 @@ pub struct Weapons(pub Vec<Weapon>);
 
 pub(crate) fn shoot_on_event(
     mut commands: Commands,
-    mut shoot_event: EventReader<ShootEvent>,
+    mut shoot_event: MessageReader<ShootEvent>,
     mut shooter_query: Query<(&Weapons, &Aim, &mut WeaponCooldowns, &Transform)>,
 ) {
     for event in shoot_event.read() {
