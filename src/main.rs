@@ -5,6 +5,7 @@ mod projectile;
 mod setup;
 mod terrain;
 mod weapon;
+mod gamestate;
 
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
