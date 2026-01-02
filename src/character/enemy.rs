@@ -1,9 +1,8 @@
 use crate::character;
-use crate::character::{ENEMY_GROUP, Health, PLAYER_GROUP, enemy_collision_groups, square_sprite};
+use crate::character::{Health, enemy_collision_groups, square_sprite};
 use crate::weapon::Weapons;
 use bevy::color::palettes::basic::RED;
 use bevy::prelude::*;
-use bevy_rapier2d::geometry::CollisionGroups;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<EnemyDeathMessage>()
