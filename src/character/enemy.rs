@@ -90,13 +90,6 @@ mod tests {
             // start app
             app.update();
 
-            // confirm setup: there is 1 Player
-            let world = app.world_mut();
-            let player = world
-                .query_filtered::<Entity, With<Enemy>>()
-                .single(world)
-                .expect("Expected exactly one Player entity");
-
             Self { app, player }
         }
     }
