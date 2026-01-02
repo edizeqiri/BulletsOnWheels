@@ -1,12 +1,10 @@
-use crate::character;
-use crate::character::enemy::{create_enemy_bundle, enemy_additions};
+use crate::character::enemy::create_enemy_bundle;
 use crate::character::player::create_player_bundle;
 use crate::weapon::bow::Bow;
-use crate::weapon::cooldown::WeaponCooldowns;
 use crate::weapon::gun::Gun;
 use crate::weapon::{Weapon, Weapons};
 use bevy::app::{App, Startup};
-use bevy::prelude::{Camera2d, Commands, Name, Transform};
+use bevy::prelude::{Camera2d, Commands, Transform};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Startup, setup_camera)
@@ -23,12 +21,9 @@ fn init(mut commands: Commands) {
         Weapon::Gun(Gun::new(1, 250., 5.)),
     ]);
 
-    let cooldowns = WeaponCooldowns::new(&weapons);
-
     commands.spawn(create_player_bundle(
         Transform::from_xyz(100.0, 0.0, 0.0),
         weapons.clone(),
-        cooldowns.clone(),
         1000,
         "Player",
     ));
@@ -36,15 +31,13 @@ fn init(mut commands: Commands) {
     commands.spawn(create_enemy_bundle(
         Transform::from_xyz(-100.0, 0.0, 0.0),
         weapons.clone(),
-        cooldowns.clone(),
         1000,
         "Enemy1",
     ));
 
     commands.spawn(create_enemy_bundle(
         Transform::from_xyz(200.0, 0.0, 0.0),
-        weapons.clone(),
-        cooldowns.clone(),
+        weapons,
         1000,
         "Enemy2",
     ));

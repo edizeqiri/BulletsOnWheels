@@ -1,7 +1,7 @@
-use crate::character::{Aim, Health, square_sprite};
+use crate::character::{square_sprite, Aim};
 use crate::projectile::ProjectileBundle;
 use crate::weapon::bow::Bow;
-use crate::weapon::cooldown::{WeaponCooldowns, update_weapon_cooldowns};
+use crate::weapon::cooldown::{update_weapon_cooldowns, WeaponCooldowns};
 use crate::weapon::gun::Gun;
 use bevy::color::palettes::basic::GREEN;
 use bevy::math::Vec2;

@@ -1,11 +1,11 @@
 use crate::character::enemy::Enemy;
-use crate::character::{enemy_collision_groups, square_sprite, Health};
+use crate::character::{Health, enemy_collision_groups, square_sprite};
 use crate::projectile::Projectile;
 use crate::weapon::Shootable;
 use crate::weapon::Weapon;
 use bevy::app::{App, FixedUpdate, Update};
-use bevy::color::palettes::basic::YELLOW;
 use bevy::color::Color;
+use bevy::color::palettes::basic::YELLOW;
 use bevy::math::Vec2;
 use bevy::prelude::{Commands, Fixed, MessageReader, Query, Time, With};
 use bevy_rapier2d::pipeline::CollisionEvent;

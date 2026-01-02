@@ -12,14 +12,13 @@ pub struct Player;
 pub fn create_player_bundle(
     transform: Transform,
     weapons: Weapons,
-    weapon_cooldowns: WeaponCooldowns,
     max_health: u32,
     name: &'static str,
 ) -> impl Bundle {
     (
         Name::new(name),
-        character::create_character(transform, weapons, max_health),
-        weapon_cooldowns.clone(),
+        character::create_character(transform, weapons.clone(), max_health),
+        WeaponCooldowns::new(&weapons),
         CollisionGroups::new(PLAYER_GROUP, ENEMY_GROUP),
         Player,
         square_sprite(Color::Srgba(BLUE)),
