@@ -7,7 +7,7 @@ use bevy::app::{App, FixedUpdate, Update};
 use bevy::color::Color;
 use bevy::color::palettes::basic::YELLOW;
 use bevy::math::Vec2;
-use bevy::prelude::{Commands, EventReader, Fixed, Query, Time, With};
+use bevy::prelude::{Commands, Fixed, MessageReader, Query, Time, With};
 use bevy_rapier2d::pipeline::CollisionEvent;
 use bevy_rapier2d::plugin::{NoUserData, RapierPhysicsPlugin};
 use bevy_rapier2d::prelude::RapierDebugRenderPlugin;
@@ -32,7 +32,7 @@ fn shoot_every_second(mut commands: Commands, enemy_query: Query<&Weapon, With<E
 }
 
 fn handle_sensor_collision(
-    mut collision_events: EventReader<CollisionEvent>,
+    mut collision_events: MessageReader<CollisionEvent>,
     mut commands: Commands,
     projectile_query: Query<&Projectile>,
     mut health_query: Query<&mut Health>,

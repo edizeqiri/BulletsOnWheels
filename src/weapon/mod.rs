@@ -1,4 +1,4 @@
-use crate::character::{Aim, Health, square_sprite};
+use crate::character::{Aim, square_sprite};
 use crate::projectile::ProjectileBundle;
 use crate::weapon::bow::Bow;
 use crate::weapon::cooldown::{WeaponCooldowns, update_weapon_cooldowns};
@@ -14,7 +14,7 @@ pub mod cooldown;
 pub mod gun;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_event::<ShootEvent>()
+    app.add_message::<ShootEvent>()
         .add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
 }
 

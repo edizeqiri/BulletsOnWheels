@@ -32,7 +32,7 @@ impl WeaponCooldown {
     }
 
     pub fn can_shoot(&self) -> bool {
-        self.timer.finished()
+        self.timer.is_finished()
     }
 
     pub fn reset(&mut self) {

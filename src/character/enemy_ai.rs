@@ -14,7 +14,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn shoot_at_player(
-    mut shoot_event: EventWriter<ShootEvent>,
+    mut shoot_event: MessageWriter<ShootEvent>,
     enemy_query: Query<(Entity, &mut Aim, &Transform), With<Enemy>>,
     player_query: Query<&Transform, With<Player>>,
 ) {
