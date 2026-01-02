@@ -31,7 +31,6 @@ mod tests {
 
     use crate::character::player::{create_player_bundle, Player};
     use crate::character::Health;
-    use crate::weapon::bow::Bow;
     use crate::weapon::{Weapon, Weapons};
     use bevy::app::{App, Update};
     use bevy::prelude::{Entity, Name, Transform, With, World};
@@ -43,18 +42,17 @@ mod tests {
         test_app
             .add_systems(Update, handle_enemy_zero_health_system);
         // setup Entities
-        let weapons = Weapons(vec![Weapon::Bow(Bow::new(1, 1000., 0.5))]);
 
         test_app.world_mut().spawn(create_player_bundle(
             Transform::from_xyz(1.0, 1.0, 0.0),
-            weapons.clone(),
+Weapons::default(),
             1,
             Name::from("Player"),
         ));
 
         test_app.world_mut().spawn(create_enemy_bundle(
             Transform::from_xyz(0.0, 0.0, 0.0),
-            weapons.clone(),
+Weapons::default(),
             1,
             Name::from("Enemy"),
         ));

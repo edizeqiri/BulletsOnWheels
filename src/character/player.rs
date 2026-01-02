@@ -1,8 +1,5 @@
 use crate::character;
-use crate::character::{square_sprite, Health, ENEMY_GROUP, PLAYER_GROUP};
-use crate::weapon::cooldown::WeaponCooldowns;
-use crate::weapon::Weapons;
-use crate::character::{ENEMY_GROUP, PLAYER_GROUP, square_sprite};
+use crate::character::{ENEMY_GROUP, PLAYER_GROUP, square_sprite, Health};
 use crate::weapon::Weapons;
 use bevy::color::palettes::css::BLUE;
 use bevy::prelude::*;
@@ -67,7 +64,6 @@ fn handle_player_zero_health_system(
 mod tests {
     use crate::character::player::{check_player_zero_health_system, create_player_bundle, handle_player_zero_health_system, Player, PlayerDeathMessage};
     use crate::character::{player, Health};
-    use crate::weapon::bow::Bow;
     use crate::weapon::{Weapon, Weapons};
     use bevy::app::{App, Update};
     use bevy::prelude::{Entity, Name, Transform, With};
@@ -87,11 +83,9 @@ mod tests {
                 .add_plugins(player::plugin);
 
             // setup Entities
-            let weapons = Weapons(vec![Weapon::Bow(Bow::new(1, 1000., 0.5))]);
-
             let player = app.world_mut().spawn(create_player_bundle(
                 Transform::from_xyz(1.0, 1.0, 0.0),
-                weapons.clone(),
+                Weapons::default(),
                 1,
                 Name::from("Player"),
             )).id();
