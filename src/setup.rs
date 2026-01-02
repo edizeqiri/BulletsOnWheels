@@ -1,6 +1,6 @@
 use crate::character;
-use crate::character::enemy::enemy_additions;
-use crate::character::player::player_additions;
+use crate::character::enemy::{create_enemy_bundle, enemy_additions};
+use crate::character::player::create_player_bundle;
 use crate::weapon::bow::Bow;
 use crate::weapon::cooldown::WeaponCooldowns;
 use crate::weapon::gun::Gun;
@@ -25,22 +25,27 @@ fn init(mut commands: Commands) {
 
     let cooldowns = WeaponCooldowns::new(&weapons);
 
-    commands.spawn((
-        Name::new("Player"),
-        character::create_character(Transform::from_xyz(100.0, 0.0, 0.0), weapons.clone()),
-        player_additions(),
+    commands.spawn(create_player_bundle(
+        Transform::from_xyz(100.0, 0.0, 0.0),
+        weapons.clone(),
         cooldowns.clone(),
+        1000,
+        "Player",
     ));
-    commands.spawn((
-        Name::new("Enemy1"),
-        character::create_character(Transform::from_xyz(-100.0, 0.0, 0.0), weapons.clone()),
-        enemy_additions(),
+
+    commands.spawn(create_enemy_bundle(
+        Transform::from_xyz(-100.0, 0.0, 0.0),
+        weapons.clone(),
         cooldowns.clone(),
+        1000,
+        "Enemy1",
     ));
-    commands.spawn((
-        Name::new("Enemy2"),
-        character::create_character(Transform::from_xyz(200.0, 0.0, 0.0), weapons.clone()),
-        enemy_additions(),
+
+    commands.spawn(create_enemy_bundle(
+        Transform::from_xyz(200.0, 0.0, 0.0),
+        weapons.clone(),
         cooldowns.clone(),
+        1000,
+        "Enemy2",
     ));
 }

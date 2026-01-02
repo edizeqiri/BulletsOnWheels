@@ -27,7 +27,7 @@ fn main() {
 
 fn logger() -> LogPlugin {
     LogPlugin {
-        filter: "info,wgpu_core=error,wgpu_hal=error,rustydefense=debug".into(),
+        filter: "info,wgp`u_core=error,wgpu_hal=error,rustydefense=debug".into(),
         level: bevy::log::Level::DEBUG,
         custom_layer: |_| None,
         fmt_layer: |_| None,

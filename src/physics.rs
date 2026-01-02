@@ -1,11 +1,11 @@
 use crate::character::enemy::Enemy;
-use crate::character::{Health, enemy_collision_groups, square_sprite};
+use crate::character::{enemy_collision_groups, square_sprite, Health};
 use crate::projectile::Projectile;
 use crate::weapon::Shootable;
 use crate::weapon::Weapon;
 use bevy::app::{App, FixedUpdate, Update};
-use bevy::color::Color;
 use bevy::color::palettes::basic::YELLOW;
+use bevy::color::Color;
 use bevy::math::Vec2;
 use bevy::prelude::{Commands, Fixed, MessageReader, Query, Time, With};
 use bevy_rapier2d::pipeline::CollisionEvent;
@@ -31,6 +31,9 @@ fn shoot_every_second(mut commands: Commands, enemy_query: Query<&Weapon, With<E
     }
 }
 
+/// todo([#11]): handle bullet hitting despawend entity
+///
+/// [#11]: https://github.com/edizeqiri/BulletsOnWheels/issues/11
 fn handle_sensor_collision(
     mut collision_events: MessageReader<CollisionEvent>,
     mut commands: Commands,

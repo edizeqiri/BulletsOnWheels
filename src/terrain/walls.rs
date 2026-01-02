@@ -1,4 +1,3 @@
-use crate::character::Health;
 use bevy::prelude::*;
 use bevy_rapier2d::dynamics::RigidBody;
 use bevy_rapier2d::geometry::{ActiveEvents, Collider};
@@ -15,7 +14,6 @@ struct Destructible;
 
 #[derive(Bundle)]
 struct WallBundle {
-    health: Health,
     body: RigidBody,
     collider: Collider,
     active_events: ActiveEvents,
@@ -24,7 +22,6 @@ struct WallBundle {
 
 fn create_wall_bundle(transform: Transform) -> WallBundle {
     WallBundle {
-        health: Health { current: 0 },
         body: RigidBody::Fixed,
         collider: Collider::cuboid(10.0, 10.0),
         active_events: Default::default(),
