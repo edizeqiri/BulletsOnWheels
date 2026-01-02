@@ -1,9 +1,9 @@
 use crate::character::enemy::Enemy;
 use crate::character::player::Player;
-use crate::character::{CharacterBundle, Health};
+use crate::character::{Health};
 use bevy::app::{App, Update};
 use bevy::log::debug;
-use bevy::prelude::{Changed, Commands, Entity, Query, With, World};
+use bevy::prelude::{Changed, Commands, Entity, Query, With};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, handle_player_zero_health_system)
@@ -15,7 +15,7 @@ fn handle_player_zero_health_system(
     query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>,
 ) {
     for (health, entity) in &query {
-        if (health.current <= 0) {
+        if health.current <= 0 {
             debug!("Player died!");
             commands.entity(entity).despawn();
         }
@@ -27,7 +27,7 @@ fn handle_enemy_zero_health_system(
     query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>,
 ) {
     for (health, entity) in &query {
-        if (health.current <= 0) {
+        if health.current <= 0 {
             debug!("Enemy died!");
             commands.entity(entity).despawn();
         }
