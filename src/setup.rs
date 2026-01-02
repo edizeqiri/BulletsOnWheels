@@ -25,20 +25,20 @@ fn init(mut commands: Commands) {
         Transform::from_xyz(100.0, 0.0, 0.0),
         weapons.clone(),
         1000,
-        "Player",
+        "Player".to_string(),
     ));
 
     commands.spawn(create_enemy_bundle(
         Transform::from_xyz(-100.0, 0.0, 0.0),
         weapons.clone(),
         1000,
-        "Enemy1",
+        "Enemy1".to_string(),
     ));
 
     commands.spawn(create_enemy_bundle(
         Transform::from_xyz(200.0, 0.0, 0.0),
         weapons,
         1000,
-        "Enemy2",
+        "Enemy2".to_string(),
     ));
 }

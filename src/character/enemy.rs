@@ -13,7 +13,7 @@ pub fn create_enemy_bundle(
     transform: Transform,
     weapons: Weapons,
     max_health: u32,
-    name: &'static str,
+    name: String,
 ) -> impl Bundle {
     (
         Name::new(name),
