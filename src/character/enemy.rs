@@ -110,7 +110,7 @@ mod tests {
         {
             let world = setup.app.world_mut();
 
-            // when: player.health.current = 0
+            // when: enemy.health.current = 0
             world
                 .query::<&mut Health>()
                 .get_mut(world, setup.player)
@@ -120,10 +120,10 @@ mod tests {
 
         // 1. message: health changes
         setup.app.update();
-        // 2. message: player died
+        // 2. message: enemy died
         setup.app.update();
 
-        // then: no player exists
+        // then: no enemy exists
         let world = setup.app.world_mut();
         assert_eq!(
             world
