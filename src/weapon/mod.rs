@@ -4,7 +4,6 @@ use bevy::color::palettes::basic::GREEN;
 use bevy::math::Vec2;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::CollisionGroups;
-use enum_dispatch::enum_dispatch;
 use std::time::Duration;
 
 pub(super) fn plugin(app: &mut App) {
@@ -12,21 +11,22 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
 }
 #[derive(Copy, Clone, Debug)]
-pub enum WeaponKind {
+pub enum WeaponType {
     Bow,
     Gun,
 }
 
 #[derive(Component, Clone, Debug)]
 pub struct Weapon {
-    kind: WeaponKind,
+    kind: WeaponType,
     damage: u32,
     speed: f32,
     fire_rate: f32,
     pub timer: Timer,
 }
+
 impl Weapon {
-    pub fn new(kind: WeaponKind, damage: u32, speed: f32, fire_rate: f32) -> Self {
+    pub fn new(kind: WeaponType, damage: u32, speed: f32, fire_rate: f32) -> Self {
         Self {
             kind,
             damage,
@@ -39,9 +39,7 @@ impl Weapon {
     pub(crate) fn shoot(&self, direction: Vec2) -> ProjectileBundle {
         create_projectile(self.damage, self.speed, direction)
     }
-    fn fire_rate(&self) -> f32 {
-        self.fire_rate
-    }
+
     pub fn can_shoot(&self) -> bool {
         self.timer.is_finished()
     }
@@ -83,7 +81,7 @@ pub fn shoot_all_weapons_system(
 ) {
     if let Ok((mut weapons, aim, transform)) = shooter_query.get_mut(shooter) {
         // Zip weapons with their cooldowns
-        for (weapon) in weapons.0.iter_mut() {
+        for weapon in weapons.0.iter_mut() {
             if weapon.can_shoot() {
                 commands.spawn((
                     weapon.shoot(aim.vec),
@@ -108,8 +106,8 @@ pub(crate) fn update_weapon_cooldowns(time: Res<Time>, mut weapon_query: Query<&
 impl Default for Weapons {
     fn default() -> Self {
         Weapons(vec![
-            Weapon::new(WeaponKind::Bow, 1, 1000., 0.5),
-            Weapon::new(WeaponKind::Gun, 1, 250., 5.),
+            Weapon::new(WeaponType::Bow, 1, 1000., 0.5),
+            Weapon::new(WeaponType::Gun, 1, 250., 5.),
         ])
     }
 }
