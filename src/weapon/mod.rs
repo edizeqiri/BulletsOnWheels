@@ -11,14 +11,14 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
 }
 #[derive(Copy, Clone, Debug)]
-pub enum WeaponType {
+pub enum WeaponKind {
     Bow,
     Gun,
 }
 
 #[derive(Clone, Debug)]
 pub struct Weapon {
-    kind: WeaponType,
+    kind: WeaponKind,
     damage: u32,
     speed: f32,
     fire_rate: f32,
@@ -26,7 +26,7 @@ pub struct Weapon {
 }
 
 impl Weapon {
-    pub fn new(kind: WeaponType, damage: u32, speed: f32, mut fire_rate: f32) -> Self {
+    pub fn new(kind: WeaponKind, damage: u32, speed: f32, mut fire_rate: f32) -> Self {
         if fire_rate == 0. {
             fire_rate = 1.
         }
@@ -69,32 +69,17 @@ pub(crate) fn shoot_on_event(
     mut shooter_query: Query<(&mut Weapons, &Aim, &Transform)>,
 ) {
     for event in shoot_event.read() {
-        shoot_all_weapons_system(
-            &mut commands,
-            &mut shooter_query,
-            event.shooter,
-            event.collision_groups,
-        );
-    }
-}
-
-pub fn shoot_all_weapons_system(
-    commands: &mut Commands,
-    shooter_query: &mut Query<(&mut Weapons, &Aim, &Transform)>,
-    shooter: Entity,
-    collision_groups: CollisionGroups,
-) {
-    if let Ok((mut weapons, aim, transform)) = shooter_query.get_mut(shooter) {
-        // Zip weapons with their cooldowns
-        for weapon in &mut weapons.list {
-            if weapon.can_shoot() {
-                commands.spawn((
-                    weapon.shoot(aim.vec),
-                    square_sprite(Color::Srgba(GREEN)),
-                    collision_groups,
-                    *transform,
-                ));
-                weapon.reset();
+        if let Ok((mut weapons, aim, transform)) = shooter_query.get_mut(event.shooter) {
+            for weapon in &mut weapons.list {
+                if weapon.can_shoot() {
+                    commands.spawn((
+                        weapon.shoot(aim.vec),
+                        square_sprite(Color::Srgba(GREEN)),
+                        event.collision_groups,
+                        *transform,
+                    ));
+                    weapon.reset();
+                }
             }
         }
     }
@@ -112,8 +97,8 @@ impl Default for Weapons {
     fn default() -> Self {
         Weapons {
             list: vec![
-                Weapon::new(WeaponType::Bow, 1, 1000., 0.5),
-                Weapon::new(WeaponType::Gun, 1, 250., 5.),
+                Weapon::new(WeaponKind::Bow, 1, 1000., 0.5),
+                Weapon::new(WeaponKind::Gun, 1, 250., 5.),
             ],
         }
     }

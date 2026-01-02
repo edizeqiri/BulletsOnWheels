@@ -1,35 +1,16 @@
-use crate::character::enemy::Enemy;
-use crate::character::{Health, enemy_collision_groups, square_sprite};
+use crate::character::Health;
 use crate::projectile::Projectile;
-use crate::weapon::Weapons;
-use bevy::app::{App, FixedUpdate, Update};
-use bevy::color::Color;
-use bevy::color::palettes::basic::YELLOW;
-use bevy::math::Vec2;
-use bevy::prelude::{Commands, EntityWorldMut, Fixed, MessageReader, Query, Time, With};
+use bevy::app::{App, Update};
+use bevy::prelude::{Commands, EntityWorldMut, Fixed, MessageReader, Query, Time};
 use bevy_rapier2d::pipeline::CollisionEvent;
 use bevy_rapier2d::plugin::{NoUserData, RapierPhysicsPlugin};
-use bevy_rapier2d::prelude::RapierDebugRenderPlugin;
 use std::time::Duration;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(Time::<Fixed>::from_duration(Duration::from_secs(3)))
         .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
-        .add_plugins(RapierDebugRenderPlugin::default())
-        .add_systems(FixedUpdate, shoot_every_second)
+        //.add_plugins(RapierDebugRenderPlugin::default())
         .add_systems(Update, handle_sensor_collision);
-}
-
-fn shoot_every_second(mut commands: Commands, enemy_query: Query<&Weapons, With<Enemy>>) {
-    for weapons in &enemy_query {
-        for weapon in &weapons.list {
-            commands.spawn((
-                weapon.shoot(Vec2::new(1., 0.)),
-                square_sprite(Color::Srgba(YELLOW)),
-                enemy_collision_groups(),
-            ));
-        }
-    }
 }
 
 /// todo([#11]): handle bullet hitting despawend entity

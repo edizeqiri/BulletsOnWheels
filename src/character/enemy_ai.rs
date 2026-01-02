@@ -9,7 +9,6 @@ use bevy_rapier2d::dynamics::Velocity;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, shoot_at_player)
-        //.insert_resource(Time::<Fixed>::from_seconds(0.25))
         .add_systems(Update, move_at_player);
 }
 

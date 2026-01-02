@@ -1,5 +1,5 @@
 use crate::character;
-use crate::character::{ENEMY_GROUP, Health, PLAYER_GROUP, square_sprite};
+use crate::character::{ENEMY_GROUP, Health, PLAYER_GROUP, player_collision_groups, square_sprite};
 use crate::weapon::Weapons;
 use bevy::color::palettes::css::BLUE;
 use bevy::prelude::*;
@@ -28,7 +28,7 @@ pub fn create_player_bundle(
     (
         name,
         character::create_character(transform, weapons.clone(), max_health),
-        CollisionGroups::new(PLAYER_GROUP, ENEMY_GROUP),
+        player_collision_groups(),
         Player,
         square_sprite(Color::Srgba(BLUE)),
     )
