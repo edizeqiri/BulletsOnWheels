@@ -36,13 +36,13 @@ fn handle_enemy_zero_health_system(
 
 #[cfg(test)]
 mod tests {
-    use crate::character::enemy::{create_enemy_bundle, Enemy};
+    use crate::character::enemy::{Enemy, create_enemy_bundle};
     use crate::character::system::{
         handle_enemy_zero_health_system, handle_player_zero_health_system,
     };
 
-    use crate::character::player::{create_player_bundle, Player};
     use crate::character::Health;
+    use crate::character::player::{Player, create_player_bundle};
     use crate::weapon::bow::Bow;
     use crate::weapon::{Weapon, Weapons};
     use bevy::app::App;
