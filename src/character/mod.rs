@@ -1,7 +1,6 @@
 pub mod enemy;
 mod enemy_ai;
 pub mod player;
-mod system;
 
 use crate::weapon::Weapons;
 use bevy::prelude::*;
@@ -11,7 +10,8 @@ pub const ENEMY_GROUP: Group = Group::GROUP_2;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(enemy_ai::plugin)
-        .add_plugins(system::plugin);
+        .add_plugins(enemy::plugin)
+        .add_plugins(player::plugin);
 }
 
 pub fn player_collision_groups() -> CollisionGroups {
@@ -101,11 +101,4 @@ pub fn square_sprite(color: Color) -> Sprite {
         custom_size: Some(Vec2::new(20.0, 20.0)),
         ..Default::default()
     }
-}
-
-
-
-#[derive(Message)]
-pub struct EnemyDeathMessage {
-    pub entity: Entity,
 }

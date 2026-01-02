@@ -1,13 +1,12 @@
 use crate::character;
-use crate::character::{ENEMY_GROUP, PLAYER_GROUP, square_sprite, Health};
+use crate::character::{ENEMY_GROUP, Health, PLAYER_GROUP, square_sprite};
 use crate::weapon::Weapons;
 use bevy::color::palettes::css::BLUE;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::CollisionGroups;
 
 pub(super) fn plugin(app: &mut App) {
-    app
-        .add_message::<PlayerDeathMessage>()
+    app.add_message::<PlayerDeathMessage>()
         .add_systems(Update, check_player_zero_health_system)
         .add_systems(Update, handle_player_zero_health_system);
 }
@@ -41,37 +40,33 @@ fn check_player_zero_health_system(
 ) {
     for (health, entity) in &query {
         if health.current <= 0 {
-            death_message.write(PlayerDeathMessage {
-                entity
-            }
-            );
+            death_message.write(PlayerDeathMessage { entity });
         }
     }
 }
 
 fn handle_player_zero_health_system(
     mut commands: Commands,
-    mut player_death_messages: MessageReader<PlayerDeathMessage>
+    mut player_death_messages: MessageReader<PlayerDeathMessage>,
 ) {
     for message in player_death_messages.read() {
         debug!("Player died!");
         commands.entity(message.entity).despawn();
     }
-
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::character::player::{check_player_zero_health_system, create_player_bundle, handle_player_zero_health_system, Player, PlayerDeathMessage};
-    use crate::character::{player, Health};
-    use crate::weapon::{Weapon, Weapons};
-    use bevy::app::{App, Update};
+    use crate::character::player::{Player, create_player_bundle};
+    use crate::character::{Health, player};
+    use crate::weapon::Weapons;
+    use bevy::app::App;
     use bevy::prelude::{Entity, Name, Transform, With};
 
     // ----------- SETUP ----------- //
     pub struct Setup {
         pub app: App,
-        pub player: Entity
+        pub player: Entity,
     }
 
     impl Setup {
@@ -79,16 +74,18 @@ mod tests {
             // setup App
             let mut app = App::new();
 
-            app
-                .add_plugins(player::plugin);
+            app.add_plugins(player::plugin);
 
             // setup Entities
-            let player = app.world_mut().spawn(create_player_bundle(
-                Transform::from_xyz(1.0, 1.0, 0.0),
-                Weapons::default(),
-                1,
-                Name::from("Player"),
-            )).id();
+            let player = app
+                .world_mut()
+                .spawn(create_player_bundle(
+                    Transform::from_xyz(1.0, 1.0, 0.0),
+                    Weapons::default(),
+                    1,
+                    Name::from("Player"),
+                ))
+                .id();
 
             // start app
             app.update();

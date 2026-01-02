@@ -13,11 +13,10 @@ fn setup_camera(mut commands: Commands) {
 }
 
 fn init(mut commands: Commands) {
-
     commands.spawn(create_player_bundle(
         Transform::from_xyz(100.0, 0.0, 0.0),
         Weapons::default(),
-        1000,
+        10,
         Name::from("Player"),
     ));
 }
