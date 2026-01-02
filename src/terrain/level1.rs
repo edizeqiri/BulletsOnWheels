@@ -1,6 +1,5 @@
 use crate::character::enemy::create_enemy_bundle;
 use crate::weapon::Weapons;
-use crate::weapon::cooldown::WeaponCooldowns;
 use bevy::app::{App, FixedUpdate};
 use bevy::prelude::{Commands, Transform};
 use bevy::time::{Fixed, Time};
@@ -13,7 +12,6 @@ pub(super) fn plugin(app: &mut App) {
 
 fn spawn_enemies_after_time(mut command: Commands) {
     let mut rng = rand::rng();
-    let cooldowns = WeaponCooldowns::new(&Weapons::default());
 
     command.spawn(create_enemy_bundle(
         Transform::from_xyz(
@@ -22,7 +20,6 @@ fn spawn_enemies_after_time(mut command: Commands) {
             0.,
         ),
         Weapons::default(),
-        cooldowns.clone(),
         10,
         "Enemy1",
     ));

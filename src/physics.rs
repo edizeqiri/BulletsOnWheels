@@ -1,7 +1,6 @@
 use crate::character::enemy::Enemy;
 use crate::character::{Health, enemy_collision_groups, square_sprite};
 use crate::projectile::Projectile;
-use crate::weapon::Shootable;
 use crate::weapon::Weapon;
 use bevy::app::{App, FixedUpdate, Update};
 use bevy::color::Color;

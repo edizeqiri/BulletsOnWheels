@@ -1,6 +1,5 @@
 use crate::character::player::create_player_bundle;
 use crate::weapon::Weapons;
-use crate::weapon::cooldown::WeaponCooldowns;
 use bevy::app::{App, Startup};
 use bevy::prelude::{Camera2d, Commands, Transform};
 
@@ -14,12 +13,10 @@ fn setup_camera(mut commands: Commands) {
 }
 
 fn init(mut commands: Commands) {
-    let cooldowns = WeaponCooldowns::new(&Weapons::default());
 
     commands.spawn(create_player_bundle(
         Transform::from_xyz(100.0, 0.0, 0.0),
         Weapons::default(),
-        cooldowns.clone(),
         1000,
         "Player",
     ));

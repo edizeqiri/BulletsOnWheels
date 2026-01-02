@@ -1,6 +1,6 @@
+use crate::character::Health;
 use crate::character::enemy::Enemy;
 use crate::character::player::Player;
-use crate::character::{Health};
 use bevy::app::{App, Update};
 use bevy::log::debug;
 use bevy::prelude::{Changed, Commands, Entity, Query, With};
