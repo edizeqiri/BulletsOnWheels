@@ -13,10 +13,10 @@ pub fn create_player_bundle(
     transform: Transform,
     weapons: Weapons,
     max_health: u32,
-    name: String,
+    name: Name,
 ) -> impl Bundle {
     (
-        Name::new(name),
+        name,
         character::create_character(transform, weapons.clone(), max_health),
         WeaponCooldowns::new(&weapons),
         CollisionGroups::new(PLAYER_GROUP, ENEMY_GROUP),

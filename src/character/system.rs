@@ -1,12 +1,13 @@
 use crate::character::enemy::Enemy;
 use crate::character::player::Player;
-use crate::character::{CharacterBundle, Health};
+use crate::character::Health;
 use bevy::app::{App, Update};
 use bevy::log::debug;
 use bevy::prelude::{Changed, Commands, Entity, Query, With};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, handle_player_zero_health_system)
+    app
+        .add_systems(Update, handle_player_zero_health_system)
         .add_systems(Update, handle_enemy_zero_health_system);
 }
 
@@ -34,28 +35,27 @@ fn handle_enemy_zero_health_system(
     }
 }
 
+
+
 #[cfg(test)]
 mod tests {
     use crate::character::enemy::{Enemy, create_enemy_bundle};
-    use crate::character::system::{
-        handle_enemy_zero_health_system, handle_player_zero_health_system,
-    };
+    use crate::character::system::{handle_enemy_zero_health_system, handle_player_zero_health_system};
 
     use crate::character::Health;
     use crate::character::player::{Player, create_player_bundle};
     use crate::weapon::bow::Bow;
     use crate::weapon::{Weapon, Weapons};
-    use bevy::app::App;
-    use bevy::prelude::{Entity, Transform, With, World};
+    use bevy::app::{App, Update};
+    use bevy::prelude::{Entity, Name, Transform, With, World};
 
     fn setup_test_app() -> App {
         // setup App
         let mut test_app = App::new();
 
         test_app
-            .add_systems(bevy::app::Update, handle_player_zero_health_system)
-            .add_systems(bevy::app::Update, handle_enemy_zero_health_system);
-
+            .add_systems(Update, handle_player_zero_health_system)
+            .add_systems(Update, handle_enemy_zero_health_system);
         // setup Entities
         let weapons = Weapons(vec![Weapon::Bow(Bow::new(1, 1000., 0.5))]);
 
@@ -63,14 +63,14 @@ mod tests {
             Transform::from_xyz(1.0, 1.0, 0.0),
             weapons.clone(),
             1,
-            "Player",
+            Name::from("Player"),
         ));
 
         test_app.world_mut().spawn(create_enemy_bundle(
             Transform::from_xyz(0.0, 0.0, 0.0),
             weapons.clone(),
             1,
-            "Enemy",
+            Name::from("Enemy"),
         ));
 
         // start app

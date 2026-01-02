@@ -102,3 +102,8 @@ pub fn square_sprite(color: Color) -> Sprite {
         ..Default::default()
     }
 }
+
+#[derive(Message)]
+pub struct CharacterDeathMessage {
+    pub character: Entity,
+}
