@@ -16,7 +16,7 @@ pub enum WeaponType {
     Gun,
 }
 
-#[derive(Component, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct Weapon {
     kind: WeaponType,
     damage: u32,
@@ -26,7 +26,10 @@ pub struct Weapon {
 }
 
 impl Weapon {
-    pub fn new(kind: WeaponType, damage: u32, speed: f32, fire_rate: f32) -> Self {
+    pub fn new(kind: WeaponType, damage: u32, speed: f32, mut fire_rate: f32) -> Self {
+        if fire_rate == 0. {
+            fire_rate = 1.
+        }
         Self {
             kind,
             damage,
@@ -56,7 +59,9 @@ pub struct ShootEvent {
 }
 
 #[derive(Component, Clone)]
-pub struct Weapons(pub Vec<Weapon>);
+pub struct Weapons {
+    pub list: Vec<Weapon>,
+}
 
 pub(crate) fn shoot_on_event(
     mut commands: Commands,
@@ -81,7 +86,7 @@ pub fn shoot_all_weapons_system(
 ) {
     if let Ok((mut weapons, aim, transform)) = shooter_query.get_mut(shooter) {
         // Zip weapons with their cooldowns
-        for weapon in weapons.0.iter_mut() {
+        for weapon in &mut weapons.list {
             if weapon.can_shoot() {
                 commands.spawn((
                     weapon.shoot(aim.vec),
@@ -97,7 +102,7 @@ pub fn shoot_all_weapons_system(
 
 pub(crate) fn update_weapon_cooldowns(time: Res<Time>, mut weapon_query: Query<&mut Weapons>) {
     for mut weapons in &mut weapon_query {
-        for weapon in &mut weapons.0 {
+        for weapon in &mut weapons.list {
             weapon.timer.tick(time.delta());
         }
     }
@@ -105,9 +110,11 @@ pub(crate) fn update_weapon_cooldowns(time: Res<Time>, mut weapon_query: Query<&
 
 impl Default for Weapons {
     fn default() -> Self {
-        Weapons(vec![
-            Weapon::new(WeaponType::Bow, 1, 1000., 0.5),
-            Weapon::new(WeaponType::Gun, 1, 250., 5.),
-        ])
+        Weapons {
+            list: vec![
+                Weapon::new(WeaponType::Bow, 1, 1000., 0.5),
+                Weapon::new(WeaponType::Gun, 1, 250., 5.),
+            ],
+        }
     }
 }
