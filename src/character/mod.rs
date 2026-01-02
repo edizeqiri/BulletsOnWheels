@@ -103,7 +103,9 @@ pub fn square_sprite(color: Color) -> Sprite {
     }
 }
 
+
+
 #[derive(Message)]
-pub struct CharacterDeathMessage {
-    pub character: Entity,
+pub struct EnemyDeathMessage {
+    pub entity: Entity,
 }

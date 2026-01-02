@@ -1,6 +1,5 @@
 use crate::character::enemy::create_enemy_bundle;
 use crate::weapon::Weapons;
-use crate::weapon::cooldown::WeaponCooldowns;
 use bevy::app::{App, FixedUpdate};
 use bevy::prelude::{Commands, Name, Transform};
 use bevy::time::{Fixed, Time};

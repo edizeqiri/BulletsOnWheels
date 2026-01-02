@@ -1,26 +1,13 @@
 use crate::character::enemy::Enemy;
 use crate::character::player::Player;
-use crate::character::Health;
+use crate::character::{Health};
 use bevy::app::{App, Update};
 use bevy::log::debug;
-use bevy::prelude::{Changed, Commands, Entity, Query, With};
+use bevy::prelude::{Changed, Commands, Entity, MessageWriter, Query, With};
 
 pub(super) fn plugin(app: &mut App) {
     app
-        .add_systems(Update, handle_player_zero_health_system)
         .add_systems(Update, handle_enemy_zero_health_system);
-}
-
-fn handle_player_zero_health_system(
-    mut commands: Commands,
-    query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>,
-) {
-    for (health, entity) in &query {
-        if health.current <= 0 {
-            debug!("Player died!");
-            commands.entity(entity).despawn();
-        }
-    }
 }
 
 fn handle_enemy_zero_health_system(
@@ -39,11 +26,11 @@ fn handle_enemy_zero_health_system(
 
 #[cfg(test)]
 mod tests {
-    use crate::character::enemy::{Enemy, create_enemy_bundle};
-    use crate::character::system::{handle_enemy_zero_health_system, handle_player_zero_health_system};
+    use crate::character::enemy::{create_enemy_bundle, Enemy};
+    use crate::character::system::{handle_enemy_zero_health_system};
 
+    use crate::character::player::{create_player_bundle, Player};
     use crate::character::Health;
-    use crate::character::player::{Player, create_player_bundle};
     use crate::weapon::bow::Bow;
     use crate::weapon::{Weapon, Weapons};
     use bevy::app::{App, Update};
@@ -54,7 +41,6 @@ mod tests {
         let mut test_app = App::new();
 
         test_app
-            .add_systems(Update, handle_player_zero_health_system)
             .add_systems(Update, handle_enemy_zero_health_system);
         // setup Entities
         let weapons = Weapons(vec![Weapon::Bow(Bow::new(1, 1000., 0.5))]);
@@ -77,44 +63,6 @@ mod tests {
         test_app.update();
 
         test_app
-    }
-
-    #[test]
-    fn zero_health_player_is_despawned() {
-        let mut test_app = setup_test_app();
-
-        // pre-check: there is 1 Enemy and 1 Player
-        {
-            let world = test_app.world_mut();
-            let player = get_single_player(world);
-            get_single_enemy(world);
-
-            // when: player.health.current = 0
-            world
-                .query::<&mut Health>()
-                .get_mut(world, player)
-                .unwrap()
-                .current = 0;
-        }
-
-        test_app.update();
-
-        // then: 0 Player, 1 Enemy
-        let world = test_app.world_mut();
-        assert_eq!(
-            world
-                .query_filtered::<Entity, With<Player>>()
-                .iter(&world)
-                .len(),
-            0
-        );
-        assert_eq!(
-            world
-                .query_filtered::<Entity, With<Enemy>>()
-                .iter(&world)
-                .len(),
-            1
-        );
     }
 
     #[test]
