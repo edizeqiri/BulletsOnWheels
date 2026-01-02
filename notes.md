@@ -28,13 +28,6 @@
 and the `Shootable` trait function `fire_rate`
 - `ShootEvent` is being used to track the shots from the gamepad and an `Entity` is saved in the Event
 
-## Enemies
-
-- Enemies will follow the `Transform` of `Player` by substracting the player vector with their own.
-  - The same for aiming
-- Added 20% Speed reduction for movement to not copy the moves
-- Enemies shoot by creating `ShootEvent`. Thus, they behave the same as a player.
-
 ## Base Level Room
 
 - [x] Square room with 2 enemies
