@@ -7,7 +7,6 @@ use bevy_rapier2d::prelude::CollisionGroups;
 use enum_dispatch::enum_dispatch;
 use std::time::Duration;
 
-
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<ShootEvent>()
         .add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
@@ -64,7 +63,7 @@ pub struct Weapons(pub Vec<Weapon>);
 pub(crate) fn shoot_on_event(
     mut commands: Commands,
     mut shoot_event: MessageReader<ShootEvent>,
-    mut shooter_query: Query<(&mut Weapons, &Aim,  &Transform)>,
+    mut shooter_query: Query<(&mut Weapons, &Aim, &Transform)>,
 ) {
     for event in shoot_event.read() {
         shoot_all_weapons_system(
