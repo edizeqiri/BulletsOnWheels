@@ -103,8 +103,6 @@ pub fn square_sprite(color: Color) -> Sprite {
     }
 }
 
-
-
 #[derive(Message)]
 pub struct EnemyDeathMessage {
     pub entity: Entity,
