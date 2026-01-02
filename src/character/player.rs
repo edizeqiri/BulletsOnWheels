@@ -2,6 +2,8 @@ use crate::character;
 use crate::character::{square_sprite, Health, ENEMY_GROUP, PLAYER_GROUP};
 use crate::weapon::cooldown::WeaponCooldowns;
 use crate::weapon::Weapons;
+use crate::character::{ENEMY_GROUP, PLAYER_GROUP, square_sprite};
+use crate::weapon::Weapons;
 use bevy::color::palettes::css::BLUE;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::CollisionGroups;
@@ -30,7 +32,6 @@ pub fn create_player_bundle(
     (
         name,
         character::create_character(transform, weapons.clone(), max_health),
-        WeaponCooldowns::new(&weapons),
         CollisionGroups::new(PLAYER_GROUP, ENEMY_GROUP),
         Player,
         square_sprite(Color::Srgba(BLUE)),

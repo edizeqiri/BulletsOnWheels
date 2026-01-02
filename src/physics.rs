@@ -1,8 +1,7 @@
 use crate::character::enemy::Enemy;
 use crate::character::{Health, enemy_collision_groups, square_sprite};
 use crate::projectile::Projectile;
-use crate::weapon::Shootable;
-use crate::weapon::Weapon;
+use crate::weapon::Weapons;
 use bevy::app::{App, FixedUpdate, Update};
 use bevy::color::Color;
 use bevy::color::palettes::basic::YELLOW;
@@ -21,13 +20,15 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(Update, handle_sensor_collision);
 }
 
-fn shoot_every_second(mut commands: Commands, enemy_query: Query<&Weapon, With<Enemy>>) {
-    for weapon in &enemy_query {
-        commands.spawn((
-            weapon.shoot(Vec2::new(1., 0.)),
-            square_sprite(Color::Srgba(YELLOW)),
-            enemy_collision_groups(),
-        ));
+fn shoot_every_second(mut commands: Commands, enemy_query: Query<&Weapons, With<Enemy>>) {
+    for weapons in &enemy_query {
+        for weapon in &weapons.list {
+            commands.spawn((
+                weapon.shoot(Vec2::new(1., 0.)),
+                square_sprite(Color::Srgba(YELLOW)),
+                enemy_collision_groups(),
+            ));
+        }
     }
 }
 
