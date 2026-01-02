@@ -1,4 +1,3 @@
-use crate::character;
 use crate::character::{ENEMY_GROUP, PLAYER_GROUP, square_sprite};
 use crate::weapon::Weapons;
 use bevy::color::palettes::css::BLUE;
