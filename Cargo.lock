@@ -11,6 +11,7 @@ dependencies = [
  "enum_dispatch",
  "image",
  "imageproc",
+ "rand 0.9.2",
 ]
 
 [[package]]

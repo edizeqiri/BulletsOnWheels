@@ -1,5 +1,6 @@
 use bevy::prelude::App;
 
+mod level1;
 mod map;
 mod walls;
 

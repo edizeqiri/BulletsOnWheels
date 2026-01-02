@@ -1,3 +1,6 @@
+use crate::character::player::create_player_bundle;
+use crate::weapon::Weapons;
+use crate::weapon::cooldown::WeaponCooldowns;
 use crate::character::enemy::create_enemy_bundle;
 use crate::character::player::create_player_bundle;
 use crate::weapon::bow::Bow;
@@ -16,29 +19,11 @@ fn setup_camera(mut commands: Commands) {
 }
 
 fn init(mut commands: Commands) {
-    let weapons = Weapons(vec![
-        Weapon::Bow(Bow::new(1, 1000., 0.5)),
-        Weapon::Gun(Gun::new(1, 250., 5.)),
-    ]);
 
     commands.spawn(create_player_bundle(
         Transform::from_xyz(100.0, 0.0, 0.0),
-        weapons.clone(),
+        Weapons::default(),
         1000,
         "Player".to_string(),
-    ));
-
-    commands.spawn(create_enemy_bundle(
-        Transform::from_xyz(-100.0, 0.0, 0.0),
-        weapons.clone(),
-        1000,
-        "Enemy1".to_string(),
-    ));
-
-    commands.spawn(create_enemy_bundle(
-        Transform::from_xyz(200.0, 0.0, 0.0),
-        weapons,
-        1000,
-        "Enemy2".to_string(),
     ));
 }
