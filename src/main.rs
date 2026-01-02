@@ -33,23 +33,3 @@ fn logger() -> LogPlugin {
         fmt_layer: |_| None,
     }
 }
-
-fn setup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
-) {
-    let texture_handle = asset_server.load("sprites.png");
-    let tile_size = UVec2::splat(64);
-
-    let layout = TextureAtlasLayout::from_grid(tile_size, 16, 16, Some(UVec2::splat(16)), None);
-    let texture_atlas_layout = texture_atlas_layouts.add(layout);
-
-    commands.spawn((Sprite::from_atlas_image(
-        texture_handle,
-        TextureAtlas {
-            layout: texture_atlas_layout,
-            index: 0,
-        },
-    ),));
-}

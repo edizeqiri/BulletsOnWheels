@@ -42,7 +42,7 @@ fn gamepad_movement(
 }
 
 fn gamepad_input_system(
-    mut gamepad_event: EventReader<GamepadEvent>,
+    mut gamepad_event: MessageReader<GamepadEvent>,
     mut player_query: Query<&mut ShootingState, With<Player>>,
 ) {
     let Ok(mut shooting_state) = player_query.single_mut() else {
@@ -62,7 +62,7 @@ fn gamepad_input_system(
 }
 
 fn shoot_system(
-    mut event_writer: EventWriter<ShootEvent>,
+    mut event_writer: MessageWriter<ShootEvent>,
     player_query: Query<(Entity, &ShootingState), With<Player>>,
     mut shoot_timer: Local<f32>,
     time: Res<Time>,
