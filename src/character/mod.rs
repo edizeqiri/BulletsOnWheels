@@ -1,6 +1,7 @@
 pub mod enemy;
 mod enemy_ai;
 pub mod player;
+mod system;
 
 use crate::weapon::Weapons;
 use bevy::prelude::*;
@@ -9,7 +10,8 @@ pub const PLAYER_GROUP: Group = Group::GROUP_1;
 pub const ENEMY_GROUP: Group = Group::GROUP_2;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins(enemy_ai::plugin);
+    app.add_plugins(enemy_ai::plugin)
+        .add_plugins(system::plugin);
 }
 
 pub fn player_collision_groups() -> CollisionGroups {
@@ -27,7 +29,7 @@ fn collider() -> Collider {
 #[derive(Component)]
 pub struct Health {
     pub current: u32,
-    //pub(crate) max: u32,
+    pub(crate) max: u32,
 }
 
 #[derive(Component, Default)]
@@ -65,9 +67,16 @@ pub struct CharacterBundle {
     shooting_state: ShootingState,
 }
 
-pub fn create_character(transform: Transform, weapons: Weapons) -> CharacterBundle {
+pub fn create_character(
+    transform: Transform,
+    weapons: Weapons,
+    max_health: u32,
+) -> CharacterBundle {
     CharacterBundle {
-        health: Health { current: 0 },
+        health: Health {
+            current: max_health,
+            max: max_health,
+        },
         weapon: weapons,
         velocity: Velocity::linear(Vec2::new(0., 0.)),
         body: RigidBody::Dynamic,
