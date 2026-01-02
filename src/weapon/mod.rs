@@ -46,7 +46,7 @@ pub(crate) fn shoot_on_event(
     mut shooter_query: Query<(&Weapons, &Aim, &mut WeaponCooldowns, &Transform)>,
 ) {
     for event in shoot_event.read() {
-        shoot_all_weapons(
+        shoot_all_weapons_system(
             &mut commands,
             &mut shooter_query,
             event.shooter,
@@ -55,7 +55,7 @@ pub(crate) fn shoot_on_event(
     }
 }
 
-pub fn shoot_all_weapons(
+pub fn shoot_all_weapons_system(
     commands: &mut Commands,
     shooter_query: &mut Query<(&Weapons, &Aim, &mut WeaponCooldowns, &Transform)>,
     shooter: Entity,
@@ -74,5 +74,14 @@ pub fn shoot_all_weapons(
                 cooldown.reset();
             }
         }
+    }
+}
+
+impl Default for Weapons {
+    fn default() -> Self {
+        Weapons(vec![
+            Weapon::Bow(Bow::new(1, 1000., 0.5)),
+            Weapon::Gun(Gun::new(1, 250., 5.)),
+        ])
     }
 }

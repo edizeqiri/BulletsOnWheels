@@ -31,6 +31,9 @@ fn shoot_every_second(mut commands: Commands, enemy_query: Query<&Weapon, With<E
     }
 }
 
+/// todo([#11]): handle bullet hitting despawend entity
+///
+/// [#11]: https://github.com/edizeqiri/BulletsOnWheels/issues/11
 fn handle_sensor_collision(
     mut collision_events: MessageReader<CollisionEvent>,
     mut commands: Commands,
