@@ -1,7 +1,7 @@
 use crate::character::player::{Player, PlayerDeathMessage};
-use crate::character::{Aim, ShootingState, player_collision_groups};
-use crate::gamestate::GameState;
+use crate::character::{player_collision_groups, Aim, ShootingState};
 use crate::gamestate::start::StartGameMessage;
+use crate::gamestate::GameState;
 use crate::weapon::ShootEvent;
 use bevy::ecs::error::debug;
 use bevy::input::gamepad::GamepadEvent;
@@ -11,12 +11,7 @@ use bevy_rapier2d::prelude::Velocity;
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
-        ((
-            gamepad_input_system,
-            gamepad_aim,
-            shoot_system,
-            gamepad_movement,
-        )
+        ((gamepad_input_system, gamepad_aim, gamepad_movement)
             .run_if(any_with_component::<Player>),),
     );
 }
@@ -51,7 +46,6 @@ fn gamepad_input_system(
     let Ok(mut shooting_state) = player_query.single_mut() else {
         return;
     };
-
     for event in gamepad_event.read() {
         if let GamepadEvent::Button(button_event) = event {
             info!("button {:?}", button_event.button);
@@ -62,26 +56,5 @@ fn gamepad_input_system(
                 _ => {}
             }
         }
-    }
-}
-
-fn shoot_system(
-    mut event_writer: MessageWriter<ShootEvent>,
-    player_query: Query<(Entity, &ShootingState), With<Player>>,
-    mut shoot_timer: Local<f32>,
-    time: Res<Time>,
-) {
-    let Ok((player, shooting_state)) = player_query.single() else {
-        return;
-    };
-
-    *shoot_timer -= time.delta_secs();
-
-    if shooting_state.is_shooting && *shoot_timer <= 0.0 {
-        event_writer.write(ShootEvent {
-            shooter: player,
-            collision_groups: player_collision_groups(),
-        });
-        *shoot_timer = 0.01;
     }
 }
