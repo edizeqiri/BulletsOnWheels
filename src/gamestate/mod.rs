@@ -16,10 +16,9 @@ pub(super) fn plugin(app: &mut App) {
             aggregate_message_system::<PlayerDeathMessage>.run_if(in_state(GameState::RUNNING)),
         )
         .add_systems(
-        Update,
-        aggregate_message_system::<StartGameMessage>.run_if(in_state(GameState::START)),
-    );
-
+            Update,
+            aggregate_message_system::<StartGameMessage>.run_if(in_state(GameState::START)),
+        );
 }
 
 // ---------- GAME STATE ---------- //

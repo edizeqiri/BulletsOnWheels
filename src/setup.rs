@@ -1,14 +1,14 @@
 use crate::character::player::create_player_bundle;
-use crate::gamestate::{GameState, PlayerResource};
 use crate::gamestate::start::{PLAYER_DEFAULTS, StartGameMessage, apply_player_defaults};
+use crate::gamestate::{GameState, PlayerResource};
 use crate::weapon::Weapons;
-use bevy::prelude::{
-    resource_exists, Camera2d, Commands, IntoScheduleConfigs, Name, OnEnter, Res, Startup,
-    Transform,
-};
 use bevy::app::App;
 use bevy::camera::visibility::RenderLayers;
 use bevy::prelude::*;
+use bevy::prelude::{
+    Camera2d, Commands, IntoScheduleConfigs, Name, OnEnter, Res, Startup, Transform,
+    resource_exists,
+};
 use bevy_lunex::prelude::{Anchor, SystemCursorIcon};
 use bevy_lunex::{
     OnHoverSetCursor, Rl, UiColor, UiFetchFromCamera, UiLayout, UiLayoutRoot, UiSourceCamera,
@@ -18,7 +18,6 @@ pub(super) fn plugin(app: &mut App) {
     app.insert_resource(PLAYER_DEFAULTS)
         .add_systems(Startup, (setup_camera, setup_ui))
         .add_systems(OnEnter(GameState::START), apply_player_defaults)
-
         .add_systems(
             OnEnter(GameState::RUNNING),
             init.run_if(resource_exists::<PlayerResource>),

@@ -1,5 +1,5 @@
-use crate::character::{square_sprite, Aim};
-use crate::projectile::{create_projectile, ProjectileBundle};
+use crate::character::{Aim, square_sprite};
+use crate::projectile::{ProjectileBundle, create_projectile};
 use bevy::color::palettes::basic::GREEN;
 use bevy::math::Vec2;
 use bevy::prelude::*;

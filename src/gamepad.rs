@@ -1,22 +1,22 @@
 use crate::character::player::Player;
 use crate::character::{Aim, ShootingState};
+use crate::gamestate::GameState;
+use crate::gamestate::start::StartGameMessage;
 use bevy::input::gamepad::GamepadEvent;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::Velocity;
-use crate::gamestate::GameState;
-use crate::gamestate::start::StartGameMessage;
 
 pub(super) fn plugin(app: &mut App) {
-    app
-        .add_message::<StartGameMessage>()
+    app.add_message::<StartGameMessage>()
         .add_systems(
-        Update,
-        ((gamepad_in_game_system, gamepad_aim, gamepad_movement)
-            .run_if(any_with_component::<Player>),),
-    ).add_systems(
-        Update,
-        gamepad_in_menu_system.run_if(in_state(GameState::START)),
-    );
+            Update,
+            ((gamepad_in_game_system, gamepad_aim, gamepad_movement)
+                .run_if(any_with_component::<Player>),),
+        )
+        .add_systems(
+            Update,
+            gamepad_in_menu_system.run_if(in_state(GameState::START)),
+        );
 }
 
 fn gamepad_aim(
