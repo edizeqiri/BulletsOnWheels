@@ -1,12 +1,16 @@
+use bevy::ecs::error::debug;
 use crate::character::player::Player;
 use crate::character::{Aim, ShootingState, player_collision_groups};
+use crate::gamestate::GameState;
 use crate::weapon::ShootEvent;
 use bevy::input::gamepad::GamepadEvent;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::Velocity;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(
+    app
+        .add_systems(Update, gamepad_start)
+        .add_systems(
         Update,
         ((
             gamepad_aim,
@@ -17,8 +21,28 @@ pub(super) fn plugin(app: &mut App) {
             .run_if(any_with_component::<Player>),),
     );
 }
+fn gamepad_start(
+    mut gamepad_event: MessageReader<GamepadEvent>,
+    state: Res<State<GameState>>,
+    mut next_state: ResMut<NextState<GameState>>,
+) {
+    for event in gamepad_event.read() {
+        if let GamepadEvent::Button(button_event) = event {
+            info!("Gamepad clicks button {:?}", button_event.button);
+            if matches!(
+                button_event.button,
+                GamepadButton::Start | GamepadButton::Select | GamepadButton::West
+            ) {
+                match state.get() {
+                    GameState::START => next_state.set(GameState::RUNNING),
+                    _ => {}
+                }
+            }
+        }
+    }
+}
 
-fn gamepad_aim(
+    fn gamepad_aim(
     controller_query: Query<&Gamepad>,
     mut player_aim_query: Query<&mut Aim, With<Player>>,
 ) {

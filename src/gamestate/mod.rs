@@ -1,22 +1,30 @@
-use std::ops::Range;
-use bevy::app::App;
-use bevy::prelude::{Name, Resource};
 use crate::weapon::Weapons;
+use bevy::app::App;
+use bevy::prelude::{Name, Resource, States};
+use std::ops::Range;
 
-mod start;
+pub(crate) mod start;
 
-
+#[derive(States, Debug, Clone, Eq, PartialEq, Hash, Default)]
 pub enum GameState {
+    #[default]
     START,
     RUNNING,
-    STOP
+    STOP,
 }
 
-#[derive(Resource)]
-pub struct EnemyProperties {
-   // x_range: Range<i32>,
-   // y_range: Range<i32>,
+#[derive(Resource, Clone)]
+pub struct PlayerResource {
+    // x_range: Range<i32>,
+    // y_range: Range<i32>,
     //pub weapons: Weapons,
     pub max_health: u32,
-    pub name: Name
+}
+
+#[derive(Resource, Clone)]
+pub struct EnemyResource {
+    // x_range: Range<i32>,
+    // y_range: Range<i32>,
+    //pub weapons: Weapons,
+    pub max_health: u32,
 }
