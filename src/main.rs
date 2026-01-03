@@ -37,4 +37,3 @@ fn logger() -> LogPlugin {
         fmt_layer: |_| None,
     }
 }
-

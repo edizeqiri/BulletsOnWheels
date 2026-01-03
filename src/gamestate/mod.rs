@@ -1,14 +1,18 @@
-use bevy::app::App;
 use crate::character::player::PlayerDeathMessage;
-use bevy::log::info;
-use bevy::prelude::{in_state, Entity, IntoScheduleConfigs, Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States, Update};
+use bevy::app::App;
+use bevy::prelude::{
+    in_state, IntoScheduleConfigs, Message, MessageReader, MessageWriter, NextState, Res,
+    ResMut, Resource, State, States, Update,
+};
 pub(crate) mod start;
 
 pub(super) fn plugin(app: &mut App) {
-    app
-        .add_message::<GameStateMessage>()
+    app.add_message::<GameStateMessage>()
         .add_systems(Update, state_machine_system)
-        .add_systems(Update, aggregate_message_system::<PlayerDeathMessage>.run_if(in_state(GameState::RUNNING)));
+        .add_systems(
+            Update,
+            aggregate_message_system::<PlayerDeathMessage>.run_if(in_state(GameState::RUNNING)),
+        );
 }
 
 // ---------- GAME STATE ---------- //
@@ -56,15 +60,13 @@ pub fn aggregate_message_system<M>(
 fn state_machine_system(
     mut messages: MessageReader<GameStateMessage>,
     current_state: Res<State<GameState>>,
-    mut next_state: ResMut<NextState<GameState>>
+    mut next_state: ResMut<NextState<GameState>>,
 ) {
     for message in messages.read() {
         match &message.kind {
-            GameStateEnum::PlayerDeath => {
-                match current_state.get() {
-                    GameState::RUNNING => next_state.set(GameState::STOP),
-                    _ => {}
-                }
+            GameStateEnum::PlayerDeath => match current_state.get() {
+                GameState::RUNNING => next_state.set(GameState::STOP),
+                _ => {}
             },
         }
     }

@@ -4,14 +4,20 @@ use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
 use bevy::app::{App, FixedUpdate};
 use bevy::log::debug;
-use bevy::prelude::{Commands, Entity, Message, MessageReader, MessageWriter, Name, Res, Transform, Update, info, IntoScheduleConfigs, in_state};
+use bevy::prelude::{
+    Commands, Entity, IntoScheduleConfigs, Message, MessageReader, MessageWriter, Name, Res,
+    Transform, Update, in_state, info,
+};
 use bevy::time::{Fixed, Time};
 use rand::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(Time::<Fixed>::from_seconds(3.))
         .insert_resource(ENEMY_DEFAULTS) // will be something else that depends on state = running
-        .add_systems(FixedUpdate, spawn_enemies_after_time.run_if(in_state(GameState::RUNNING)));
+        .add_systems(
+            FixedUpdate,
+            spawn_enemies_after_time.run_if(in_state(GameState::RUNNING)),
+        );
 }
 
 fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyResource>) {

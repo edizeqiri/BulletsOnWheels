@@ -1,10 +1,10 @@
 use crate::character::player::create_player_bundle;
-use crate::gamestate::start::{PLAYER_DEFAULTS, apply_player_defaults};
+use crate::gamestate::start::{apply_player_defaults, PLAYER_DEFAULTS};
 use crate::gamestate::{GameState, PlayerResource};
 use crate::weapon::Weapons;
 use bevy::app::App;
 use bevy::prelude::{
-    Camera2d, Commands, IntoScheduleConfigs, Name, OnEnter, Res, Transform, resource_exists,
+    resource_exists, Camera2d, Commands, IntoScheduleConfigs, Name, OnEnter, Res, Transform,
 };
 
 pub(super) fn plugin(app: &mut App) {
