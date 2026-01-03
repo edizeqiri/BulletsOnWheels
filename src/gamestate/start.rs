@@ -1,11 +1,5 @@
-use crate::character::player::PlayerDeathMessage;
-use crate::gamestate::{EnemyResource, GameState, PlayerResource};
-use crate::weapon::Weapons;
-use bevy::app::{App, Update};
-use bevy::prelude::{Commands, Name, OnEnter};
-use rand::{Rng, rng};
-use std::ops::Range;
-use std::process::Command;
+use crate::gamestate::{EnemyResource, PlayerResource};
+use bevy::prelude::Commands;
 
 // --------------- PLAYER RESOURCES --------------- //
 #[cfg(debug_assertions)]

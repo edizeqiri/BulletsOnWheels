@@ -1,7 +1,4 @@
-use crate::weapon::Weapons;
-use bevy::app::App;
-use bevy::prelude::{Name, Resource, States};
-use std::ops::Range;
+use bevy::prelude::{Resource, States};
 
 pub(crate) mod start;
 
