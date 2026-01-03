@@ -1,22 +1,31 @@
 use crate::character::player::create_player_bundle;
+use crate::gamestate::start::PLAYER_DEFAULTS;
+use crate::gamestate::{GameState, PlayerResource};
 use crate::weapon::Weapons;
-use bevy::app::{App, Startup};
-use bevy::prelude::{Camera2d, Commands, Name, Transform};
+use bevy::app::App;
+use bevy::prelude::{
+    resource_exists, Camera2d, Commands, IntoScheduleConfigs, Name, OnEnter, Res, Startup,
+    Transform,
+};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Startup, setup_camera)
-        .add_systems(Startup, init);
+    app.insert_resource(PLAYER_DEFAULTS)
+        .add_systems(Startup, setup_camera)
+        .add_systems(
+            OnEnter(GameState::RUNNING),
+            init.run_if(resource_exists::<PlayerResource>),
+        );
 }
 
 fn setup_camera(mut commands: Commands) {
     commands.spawn(Camera2d);
 }
 
-fn init(mut commands: Commands) {
+fn init(mut commands: Commands, player_resource: Res<PlayerResource>) {
     commands.spawn(create_player_bundle(
         Transform::from_xyz(100.0, 0.0, 0.0),
         Weapons::default(),
-        10,
+        player_resource.max_health,
         Name::from("Player"),
     ));
 }

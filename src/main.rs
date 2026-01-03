@@ -1,11 +1,13 @@
 mod character;
 mod gamepad;
+mod gamestate;
 mod physics;
 mod projectile;
 mod setup;
-mod terrain;
 mod weapon;
+mod world;
 
+use crate::gamestate::GameState;
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
 
@@ -16,12 +18,14 @@ fn main() {
                 .set(logger())
                 .set(ImagePlugin::default_nearest()),
         )
+        .init_state::<GameState>()
         .add_plugins(physics::plugin)
         .add_plugins(gamepad::plugin)
         .add_plugins(setup::plugin)
         .add_plugins(weapon::plugin)
         .add_plugins(character::plugin)
-        .add_plugins(terrain::plugin)
+        .add_plugins(world::plugin)
+        .add_plugins(gamestate::plugin)
         .run();
 }
 

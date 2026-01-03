@@ -13,9 +13,6 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(Update, handle_sensor_collision);
 }
 
-/// todo([#11]): handle bullet hitting despawend entity
-///
-/// [#11]: https://github.com/edizeqiri/BulletsOnWheels/issues/11
 fn handle_sensor_collision(
     mut collision_events: MessageReader<CollisionEvent>,
     mut commands: Commands,
