@@ -16,7 +16,7 @@ pub(super) fn plugin(app: &mut App) {
     ).add_systems(
         Update,
         gamepad_in_menu_system.run_if(in_state(GameState::START)),
-    );;
+    );
 }
 
 fn gamepad_aim(
