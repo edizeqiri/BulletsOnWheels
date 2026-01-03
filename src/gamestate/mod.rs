@@ -18,8 +18,7 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(
             Update,
             aggregate_message_system::<StartGameMessage>.run_if(in_state(GameState::START)),
-        )
-        .add_plugins(start::plugin);
+        );
 }
 
 // ---------- GAME STATE ---------- //
