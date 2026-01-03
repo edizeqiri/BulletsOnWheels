@@ -1,4 +1,4 @@
-use crate::terrain::level1;
+use crate::world::level1;
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {

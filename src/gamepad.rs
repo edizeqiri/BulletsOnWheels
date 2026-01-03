@@ -1,16 +1,14 @@
-use bevy::ecs::error::debug;
 use crate::character::player::Player;
 use crate::character::{Aim, ShootingState, player_collision_groups};
 use crate::gamestate::GameState;
 use crate::weapon::ShootEvent;
+use bevy::ecs::error::debug;
 use bevy::input::gamepad::GamepadEvent;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::Velocity;
 
 pub(super) fn plugin(app: &mut App) {
-    app
-        .add_systems(Update, gamepad_start)
-        .add_systems(
+    app.add_systems(Update, gamepad_start).add_systems(
         Update,
         ((
             gamepad_aim,
@@ -42,7 +40,7 @@ fn gamepad_start(
     }
 }
 
-    fn gamepad_aim(
+fn gamepad_aim(
     controller_query: Query<&Gamepad>,
     mut player_aim_query: Query<&mut Aim, With<Player>>,
 ) {

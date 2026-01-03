@@ -4,8 +4,8 @@ mod gamestate;
 mod physics;
 mod projectile;
 mod setup;
-mod terrain;
 mod weapon;
+mod world;
 
 use crate::gamestate::GameState;
 use bevy::log::LogPlugin;
@@ -24,7 +24,7 @@ fn main() {
         .add_plugins(setup::plugin)
         .add_plugins(weapon::plugin)
         .add_plugins(character::plugin)
-        .add_plugins(terrain::plugin)
+        .add_plugins(world::plugin)
         .run();
 }
 
