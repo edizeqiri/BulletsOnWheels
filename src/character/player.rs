@@ -1,8 +1,9 @@
 use crate::character;
-use crate::character::{Health, player_collision_groups, square_sprite};
-use crate::weapon::Weapons;
+use crate::character::{Health, player_collision_groups, square_sprite, ShootingState};
+use crate::weapon::{ShootEvent, Weapons};
 use bevy::color::palettes::css::BLUE;
 use bevy::prelude::*;
+use crate::gamestate::GameState;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<PlayerDeathMessage>().add_systems(
@@ -23,6 +24,26 @@ pub struct Player;
 #[derive(Message)]
 pub struct PlayerDeathMessage {
     pub entity: Entity,
+}
+fn player_shoot_system(
+    mut event_writer: MessageWriter<ShootEvent>,
+    player_query: Query<(Entity, &ShootingState), With<Player>>,
+    mut shoot_timer: Local<f32>,
+    time: Res<Time>,
+) {
+    let Ok((player, shooting_state)) = player_query.single() else {
+        return;
+    };
+
+    *shoot_timer -= time.delta_secs();
+
+    if shooting_state.is_shooting && *shoot_timer <= 0.0 {
+        event_writer.write(ShootEvent {
+            shooter: player,
+            collision_groups: player_collision_groups(),
+        });
+        *shoot_timer = 0.01;
+    }
 }
 
 pub fn create_player_bundle(
