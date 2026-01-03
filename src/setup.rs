@@ -4,15 +4,16 @@ use crate::gamestate::{GameState, PlayerResource};
 use crate::weapon::Weapons;
 use bevy::app::App;
 use bevy::prelude::{
-    Camera2d, Commands, IntoScheduleConfigs, Name, OnEnter, Res, Transform, resource_exists,
+    Camera2d, Commands, IntoScheduleConfigs, Name, OnEnter, Res, Startup, Transform,
+    resource_exists,
 };
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(PLAYER_DEFAULTS)
-        .add_systems(OnEnter(GameState::START), apply_player_defaults)
+        .add_systems(Startup, setup_camera)
         .add_systems(
             OnEnter(GameState::RUNNING),
-            (setup_camera, init.run_if(resource_exists::<PlayerResource>)),
+            init.run_if(resource_exists::<PlayerResource>),
         );
 }
 

@@ -1,15 +1,19 @@
+use crate::character::ShootingState;
+use crate::character::player::Player;
+use crate::gamestate::{EnemyResource, GameState, GameStateEnum, PlayerResource};
 use bevy::app::App;
 use bevy::input::gamepad::GamepadEvent;
 use bevy::log::info;
-use crate::gamestate::{EnemyResource, GameState, GameStateEnum, PlayerResource};
-use bevy::prelude::{in_state, Commands, GamepadButton, IntoScheduleConfigs, Message, MessageReader, MessageWriter, Query, Update, With};
-use crate::character::player::Player;
-use crate::character::ShootingState;
+use bevy::prelude::{
+    Commands, GamepadButton, IntoScheduleConfigs, Message, MessageReader, MessageWriter, Query,
+    Update, With, in_state,
+};
 
 pub(super) fn plugin(app: &mut App) {
-    app
-        .add_message::<StartGameMessage>()
-        .add_systems(Update, gamepad_start_input_system.run_if(in_state(GameState::START)));
+    app.add_message::<StartGameMessage>().add_systems(
+        Update,
+        gamepad_start_input_system.run_if(in_state(GameState::START)),
+    );
 }
 
 #[derive(Message)]

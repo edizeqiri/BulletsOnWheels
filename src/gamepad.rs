@@ -9,8 +9,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::Velocity;
 
 pub(super) fn plugin(app: &mut App) {
-    app
-        .add_systems(
+    app.add_systems(
         Update,
         ((
             gamepad_input_system,
@@ -59,7 +58,7 @@ fn gamepad_input_system(
             match button_event.button {
                 GamepadButton::East | GamepadButton::RightTrigger => {
                     shooting_state.is_shooting = button_event.state.is_pressed();
-                },
+                }
                 _ => {}
             }
         }
