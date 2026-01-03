@@ -47,13 +47,13 @@ pub enum GameStateEnum {
 }
 
 impl From<&PlayerDeathMessage> for GameStateEnum {
-    fn from(message: &PlayerDeathMessage) -> Self {
+    fn from(_message: &PlayerDeathMessage) -> Self {
         GameStateEnum::PlayerDeath
     }
 }
 
 impl From<&StartGameMessage> for GameStateEnum {
-    fn from(message: &StartGameMessage) -> Self {
+    fn from(_message: &StartGameMessage) -> Self {
         GameStateEnum::StartGame
     }
 }

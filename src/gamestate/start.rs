@@ -1,12 +1,9 @@
-use crate::character::player::Player;
-use crate::character::ShootingState;
-use crate::gamestate::{EnemyResource, GameState, GameStateEnum, PlayerResource};
+use crate::gamestate::{EnemyResource, GameState, PlayerResource};
 use bevy::app::App;
 use bevy::input::gamepad::GamepadEvent;
 use bevy::log::info;
 use bevy::prelude::{
-    in_state, Commands, GamepadButton, IntoScheduleConfigs, Message, MessageReader, MessageWriter,
-    Query, Update, With,
+    in_state, Commands, GamepadButton, IntoScheduleConfigs, Message, MessageReader, MessageWriter, Update,
 };
 
 pub(super) fn plugin(app: &mut App) {

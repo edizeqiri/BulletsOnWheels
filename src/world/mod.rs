@@ -1,4 +1,4 @@
-use bevy::prelude::{App, Resource};
+use bevy::prelude::App;
 
 pub(crate) mod level1;
 mod map;

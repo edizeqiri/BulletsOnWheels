@@ -5,8 +5,8 @@ use crate::weapon::Weapons;
 use bevy::app::{App, FixedUpdate};
 use bevy::log::debug;
 use bevy::prelude::{
-    in_state, info, Commands, Entity, IntoScheduleConfigs, Message, MessageReader, MessageWriter,
-    Name, Res, Transform, Update,
+    in_state, Commands, IntoScheduleConfigs,
+    Name, Res, Transform,
 };
 use bevy::time::{Fixed, Time};
 use rand::prelude::*;
@@ -40,5 +40,5 @@ fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyRe
 }
 
 fn choose_end_of_map() {
-    let mut rng = rand::rng();
+    let _rng = rand::rng();
 }

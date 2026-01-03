@@ -1,9 +1,5 @@
-use crate::character::player::{Player, PlayerDeathMessage};
-use crate::character::{player_collision_groups, Aim, ShootingState};
-use crate::gamestate::start::StartGameMessage;
-use crate::gamestate::GameState;
-use crate::weapon::ShootEvent;
-use bevy::ecs::error::debug;
+use crate::character::player::Player;
+use crate::character::{Aim, ShootingState};
 use bevy::input::gamepad::GamepadEvent;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::Velocity;
