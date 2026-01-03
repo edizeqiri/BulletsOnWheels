@@ -2,7 +2,7 @@ use bevy::app::App;
 use bevy::input::gamepad::GamepadEvent;
 use bevy::log::info;
 use crate::gamestate::{EnemyResource, GameState, GameStateEnum, PlayerResource};
-use bevy::prelude::{in_state, Commands, GamepadButton, IntoScheduleConfigs, Message, MessageReader, MessageWriter, Query, Update, With};
+use bevy::prelude::{in_state, Commands, Event, GamepadButton, IntoScheduleConfigs, Message, MessageReader, MessageWriter, Query, Update, With};
 use crate::character::player::Player;
 use crate::character::ShootingState;
 

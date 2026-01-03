@@ -10,6 +10,7 @@ mod world;
 use crate::gamestate::GameState;
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
+use bevy_lunex::UiLunexPlugins;
 
 fn main() {
     App::new()
@@ -18,6 +19,7 @@ fn main() {
                 .set(logger())
                 .set(ImagePlugin::default_nearest()),
         )
+        .add_plugins(UiLunexPlugins)
         .init_state::<GameState>()
         .add_plugins(physics::plugin)
         .add_plugins(gamepad::plugin)

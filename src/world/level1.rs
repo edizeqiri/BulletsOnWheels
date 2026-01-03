@@ -4,10 +4,7 @@ use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
 use bevy::app::{App, FixedUpdate};
 use bevy::log::debug;
-use bevy::prelude::{
-    Commands, Entity, IntoScheduleConfigs, Message, MessageReader, MessageWriter, Name, Res,
-    Transform, Update, in_state, info,
-};
+use bevy::prelude::{Commands, Entity, IntoScheduleConfigs, Message, MessageReader, MessageWriter, Name, Res, Transform, Update, in_state, info, OnEnter};
 use bevy::time::{Fixed, Time};
 use rand::prelude::*;
 
