@@ -69,9 +69,11 @@ pub(crate) fn shoot_on_event(
     mut shooter_query: Query<(&mut Weapons, &Aim, &Transform)>,
 ) {
     for event in shoot_event.read() {
+        info!("shoot event");
         if let Ok((mut weapons, aim, transform)) = shooter_query.get_mut(event.shooter) {
             for weapon in &mut weapons.list {
                 if weapon.can_shoot() {
+                    info!("we spawn projectile");
                     commands.spawn((
                         weapon.shoot(aim.vec),
                         square_sprite(Color::Srgba(GREEN)),

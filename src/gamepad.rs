@@ -31,7 +31,7 @@ fn gamepad_start(
                 button_event.button,
                 GamepadButton::Start | GamepadButton::Select | GamepadButton::West
             ) {
-                match state.get() {
+                match state.get() { // start running event
                     GameState::START => next_state.set(GameState::RUNNING),
                     _ => {}
                 }
