@@ -20,7 +20,7 @@ pub fn create_projectile(damage: u32, speed: f32, direction: Vec2) -> Projectile
     ProjectileBundle {
         projectile: Projectile { damage },
         body: RigidBody::KinematicVelocityBased,
-        velocity: Velocity::linear(speed * direction.normalize()),
+        velocity: Velocity::linear(speed * direction.normalize_or(vec2(1., 1.))),
         sensor: Sensor,
         collider: Collider::ball(10.0),
         active_events: ActiveEvents::COLLISION_EVENTS,
