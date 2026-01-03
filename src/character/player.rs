@@ -1,14 +1,20 @@
 use crate::character;
 use crate::character::{Health, player_collision_groups, square_sprite};
+use crate::gamestate::GameState;
 use crate::weapon::Weapons;
 use bevy::color::palettes::css::BLUE;
 use bevy::prelude::*;
-use crate::gamestate::GameState;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<PlayerDeathMessage>()
-        .add_systems(Update, check_player_zero_health_system.run_if(in_state(GameState::RUNNING)))
-        .add_systems(Update, handle_player_zero_health_system.run_if(in_state(GameState::RUNNING)));
+        .add_systems(
+            Update,
+            check_player_zero_health_system.run_if(in_state(GameState::RUNNING)),
+        )
+        .add_systems(
+            Update,
+            handle_player_zero_health_system.run_if(in_state(GameState::RUNNING)),
+        );
 }
 
 #[derive(Component)]

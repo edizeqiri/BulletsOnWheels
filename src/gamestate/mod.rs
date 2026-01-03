@@ -1,9 +1,11 @@
 use crate::character::player::PlayerDeathMessage;
+use crate::gamestate::start::StartGameMessage;
 use bevy::app::App;
 use bevy::prelude::{
-    in_state, IntoScheduleConfigs, Message, MessageReader, MessageWriter, NextState, Res,
-    ResMut, Resource, State, States, Update,
+    IntoScheduleConfigs, Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource,
+    State, States, Update, in_state,
 };
+
 pub(crate) mod start;
 
 pub(super) fn plugin(app: &mut App) {
@@ -12,7 +14,12 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(
             Update,
             aggregate_message_system::<PlayerDeathMessage>.run_if(in_state(GameState::RUNNING)),
-        );
+        )
+        .add_systems(
+        Update,
+        aggregate_message_system::<StartGameMessage>.run_if(in_state(GameState::START)),
+    )
+        .add_plugins(start::plugin);
 }
 
 // ---------- GAME STATE ---------- //
@@ -33,13 +40,21 @@ pub struct GameStateMessage {
     kind: GameStateEnum,
 }
 
+#[derive(Copy, Clone)]
 pub enum GameStateEnum {
     PlayerDeath,
+    StartGame,
 }
 
 impl From<&PlayerDeathMessage> for GameStateEnum {
     fn from(message: &PlayerDeathMessage) -> Self {
         GameStateEnum::PlayerDeath
+    }
+}
+
+impl From<&StartGameMessage> for GameStateEnum {
+    fn from(message: &StartGameMessage) -> Self {
+        GameStateEnum::StartGame
     }
 }
 
@@ -63,11 +78,14 @@ fn state_machine_system(
     mut next_state: ResMut<NextState<GameState>>,
 ) {
     for message in messages.read() {
-        match &message.kind {
-            GameStateEnum::PlayerDeath => match current_state.get() {
-                GameState::RUNNING => next_state.set(GameState::STOP),
-                _ => {}
-            },
+        match (message.kind, current_state.get()) {
+            (GameStateEnum::PlayerDeath, GameState::RUNNING) => {
+                next_state.set(GameState::STOP);
+            }
+            (GameStateEnum::StartGame, GameState::START) => {
+                next_state.set(GameState::RUNNING);
+            }
+            _ => {}
         }
     }
 }

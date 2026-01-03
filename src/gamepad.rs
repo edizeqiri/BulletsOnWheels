@@ -1,6 +1,7 @@
-use crate::character::player::Player;
+use crate::character::player::{Player, PlayerDeathMessage};
 use crate::character::{Aim, ShootingState, player_collision_groups};
 use crate::gamestate::GameState;
+use crate::gamestate::start::StartGameMessage;
 use crate::weapon::ShootEvent;
 use bevy::ecs::error::debug;
 use bevy::input::gamepad::GamepadEvent;
@@ -8,36 +9,17 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::Velocity;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, gamepad_start).add_systems(
+    app
+        .add_systems(
         Update,
         ((
-            gamepad_aim,
             gamepad_input_system,
+            gamepad_aim,
             shoot_system,
             gamepad_movement,
         )
             .run_if(any_with_component::<Player>),),
     );
-}
-fn gamepad_start(
-    mut gamepad_event: MessageReader<GamepadEvent>,
-    state: Res<State<GameState>>,
-    mut next_state: ResMut<NextState<GameState>>,
-) {
-    for event in gamepad_event.read() {
-        if let GamepadEvent::Button(button_event) = event {
-            info!("Gamepad clicks button {:?}", button_event.button);
-            if matches!(
-                button_event.button,
-                GamepadButton::Start | GamepadButton::Select | GamepadButton::West
-            ) {
-                match state.get() { // start running event
-                    GameState::START => next_state.set(GameState::RUNNING),
-                    _ => {}
-                }
-            }
-        }
-    }
 }
 
 fn gamepad_aim(
@@ -73,11 +55,12 @@ fn gamepad_input_system(
 
     for event in gamepad_event.read() {
         if let GamepadEvent::Button(button_event) = event {
-            if matches!(
-                button_event.button,
-                GamepadButton::East | GamepadButton::RightTrigger
-            ) {
-                shooting_state.is_shooting = button_event.state.is_pressed();
+            info!("button {:?}", button_event.button);
+            match button_event.button {
+                GamepadButton::East | GamepadButton::RightTrigger => {
+                    shooting_state.is_shooting = button_event.state.is_pressed();
+                },
+                _ => {}
             }
         }
     }
