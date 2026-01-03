@@ -19,8 +19,8 @@ fn main() {
                 .set(logger())
                 .set(ImagePlugin::default_nearest()),
         )
-        .add_plugins(UiLunexPlugins)
         .init_state::<GameState>()
+        .add_plugins(UiLunexPlugins)
         .add_plugins(physics::plugin)
         .add_plugins(gamepad::plugin)
         .add_plugins(setup::plugin)

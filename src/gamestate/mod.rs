@@ -20,6 +20,7 @@ pub(super) fn plugin(app: &mut App) {
         aggregate_message_system::<StartGameMessage>.run_if(in_state(GameState::START)),
     )
         .add_plugins(start::plugin);
+
 }
 
 // ---------- GAME STATE ---------- //
@@ -47,13 +48,13 @@ pub enum GameStateEnum {
 }
 
 impl From<&PlayerDeathMessage> for GameStateEnum {
-    fn from(message: &PlayerDeathMessage) -> Self {
+    fn from(_message: &PlayerDeathMessage) -> Self {
         GameStateEnum::PlayerDeath
     }
 }
 
 impl From<&StartGameMessage> for GameStateEnum {
-    fn from(message: &StartGameMessage) -> Self {
+    fn from(_message: &StartGameMessage) -> Self {
         GameStateEnum::StartGame
     }
 }

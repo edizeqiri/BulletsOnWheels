@@ -1,24 +1,21 @@
-use crate::character::player::{Player, PlayerDeathMessage};
-use crate::character::{Aim, ShootingState, player_collision_groups};
-use crate::gamestate::GameState;
-use crate::gamestate::start::StartGameMessage;
-use crate::weapon::ShootEvent;
-use bevy::ecs::error::debug;
+use crate::character::player::Player;
+use crate::character::{Aim, ShootingState};
 use bevy::input::gamepad::GamepadEvent;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::Velocity;
+use crate::gamestate::GameState;
+use crate::gamestate::start::StartGameMessage;
 
 pub(super) fn plugin(app: &mut App) {
     app
+        .add_message::<StartGameMessage>()
         .add_systems(
         Update,
-        ((
-            gamepad_input_system,
-            gamepad_aim,
-            shoot_system,
-            gamepad_movement,
-        )
+        ((gamepad_in_game_system, gamepad_aim, gamepad_movement)
             .run_if(any_with_component::<Player>),),
+    ).add_systems(
+        Update,
+        gamepad_in_menu_system.run_if(in_state(GameState::START)),
     );
 }
 
@@ -45,44 +42,39 @@ fn gamepad_movement(
     }
 }
 
-fn gamepad_input_system(
+fn gamepad_in_game_system(
     mut gamepad_event: MessageReader<GamepadEvent>,
     mut player_query: Query<&mut ShootingState, With<Player>>,
 ) {
     let Ok(mut shooting_state) = player_query.single_mut() else {
         return;
     };
-
     for event in gamepad_event.read() {
         if let GamepadEvent::Button(button_event) = event {
             info!("button {:?}", button_event.button);
             match button_event.button {
                 GamepadButton::East | GamepadButton::RightTrigger => {
                     shooting_state.is_shooting = button_event.state.is_pressed();
-                },
+                }
                 _ => {}
             }
         }
     }
 }
 
-fn shoot_system(
-    mut event_writer: MessageWriter<ShootEvent>,
-    player_query: Query<(Entity, &ShootingState), With<Player>>,
-    mut shoot_timer: Local<f32>,
-    time: Res<Time>,
+fn gamepad_in_menu_system(
+    mut gamepad_event: MessageReader<GamepadEvent>,
+    mut start_game_message: MessageWriter<StartGameMessage>,
 ) {
-    let Ok((player, shooting_state)) = player_query.single() else {
-        return;
-    };
-
-    *shoot_timer -= time.delta_secs();
-
-    if shooting_state.is_shooting && *shoot_timer <= 0.0 {
-        event_writer.write(ShootEvent {
-            shooter: player,
-            collision_groups: player_collision_groups(),
-        });
-        *shoot_timer = 0.01;
+    for event in gamepad_event.read() {
+        if let GamepadEvent::Button(button_event) = event {
+            info!("button {:?}", button_event.button);
+            match button_event.button {
+                GamepadButton::Start => {
+                    start_game_message.write(crate::gamestate::start::StartGameMessage {});
+                }
+                _ => {}
+            }
+        }
     }
 }

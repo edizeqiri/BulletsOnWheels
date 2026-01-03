@@ -1,36 +1,10 @@
-use bevy::app::App;
-use bevy::input::gamepad::GamepadEvent;
-use bevy::log::info;
-use crate::gamestate::{EnemyResource, GameState, GameStateEnum, PlayerResource};
-use bevy::prelude::{in_state, Commands, Event, GamepadButton, IntoScheduleConfigs, Message, MessageReader, MessageWriter, Query, Update, With};
-use crate::character::player::Player;
-use crate::character::ShootingState;
-
-pub(super) fn plugin(app: &mut App) {
-    app
-        .add_message::<StartGameMessage>()
-        .add_systems(Update, gamepad_start_input_system.run_if(in_state(GameState::START)));
-}
+use crate::gamestate::{EnemyResource, PlayerResource};
+use bevy::prelude::{
+    Commands, Message,
+};
 
 #[derive(Message)]
 pub struct StartGameMessage;
-
-fn gamepad_start_input_system(
-    mut gamepad_event: MessageReader<GamepadEvent>,
-    mut start_game_message: MessageWriter<StartGameMessage>,
-) {
-    for event in gamepad_event.read() {
-        if let GamepadEvent::Button(button_event) = event {
-            info!("button {:?}", button_event.button);
-            match button_event.button {
-                GamepadButton::Start => {
-                    start_game_message.write(StartGameMessage {});
-                }
-                _ => {}
-            }
-        }
-    }
-}
 
 // --------------- PLAYER RESOURCES --------------- //
 #[cfg(debug_assertions)]
