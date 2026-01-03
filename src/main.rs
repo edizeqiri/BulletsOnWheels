@@ -25,6 +25,7 @@ fn main() {
         .add_plugins(weapon::plugin)
         .add_plugins(character::plugin)
         .add_plugins(world::plugin)
+        .add_plugins(gamestate::plugin)
         .run();
 }
 
@@ -36,3 +37,4 @@ fn logger() -> LogPlugin {
         fmt_layer: |_| None,
     }
 }
+

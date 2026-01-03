@@ -1,14 +1,73 @@
+use bevy::app::App;
 use crate::character::player::PlayerDeathMessage;
 use bevy::log::info;
-use bevy::prelude::{Entity, Message, MessageReader, MessageWriter, Resource, States};
+use bevy::prelude::{in_state, Entity, IntoScheduleConfigs, Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States, Update};
 pub(crate) mod start;
+
+pub(super) fn plugin(app: &mut App) {
+    app
+        .add_message::<GameStateMessage>()
+        .add_systems(Update, state_machine_system)
+        .add_systems(Update, aggregate_message_system::<PlayerDeathMessage>.run_if(in_state(GameState::RUNNING)));
+}
+
+// ---------- GAME STATE ---------- //
 
 #[derive(States, Debug, Clone, Eq, PartialEq, Hash, Default)]
 pub enum GameState {
     #[default]
     START,
     RUNNING,
+    PAUSE,
     STOP,
+}
+
+// ---------- STATE MACHINE ---------- //
+
+#[derive(Message)]
+pub struct GameStateMessage {
+    kind: GameStateEnum,
+}
+
+pub enum GameStateEnum {
+    PlayerDeath,
+}
+
+impl From<&PlayerDeathMessage> for GameStateEnum {
+    fn from(msg: &PlayerDeathMessage) -> Self {
+        GameStateEnum::PlayerDeath
+    }
+}
+
+pub fn aggregate_message_system<M>(
+    mut messages: MessageReader<M>,
+    mut writer: MessageWriter<GameStateMessage>,
+) where
+    M: Message,
+    for<'a> &'a M: Into<GameStateEnum>,
+{
+    for message in messages.read() {
+        writer.write(GameStateMessage {
+            kind: message.into(),
+        });
+    }
+}
+
+fn state_machine_system(
+    mut messages: MessageReader<GameStateMessage>,
+    current_state: Res<State<GameState>>,
+    mut next_state: ResMut<NextState<GameState>>
+) {
+    for message in messages.read() {
+        match &message.kind {
+            GameStateEnum::PlayerDeath => {
+                match current_state.get() {
+                    GameState::RUNNING => next_state.set(GameState::STOP),
+                    _ => {}
+                }
+            },
+        }
+    }
 }
 
 #[derive(Resource, Clone)]
@@ -25,40 +84,4 @@ pub struct EnemyResource {
     // y_range: Range<i32>,
     //pub weapons: Weapons,
     pub max_health: u32,
-}
-
-pub enum GameStateEnum {
-    PlayerDeath { entity: Entity },
-}
-
-#[derive(Message)]
-pub struct GameStateMessage {
-    body: GameStateEnum,
-}
-
-impl From<&PlayerDeathMessage> for GameStateEnum {
-    fn from(msg: &PlayerDeathMessage) -> Self {
-        GameStateEnum::PlayerDeath { entity: msg.entity }
-    }
-}
-pub fn game_state_aggregator<M>(
-    mut messages: MessageReader<M>,
-    mut writer: MessageWriter<GameStateMessage>,
-) where
-    M: Message,
-    for<'a> &'a M: Into<GameStateEnum>,
-{
-    for message in messages.read() {
-        writer.write(GameStateMessage {
-            body: message.into(),
-        });
-    }
-}
-
-fn state_machine(mut messages: MessageReader<GameStateMessage>) {
-    for message in messages.read() {
-        match &message.body {
-            PlayerDeath => info!("Penis"),
-        }
-    }
 }
