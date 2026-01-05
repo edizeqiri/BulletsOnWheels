@@ -27,7 +27,6 @@ trait Strategy {
     fn build(&self, start: Vec2, config: &GenerationConfig) -> Path;
 }
 
-
 pub struct PathStrategy {
     vertex_gen: Box<dyn VertexGenerator>,
     interpolator: Box<dyn Interpolator>,

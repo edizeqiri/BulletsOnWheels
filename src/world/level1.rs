@@ -40,5 +40,4 @@ fn choose_end_of_map() {
     let mut rng = rand::rng();
 }
 
-fn generate_map(mut commands: Commands) {
-}
+fn generate_map(mut commands: Commands) {}
