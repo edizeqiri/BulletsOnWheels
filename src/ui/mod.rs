@@ -21,7 +21,7 @@ fn spawn_health_display_system(mut commands: Commands) {
         HealthText {
             text2d: Text2d::new(format!(
                 "Player Health: {}",
-                PLAYER_DEFAULTS.max_health
+                PLAYER_DEFAULTS.max_health // todo: sth not right here ;)
             ))
         },
         TextLayout::new_with_justify(Justify::Center),
