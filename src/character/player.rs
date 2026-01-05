@@ -1,9 +1,10 @@
+use bevy::color::palettes::css::BLUE;
+use bevy::prelude::*;
+
 use crate::character;
 use crate::character::{Health, ShootingState, player_collision_groups, square_sprite};
 use crate::gamestate::GameState;
 use crate::weapon::{ShootEvent, Weapons};
-use bevy::color::palettes::css::BLUE;
-use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<PlayerDeathMessage>().add_systems(
@@ -11,9 +12,9 @@ pub(super) fn plugin(app: &mut App) {
         (
             player_shoot_system,
             check_player_zero_health_system,
-            handle_player_zero_health_system,
+            handle_player_zero_health_system
         )
-            .run_if(in_state(GameState::RUNNING)),
+            .run_if(in_state(GameState::RUNNING))
     );
 }
 
@@ -22,13 +23,13 @@ pub struct Player;
 
 #[derive(Message)]
 pub struct PlayerDeathMessage {
-    pub entity: Entity,
+    pub entity: Entity
 }
 fn player_shoot_system(
     mut event_writer: MessageWriter<ShootEvent>,
     player_query: Query<(Entity, &ShootingState), With<Player>>,
     mut shoot_timer: Local<f32>,
-    time: Res<Time>,
+    time: Res<Time>
 ) {
     let Ok((player, shooting_state)) = player_query.single() else {
         return;
@@ -39,7 +40,7 @@ fn player_shoot_system(
     if shooting_state.is_shooting && *shoot_timer <= 0.0 {
         event_writer.write(ShootEvent {
             shooter: player,
-            collision_groups: player_collision_groups(),
+            collision_groups: player_collision_groups()
         });
         *shoot_timer = 0.01;
     }
@@ -49,20 +50,20 @@ pub fn create_player_bundle(
     transform: Transform,
     weapons: Weapons,
     max_health: u32,
-    name: Name,
+    name: Name
 ) -> impl Bundle {
     (
         name,
         character::create_character(transform, weapons.clone(), max_health),
         player_collision_groups(),
         Player,
-        square_sprite(Color::Srgba(BLUE)),
+        square_sprite(Color::Srgba(BLUE))
     )
 }
 
 fn check_player_zero_health_system(
     mut death_message: MessageWriter<PlayerDeathMessage>,
-    query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>,
+    query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>
 ) {
     for (health, entity) in &query {
         if health.current <= 0 {
@@ -73,7 +74,7 @@ fn check_player_zero_health_system(
 
 fn handle_player_zero_health_system(
     mut commands: Commands,
-    mut player_death_messages: MessageReader<PlayerDeathMessage>,
+    mut player_death_messages: MessageReader<PlayerDeathMessage>
 ) {
     for message in player_death_messages.read() {
         debug!("Player died!");
@@ -83,16 +84,17 @@ fn handle_player_zero_health_system(
 
 #[cfg(test)]
 mod tests {
+    use bevy::app::App;
+    use bevy::prelude::{Entity, Name, Transform, With};
+
     use crate::character::player::{Player, create_player_bundle};
     use crate::character::{Health, player};
     use crate::weapon::Weapons;
-    use bevy::app::App;
-    use bevy::prelude::{Entity, Name, Transform, With};
 
     // ----------- SETUP ----------- //
     pub struct Setup {
         pub app: App,
-        pub player: Entity,
+        pub player: Entity
     }
 
     impl Setup {
@@ -109,7 +111,7 @@ mod tests {
                     Transform::from_xyz(1.0, 1.0, 0.0),
                     Weapons::default(),
                     1,
-                    Name::from("Player"),
+                    Name::from("Player")
                 ))
                 .id();
 

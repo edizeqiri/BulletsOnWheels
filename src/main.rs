@@ -6,20 +6,20 @@ mod projectile;
 mod setup;
 mod weapon;
 mod world;
+use bevy::log::LogPlugin;
 use bevy::prelude::*;
+use bevy_inspector_egui::bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_lunex::UiLunexPlugins;
 
 use crate::gamestate::GameState;
-use bevy::log::LogPlugin;
-use bevy_inspector_egui::bevy_egui::EguiPlugin;
-use bevy_lunex::UiLunexPlugins;
 
 fn main() {
     App::new()
         .add_plugins(
             DefaultPlugins
                 .set(logger())
-                .set(ImagePlugin::default_nearest()),
+                .set(ImagePlugin::default_nearest())
         )
         .init_state::<GameState>()
         .add_plugins(UiLunexPlugins)
@@ -40,6 +40,6 @@ fn logger() -> LogPlugin {
         filter: "info,wgpu_core=error,wgpu_hal=error,BulletOnWheels=debug".into(),
         level: bevy::log::Level::DEBUG,
         custom_layer: |_| None,
-        fmt_layer: |_| None,
+        fmt_layer: |_| None
     }
 }

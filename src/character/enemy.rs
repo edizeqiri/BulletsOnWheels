@@ -1,8 +1,9 @@
+use bevy::color::palettes::basic::RED;
+use bevy::prelude::*;
+
 use crate::character;
 use crate::character::{Health, enemy_collision_groups, square_sprite};
 use crate::weapon::Weapons;
-use bevy::color::palettes::basic::RED;
-use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<EnemyDeathMessage>()
@@ -15,27 +16,27 @@ pub struct Enemy;
 
 #[derive(Message)]
 pub struct EnemyDeathMessage {
-    pub entity: Entity,
+    pub entity: Entity
 }
 
 pub fn create_enemy_bundle(
     transform: Transform,
     weapons: Weapons,
     max_health: u32,
-    name: Name,
+    name: Name
 ) -> impl Bundle {
     (
         name,
         character::create_character(transform, weapons.clone(), max_health),
         enemy_collision_groups(),
         Enemy,
-        square_sprite(Color::Srgba(RED)),
+        square_sprite(Color::Srgba(RED))
     )
 }
 
 fn check_enemy_zero_health_system(
     mut death_message: MessageWriter<EnemyDeathMessage>,
-    query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>,
+    query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>
 ) {
     for (health, entity) in &query {
         if health.current <= 0 {
@@ -46,7 +47,7 @@ fn check_enemy_zero_health_system(
 
 fn handle_enemy_zero_health_system(
     mut commands: Commands,
-    mut enemy_death_messages: MessageReader<EnemyDeathMessage>,
+    mut enemy_death_messages: MessageReader<EnemyDeathMessage>
 ) {
     for message in enemy_death_messages.read() {
         debug!("Enemy died!");
@@ -56,16 +57,17 @@ fn handle_enemy_zero_health_system(
 
 #[cfg(test)]
 mod tests {
+    use bevy::app::App;
+    use bevy::prelude::{Entity, Name, Transform, With};
+
     use crate::character::enemy::{Enemy, create_enemy_bundle};
     use crate::character::{Health, enemy};
     use crate::weapon::Weapons;
-    use bevy::app::App;
-    use bevy::prelude::{Entity, Name, Transform, With};
 
     // ----------- SETUP ----------- //
     pub struct Setup {
         pub app: App,
-        pub player: Entity,
+        pub player: Entity
     }
 
     impl Setup {
@@ -82,7 +84,7 @@ mod tests {
                     Transform::from_xyz(1.0, 1.0, 0.0),
                     Weapons::default(),
                     1,
-                    Name::from("Player"),
+                    Name::from("Player")
                 ))
                 .id();
 

@@ -3,7 +3,7 @@ use bevy_rapier2d::prelude::*;
 
 #[derive(Component)]
 pub struct Projectile {
-    pub damage: u32,
+    pub damage: u32
 }
 
 #[derive(Bundle)]
@@ -13,7 +13,7 @@ pub struct ProjectileBundle {
     body: RigidBody,
     sensor: Sensor,
     collider: Collider,
-    active_events: ActiveEvents,
+    active_events: ActiveEvents
 }
 
 pub fn create_projectile(damage: u32, speed: f32, direction: Vec2) -> ProjectileBundle {
@@ -23,6 +23,6 @@ pub fn create_projectile(damage: u32, speed: f32, direction: Vec2) -> Projectile
         velocity: Velocity::linear(speed * direction.normalize_or(vec2(1., 1.))),
         sensor: Sensor,
         collider: Collider::ball(10.0),
-        active_events: ActiveEvents::COLLISION_EVENTS,
+        active_events: ActiveEvents::COLLISION_EVENTS
     }
 }

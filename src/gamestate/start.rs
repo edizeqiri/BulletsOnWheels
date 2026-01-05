@@ -1,5 +1,6 @@
-use crate::gamestate::{EnemyResource, PlayerResource};
 use bevy::prelude::{Commands, Message};
+
+use crate::gamestate::{EnemyResource, PlayerResource};
 
 #[derive(Message)]
 pub struct StartGameMessage;
