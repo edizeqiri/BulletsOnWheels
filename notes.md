@@ -34,3 +34,6 @@ and the `Shootable` trait function `fire_rate`
 - [ ] Shoot both down to start the game menu
 
 ## Menu (Game States)
+
+## Map
+InfinityMap with branching by applying new map with start of a vertex

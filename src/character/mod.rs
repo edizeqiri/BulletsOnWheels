@@ -2,9 +2,10 @@ pub mod enemy;
 mod enemy_ai;
 pub mod player;
 
-use crate::weapon::Weapons;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+
+use crate::weapon::Weapons;
 pub const PLAYER_GROUP: Group = Group::GROUP_1;
 pub const ENEMY_GROUP: Group = Group::GROUP_2;
 
@@ -26,26 +27,26 @@ fn collider() -> Collider {
     Collider::ball(10.0)
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
 pub struct Health {
     pub current: u32,
-    pub(crate) max: u32,
+    pub(crate) max: u32
 }
 
 #[derive(Component, Default)]
 pub struct ShootingState {
-    pub(crate) is_shooting: bool,
+    pub(crate) is_shooting: bool
 }
 
 #[derive(Component, Copy, Clone)]
 pub struct Aim {
-    pub vec: Vec2,
+    pub vec: Vec2
 }
 
 impl Default for Aim {
     fn default() -> Self {
         Self {
-            vec: Vec2::new(0., 0.),
+            vec: Vec2::new(0., 0.)
         }
     }
 }
@@ -56,7 +57,7 @@ pub struct CharacterBundle {
     weapon: Weapons,
     velocity: Velocity,
     body: RigidBody,
-    //sensor: Sensor,
+    // sensor: Sensor,
     collider: Collider,
     active_events: ActiveEvents,
     transform: Transform,
@@ -64,23 +65,23 @@ pub struct CharacterBundle {
     locked_axes: LockedAxes,
     damping: Damping,
     aim: Aim,
-    shooting_state: ShootingState,
+    shooting_state: ShootingState
 }
 
 pub fn create_character(
     transform: Transform,
     weapons: Weapons,
-    max_health: u32,
+    max_health: u32
 ) -> CharacterBundle {
     CharacterBundle {
         health: Health {
             current: max_health,
-            max: max_health,
+            max: max_health
         },
         weapon: weapons,
         velocity: Velocity::linear(Vec2::new(0., 0.)),
         body: RigidBody::Dynamic,
-        //sensor: Sensor,
+        // sensor: Sensor,
         collider: collider(),
         transform,
         active_events: ActiveEvents::COLLISION_EVENTS,
@@ -88,10 +89,10 @@ pub fn create_character(
         gravity_scale: GravityScale(0.0),         // Disable gravity
         damping: Damping {
             linear_damping: 10.0,
-            angular_damping: 10.0,
+            angular_damping: 10.0
         }, // High damping
         aim: Aim::default(),
-        shooting_state: ShootingState::default(),
+        shooting_state: ShootingState::default()
     }
 }
 

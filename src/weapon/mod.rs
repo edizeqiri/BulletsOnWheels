@@ -1,10 +1,12 @@
-use crate::character::{Aim, square_sprite};
-use crate::projectile::{ProjectileBundle, create_projectile};
+use std::time::Duration;
+
 use bevy::color::palettes::basic::GREEN;
 use bevy::math::Vec2;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::CollisionGroups;
-use std::time::Duration;
+
+use crate::character::{Aim, square_sprite};
+use crate::projectile::{ProjectileBundle, create_projectile};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<ShootEvent>()
@@ -13,7 +15,7 @@ pub(super) fn plugin(app: &mut App) {
 #[derive(Copy, Clone, Debug)]
 pub enum WeaponKind {
     Bow,
-    Gun,
+    Gun
 }
 
 #[derive(Clone, Debug)]
@@ -22,7 +24,7 @@ pub struct Weapon {
     damage: u32,
     speed: f32,
     fire_rate: f32,
-    pub timer: Timer,
+    pub timer: Timer
 }
 
 impl Weapon {
@@ -35,7 +37,7 @@ impl Weapon {
             damage,
             speed,
             fire_rate,
-            timer: Timer::new(Duration::from_secs_f32(1.0 / fire_rate), TimerMode::Once),
+            timer: Timer::new(Duration::from_secs_f32(1.0 / fire_rate), TimerMode::Once)
         }
     }
 
@@ -55,18 +57,18 @@ impl Weapon {
 #[derive(Message)]
 pub struct ShootEvent {
     pub shooter: Entity,
-    pub collision_groups: CollisionGroups,
+    pub collision_groups: CollisionGroups
 }
 
 #[derive(Component, Clone)]
 pub struct Weapons {
-    pub list: Vec<Weapon>,
+    pub list: Vec<Weapon>
 }
 
 pub(crate) fn shoot_on_event(
     mut commands: Commands,
     mut shoot_event: MessageReader<ShootEvent>,
-    mut shooter_query: Query<(&mut Weapons, &Aim, &Transform)>,
+    mut shooter_query: Query<(&mut Weapons, &Aim, &Transform)>
 ) {
     for event in shoot_event.read() {
         if let Ok((mut weapons, aim, transform)) = shooter_query.get_mut(event.shooter) {
@@ -76,7 +78,7 @@ pub(crate) fn shoot_on_event(
                         weapon.shoot(aim.vec),
                         square_sprite(Color::Srgba(GREEN)),
                         event.collision_groups,
-                        *transform,
+                        *transform
                     ));
                     weapon.reset();
                 }
@@ -99,7 +101,7 @@ impl Default for Weapons {
             list: vec![
                 Weapon::new(WeaponKind::Bow, 1, 1000., 0.5),
                 Weapon::new(WeaponKind::Gun, 1, 250., 5.),
-            ],
+            ]
         }
     }
 }

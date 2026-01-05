@@ -11,6 +11,8 @@ mod ui;
 use crate::gamestate::GameState;
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
+use bevy_inspector_egui::bevy_egui::EguiPlugin;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_lunex::UiLunexPlugins;
 
 fn main() {
@@ -18,10 +20,12 @@ fn main() {
         .add_plugins(
             DefaultPlugins
                 .set(logger())
-                .set(ImagePlugin::default_nearest()),
+                .set(ImagePlugin::default_nearest())
         )
         .init_state::<GameState>()
         .add_plugins(UiLunexPlugins)
+        .add_plugins(EguiPlugin::default())
+        .add_plugins(WorldInspectorPlugin::new())
         .add_plugins(physics::plugin)
         .add_plugins(gamepad::plugin)
         .add_plugins(setup::plugin)
@@ -38,6 +42,6 @@ fn logger() -> LogPlugin {
         filter: "info,wgpu_core=error,wgpu_hal=error,BulletOnWheels=debug".into(),
         level: bevy::log::Level::DEBUG,
         custom_layer: |_| None,
-        fmt_layer: |_| None,
+        fmt_layer: |_| None
     }
 }

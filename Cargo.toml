@@ -8,6 +8,8 @@ bevy = { version = "0.17.3", features = ["track_location"] }
 bevy_rapier2d = "0.32.0"
 rand = "0.9.2"
 bevy_lunex = "*"
+bevy-inspector-egui = "0.35.0"
+glam = "0.30.9"
 
 
 # Enable a small amount of optimization in the dev profile.
