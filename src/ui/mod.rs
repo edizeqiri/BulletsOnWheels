@@ -3,7 +3,7 @@ use crate::character::Health;
 use crate::gamestate::start::PLAYER_DEFAULTS;
 use crate::gamestate::GameState;
 use bevy::app::App;
-use bevy::prelude::{in_state, Changed, Commands, Component, IntoScheduleConfigs, Justify, OnEnter, Query, Text2d, TextLayout, Transform, Update, Vec3, With};
+use bevy::prelude::{in_state, Changed, Commands, Component, IntoScheduleConfigs, Justify, OnEnter, Query, Reflect, Text2d, TextLayout, Transform, Update, Vec3, With};
 
 pub(super) fn plugin(app: &mut App) {
     app
@@ -12,28 +12,28 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(Component)]
-struct HealthText;
+struct HealthText {
+    text2d: Text2d
+}
 
 fn spawn_health_display_system(mut commands: Commands) {
     commands.spawn((
-        Text2d::new(format!(
-            "Player Health: {}",
-            PLAYER_DEFAULTS.max_health
-        )),
+        HealthText {
+            text2d: Text2d::new(format!(
+                "Player Health: {}",
+                PLAYER_DEFAULTS.max_health
+            ))
+        },
         TextLayout::new_with_justify(Justify::Center),
         Transform::from_translation(Vec3::new(-400.0, -250.0, 0.0)),
-        HealthText,
     ));
 }
 
 
 fn update_health_display_system(
-    mut text_query: Query<&mut Text2d, With<HealthText>>,
-    health_query: Query<&Health, (With<Player>, Changed<Health>)>,
+    mut query: Query<(&Health, &mut HealthText), (With<Player>, Changed<Health>)>,
 ) {
-    for health in &health_query {
-        for mut text in &mut text_query {
-            text.0 = format!("Player Health: {}", health.current);
+    for (health, mut health_text) in &mut query {
+            health_text.text2d.0 = format!("Player Health: {}", health.current);
         }
-    }
 }
