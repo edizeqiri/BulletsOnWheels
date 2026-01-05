@@ -1,4 +1,4 @@
-use glam::Vec2;
+use bevy::prelude::*;
 
 use crate::world::map::{Interpolator, Map, Path, PathStrategy, Strategy, VertexGenerator};
 #[derive(Default)]
