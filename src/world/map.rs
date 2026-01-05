@@ -17,13 +17,12 @@ pub trait Interpolator {
 pub trait NoiseApplier {
     fn apply(&self, points: &mut Vec2);
 }
-
-pub struct GenerationConfig {
-    pub size: u32,
-    pub vertex_count: u32,
+pub trait Map {
+    fn new(config: GenerationConfig) -> Self;
+    fn add_path(&mut self, strategy: &PathStrategy, start: Vec2);
 }
 
-trait Strategy {
+pub trait Strategy {
     fn build(&self, start: Vec2, config: &GenerationConfig) -> Path;
 }
 
@@ -31,6 +30,10 @@ pub struct PathStrategy {
     vertex_gen: Box<dyn VertexGenerator>,
     interpolator: Box<dyn Interpolator>,
     noise: Option<Box<dyn NoiseApplier>>,
+}
+pub struct GenerationConfig {
+    pub size: u32,
+    pub vertex_count: u32,
 }
 
 impl Strategy for PathStrategy {
@@ -62,10 +65,6 @@ impl PathStrategy {
     }
 }
 
-pub trait Map {
-    fn new(config: GenerationConfig) -> Self;
-    fn add_path(&mut self, strategy: &PathStrategy, start: Vec2);
-}
 pub struct InfiniteMap {
     paths: Vec<Path>,
     config: GenerationConfig,
