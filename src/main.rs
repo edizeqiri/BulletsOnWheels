@@ -6,6 +6,7 @@ mod projectile;
 mod setup;
 mod weapon;
 mod world;
+mod ui;
 
 use crate::gamestate::GameState;
 use bevy::log::LogPlugin;
@@ -28,6 +29,7 @@ fn main() {
         .add_plugins(character::plugin)
         .add_plugins(world::plugin)
         .add_plugins(gamestate::plugin)
+        .add_plugins(ui::plugin)
         .run();
 }
 
