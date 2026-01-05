@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use glam::Vec2;
 
 pub trait VertexGenerator {
     fn generate(&self, start: Vec2) -> Vec<Vec2>;

@@ -1,8 +1,7 @@
 use bevy::app::{App, FixedUpdate};
 use bevy::log::debug;
-use bevy::prelude::{in_state, Commands, IntoScheduleConfigs, Name, Res, Transform};
+use bevy::prelude::{Commands, IntoScheduleConfigs, Name, Res, Transform, Vec2, in_state};
 use bevy::time::{Fixed, Time};
-use glam::Vec2;
 use rand::prelude::*;
 
 use crate::character::enemy::create_enemy_bundle;
