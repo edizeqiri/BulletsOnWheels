@@ -89,7 +89,7 @@ pub trait Map {
     fn get_strategy(&mut self) -> &dyn Strategy;
     fn get_paths(&mut self) -> &mut Vec<Path>;
     fn add_path(&mut self, start: Vec2) {
-        let strategy = self.get_strategy().build(start);
-        self.get_paths().push(strategy);
+        let new_path = self.get_strategy().build(start);
+        self.get_paths().push(new_path);
     }
 }
