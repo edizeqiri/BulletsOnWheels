@@ -20,14 +20,14 @@ impl Map for InfiniteMap {
 
 struct InfinityVertex;
 impl VertexGenerator for InfinityVertex {
-    fn generate(&self, start: Vec2) -> Vec<Vec2> {
+    fn generate(&self, _start: Vec2) -> Vec<Vec2> {
         todo!()
     }
 }
 
 struct InfinityInterpolator;
 impl Interpolator for InfinityInterpolator {
-    fn interpolate(&self, vertices: &[Vec2]) -> Vec<Vec2> {
+    fn interpolate(&self, _vertices: &[Vec2]) -> Vec<Vec2> {
         todo!()
     }
 }

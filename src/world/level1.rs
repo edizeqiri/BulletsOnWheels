@@ -10,7 +10,7 @@ use crate::gamestate::start::ENEMY_DEFAULTS;
 use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
 use crate::world::infinity_map::generate_map;
-use crate::world::map::{Map, Path, PathStrategy, Strategy, VertexGenerator};
+use crate::world::map::Map;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(Time::<Fixed>::from_seconds(3.))

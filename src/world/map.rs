@@ -46,14 +46,14 @@ pub struct PathStrategy {
 #[derive(Default)]
 struct SimpleVertex;
 impl VertexGenerator for SimpleVertex {
-    fn generate(&self, start: Vec2) -> Vec<Vec2> {
+    fn generate(&self, _start: Vec2) -> Vec<Vec2> {
         todo!()
     }
 }
 #[derive(Default)]
 struct SimpleInterpolator;
 impl Interpolator for SimpleInterpolator {
-    fn interpolate(&self, vertices: &[Vec2]) -> Vec<Vec2> {
+    fn interpolate(&self, _vertices: &[Vec2]) -> Vec<Vec2> {
         todo!()
     }
 }
