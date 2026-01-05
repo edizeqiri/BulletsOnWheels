@@ -10,9 +10,7 @@ use bevy::prelude::{
     resource_exists,
 };
 use bevy_lunex::prelude::{Anchor, SystemCursorIcon};
-use bevy_lunex::{
-    OnHoverSetCursor, Rl, UiColor, UiFetchFromCamera, UiLayout, UiLayoutRoot, UiSourceCamera,
-};
+use bevy_lunex::{OnHoverSetCursor, Rl, UiFetchFromCamera, UiLayout, UiLayoutRoot, UiSourceCamera};
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(PLAYER_DEFAULTS)

@@ -11,7 +11,6 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use crate::gamestate::GameState;
 use bevy::log::LogPlugin;
-use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::EguiPlugin;
 use bevy_lunex::UiLunexPlugins;
 
