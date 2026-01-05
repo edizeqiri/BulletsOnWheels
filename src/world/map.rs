@@ -1,34 +1,28 @@
 use bevy::prelude::*;
-use glam::Vec2; // Better to use existing math types
-
-pub struct Path {
-    vertices: Vec2,
-    points: Vec2
-}
+use glam::Vec2;
 
 pub trait VertexGenerator {
-    fn generate(&self, start: Vec2, config: &GenerationConfig) -> Vec2;
+    fn generate(&self, start: Vec2, config: &GenerationConfig) -> Vec<Vec2>;
 }
 
 pub trait Interpolator {
-    fn interpolate(&self, vertices: &Vec2) -> Vec2;
+    fn interpolate(&self, vertices: &Vec<Vec2>) -> Vec<Vec2>;
 }
 
 pub trait NoiseApplier {
-    fn apply(&self, points: &mut Vec2);
+    fn apply(&self, points: &mut Vec<Vec2>);
 }
 
-pub struct PathStrategy {
-    vertex_gen: Box<dyn VertexGenerator>,
-    interpolator: Box<dyn Interpolator>,
-    noise: Option<Box<dyn NoiseApplier>>
-}
 pub struct GenerationConfig {
     pub size: u32,
     pub vertex_count: u32
 }
-
-/// Trait for the map abstraction.
+pub struct Path {
+    vertices: Vec<Vec2>,
+    points: Vec<Vec2>
+}
+/// Trait for the map abstraction
+///
 /// [GenerationConfig] is the chosen config for all the map strategies.
 /// Every strategy can choose their own way of creating a [Path].
 /// The idea would be that each [Path] in a [Map] is subset of the space in
@@ -37,12 +31,17 @@ pub struct GenerationConfig {
 pub trait MapStrategy {
     fn build(&self, start: Vec2, config: &GenerationConfig) -> Path;
 }
-
+/// [PathStrategy] is
+pub struct PathStrategy {
+    vertex_gen: Box<dyn VertexGenerator>,
+    interpolator: Box<dyn Interpolator>,
+    noise: Option<Box<dyn NoiseApplier>>
+}
 impl MapStrategy for PathStrategy {
     fn build(&self, start: Vec2, config: &GenerationConfig) -> Path {
-        let vertices = self.vertex_gen.generate(start, config);
+        let vertices: Vec<Vec2> = self.vertex_gen.generate(start, config);
 
-        let mut points = self.interpolator.interpolate(&vertices);
+        let mut points: Vec<Vec2> = self.interpolator.interpolate(&vertices);
 
         if let Some(noise) = &self.noise {
             noise.apply(&mut points);
@@ -86,7 +85,7 @@ impl Map for InfiniteMap {
     }
 
     fn add_path(&mut self, strategy: &dyn MapStrategy, start: Vec2) {
-        let path = strategy.build(start, &self.config);
-        self.paths.push(path);
+        let path: Path = strategy.build(start, &self.config);
+        (&mut self.paths).push(path);
     }
 }

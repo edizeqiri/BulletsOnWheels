@@ -27,7 +27,7 @@ fn collider() -> Collider {
     Collider::ball(10.0)
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
 pub struct Health {
     pub current: u32,
     pub(crate) max: u32
