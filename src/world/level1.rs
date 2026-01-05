@@ -1,13 +1,16 @@
 use bevy::app::{App, FixedUpdate};
 use bevy::log::debug;
-use bevy::prelude::{Commands, IntoScheduleConfigs, Name, Res, Transform, in_state};
+use bevy::prelude::{in_state, Commands, IntoScheduleConfigs, Name, Res, Transform};
 use bevy::time::{Fixed, Time};
+use glam::Vec2;
 use rand::prelude::*;
 
 use crate::character::enemy::create_enemy_bundle;
 use crate::gamestate::start::ENEMY_DEFAULTS;
 use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
+use crate::world::infinity_map::generate_map;
+use crate::world::map::{Map, Path, PathStrategy, Strategy, VertexGenerator};
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(Time::<Fixed>::from_seconds(3.))
@@ -37,8 +40,7 @@ fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyRe
     ));
 }
 
-fn choose_end_of_map() {
-    let _rng = rand::rng();
+fn map_system() {
+    let mut map = generate_map();
+    map.add_path(Vec2::new(0., 0.));
 }
-
-fn generate_map(_commands: Commands) {}

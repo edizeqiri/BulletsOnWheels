@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+mod infinity_map;
 pub(crate) mod level1;
 mod map;
 mod walls;

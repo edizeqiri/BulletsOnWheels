@@ -2,20 +2,26 @@ use bevy::prelude::*;
 use glam::Vec2;
 
 pub trait VertexGenerator {
-    fn generate(&self, start: Vec2, config: &GenerationConfig) -> Vec<Vec2>;
+    fn generate(&self, start: Vec2) -> Vec<Vec2>;
 }
 
 pub trait Interpolator {
-    fn interpolate(&self, vertices: &Vec<Vec2>) -> Vec<Vec2>;
+    fn interpolate(&self, vertices: &[Vec2]) -> Vec<Vec2>;
 }
 
 pub trait NoiseApplier {
-    fn apply(&self, points: &mut Vec<Vec2>);
+    fn apply(&self, points: &mut [Vec2]);
 }
 
 pub struct GenerationConfig {
     pub size: u32,
     pub vertex_count: u32
+}
+
+impl GenerationConfig {
+    pub(crate) fn new(size: u32, vertex_count: u32) -> Self {
+        GenerationConfig { size, vertex_count }
+    }
 }
 pub struct Path {
     vertices: Vec<Vec2>,
@@ -29,7 +35,7 @@ pub struct Path {
 /// which the [Strategy] can create paths. In other words, a [Map] should be
 /// as cohesive as possible.
 pub trait Strategy {
-    fn build(&self, start: Vec2, config: &GenerationConfig) -> Path;
+    fn build(&self, start: Vec2) -> Path;
 }
 
 pub struct PathStrategy {
@@ -37,9 +43,34 @@ pub struct PathStrategy {
     interpolator: Box<dyn Interpolator>,
     noise: Option<Box<dyn NoiseApplier>>
 }
+#[derive(Default)]
+struct SimpleVertex;
+impl VertexGenerator for SimpleVertex {
+    fn generate(&self, start: Vec2) -> Vec<Vec2> {
+        todo!()
+    }
+}
+#[derive(Default)]
+struct SimpleInterpolator;
+impl Interpolator for SimpleInterpolator {
+    fn interpolate(&self, vertices: &[Vec2]) -> Vec<Vec2> {
+        todo!()
+    }
+}
+
+impl Default for PathStrategy {
+    fn default() -> Self {
+        PathStrategy {
+            vertex_gen: Box::new(SimpleVertex::default()),
+            interpolator: Box::new(SimpleInterpolator::default()),
+            noise: None
+        }
+    }
+}
+
 impl Strategy for PathStrategy {
-    fn build(&self, start: Vec2, config: &GenerationConfig) -> Path {
-        let vertices: Vec<Vec2> = self.vertex_gen.generate(start, config);
+    fn build(&self, start: Vec2) -> Path {
+        let vertices: Vec<Vec2> = self.vertex_gen.generate(start);
 
         let mut points: Vec<Vec2> = self.interpolator.interpolate(&vertices);
 
@@ -65,27 +96,11 @@ impl PathStrategy {
         self
     }
 }
-
-pub struct InfiniteMap {
-    paths: Vec<Path>,
-    config: GenerationConfig
-}
-
 pub trait Map {
-    fn new(config: GenerationConfig) -> Self;
-    fn add_path(&mut self, strategy: &dyn Strategy, start: Vec2);
-}
-
-impl Map for InfiniteMap {
-    fn new(config: GenerationConfig) -> Self {
-        Self {
-            paths: Vec::new(),
-            config
-        }
-    }
-
-    fn add_path(&mut self, strategy: &dyn Strategy, start: Vec2) {
-        let path: Path = strategy.build(start, &self.config);
-        (&mut self.paths).push(path);
+    fn get_strategy(&mut self) -> &dyn Strategy;
+    fn get_paths(&mut self) -> &mut Vec<Path>;
+    fn add_path(&mut self, start: Vec2) {
+        let strategy = self.get_strategy().build(start);
+        self.get_paths().push(strategy);
     }
 }
