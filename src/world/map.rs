@@ -12,16 +12,6 @@ pub trait NoiseApplier {
     fn apply(&self, points: &mut [Vec2]);
 }
 
-pub struct GenerationConfig {
-    pub size: u32,
-    pub vertex_count: u32
-}
-
-impl GenerationConfig {
-    pub(crate) fn new(size: u32, vertex_count: u32) -> Self {
-        GenerationConfig { size, vertex_count }
-    }
-}
 pub struct Path {
     vertices: Vec<Vec2>,
     points: Vec<Vec2>
