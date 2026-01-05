@@ -26,18 +26,18 @@ pub struct Path {
 /// [GenerationConfig] is the chosen config for all the map strategies.
 /// Every strategy can choose their own way of creating a [Path].
 /// The idea would be that each [Path] in a [Map] is subset of the space in
-/// which the [MapStrategy] can create paths. In other words, a [Map] should be
+/// which the [Strategy] can create paths. In other words, a [Map] should be
 /// as cohesive as possible.
-pub trait MapStrategy {
+pub trait Strategy {
     fn build(&self, start: Vec2, config: &GenerationConfig) -> Path;
 }
-/// [PathStrategy] is
+
 pub struct PathStrategy {
     vertex_gen: Box<dyn VertexGenerator>,
     interpolator: Box<dyn Interpolator>,
     noise: Option<Box<dyn NoiseApplier>>
 }
-impl MapStrategy for PathStrategy {
+impl Strategy for PathStrategy {
     fn build(&self, start: Vec2, config: &GenerationConfig) -> Path {
         let vertices: Vec<Vec2> = self.vertex_gen.generate(start, config);
 
@@ -73,7 +73,7 @@ pub struct InfiniteMap {
 
 pub trait Map {
     fn new(config: GenerationConfig) -> Self;
-    fn add_path(&mut self, strategy: &dyn MapStrategy, start: Vec2);
+    fn add_path(&mut self, strategy: &dyn Strategy, start: Vec2);
 }
 
 impl Map for InfiniteMap {
@@ -84,7 +84,7 @@ impl Map for InfiniteMap {
         }
     }
 
-    fn add_path(&mut self, strategy: &dyn MapStrategy, start: Vec2) {
+    fn add_path(&mut self, strategy: &dyn Strategy, start: Vec2) {
         let path: Path = strategy.build(start, &self.config);
         (&mut self.paths).push(path);
     }

@@ -60,7 +60,6 @@ pub fn create_player_bundle(
         square_sprite(Color::Srgba(BLUE))
     )
 }
-
 fn check_player_zero_health_system(
     mut death_message: MessageWriter<PlayerDeathMessage>,
     query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>
