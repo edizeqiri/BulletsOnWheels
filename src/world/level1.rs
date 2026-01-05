@@ -39,3 +39,6 @@ fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyRe
 fn choose_end_of_map() {
     let mut rng = rand::rng();
 }
+
+fn generate_map(mut commands: Commands) {
+}

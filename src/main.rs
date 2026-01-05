@@ -6,10 +6,13 @@ mod projectile;
 mod setup;
 mod weapon;
 mod world;
+use bevy::prelude::*;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use crate::gamestate::GameState;
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
+use bevy_inspector_egui::bevy_egui::EguiPlugin;
 use bevy_lunex::UiLunexPlugins;
 
 fn main() {
@@ -21,6 +24,8 @@ fn main() {
         )
         .init_state::<GameState>()
         .add_plugins(UiLunexPlugins)
+        .add_plugins(EguiPlugin::default())
+        .add_plugins(WorldInspectorPlugin::new())
         .add_plugins(physics::plugin)
         .add_plugins(gamepad::plugin)
         .add_plugins(setup::plugin)
