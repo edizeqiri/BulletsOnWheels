@@ -4,8 +4,10 @@ mod gamestate;
 mod physics;
 mod projectile;
 mod setup;
+mod ui;
 mod weapon;
 mod world;
+
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::EguiPlugin;
@@ -32,6 +34,7 @@ fn main() {
         .add_plugins(character::plugin)
         .add_plugins(world::plugin)
         .add_plugins(gamestate::plugin)
+        .add_plugins(ui::plugin)
         .run();
 }
 
