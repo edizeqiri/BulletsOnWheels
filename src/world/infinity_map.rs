@@ -1,11 +1,12 @@
 use bevy::prelude::*;
 
 use crate::world::map::{Interpolator, Map, Path, PathStrategy, Strategy, VertexGenerator};
-#[derive(Default)]
+
 pub struct InfiniteMap {
     paths: Vec<Path>,
     size: u32,
-    strategy: PathStrategy
+    pub(crate) strategy: PathStrategy,
+    buffered_paths: u32
 }
 
 impl Map for InfiniteMap {
@@ -20,7 +21,7 @@ impl Map for InfiniteMap {
 
 struct InfinityVertex;
 impl VertexGenerator for InfinityVertex {
-    fn generate(&self, _start: Vec2) -> Vec<Vec2> {
+    fn generate(&self, _start: Vec2, size: u32) -> Vec<Vec2> {
         todo!()
     }
 }
@@ -33,11 +34,13 @@ impl Interpolator for InfinityInterpolator {
 }
 
 // refactor
-pub fn generate_map() -> InfiniteMap {
-    let vertex_generator: Box<InfinityVertex> = Box::new(InfinityVertex);
-    let interpolator: Box<InfinityInterpolator> = Box::new(InfinityInterpolator);
-    let path_strategy: PathStrategy = PathStrategy::new(vertex_generator, interpolator);
-    let mut map = InfiniteMap::default();
-    map.strategy = path_strategy;
-    map
+impl Default for InfiniteMap {
+    fn default() -> Self {
+        let vertex_generator: Box<InfinityVertex> = Box::new(InfinityVertex);
+        let interpolator: Box<InfinityInterpolator> = Box::new(InfinityInterpolator);
+        let path_strategy: PathStrategy = PathStrategy::new(vertex_generator, interpolator);
+        let mut map = InfiniteMap::default();
+        map.strategy = path_strategy;
+        map
+    }
 }

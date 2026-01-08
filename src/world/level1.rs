@@ -1,6 +1,6 @@
 use bevy::app::{App, FixedUpdate};
 use bevy::log::debug;
-use bevy::prelude::{Commands, IntoScheduleConfigs, Name, Res, Transform, Vec2, in_state};
+use bevy::prelude::{in_state, Commands, IntoScheduleConfigs, Name, Res, Transform, Vec2};
 use bevy::time::{Fixed, Time};
 use rand::prelude::*;
 
@@ -8,8 +8,9 @@ use crate::character::enemy::create_enemy_bundle;
 use crate::gamestate::start::ENEMY_DEFAULTS;
 use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
-use crate::world::infinity_map::generate_map;
+use crate::world::infinity_map::InfiniteMap;
 use crate::world::map::Map;
+use crate::world::simple_map::SimpleMap;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(Time::<Fixed>::from_seconds(3.))
@@ -39,7 +40,12 @@ fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyRe
     ));
 }
 
-fn map_system() {
-    let mut map = generate_map();
-    map.add_path(Vec2::new(0., 0.));
+fn generate_level1_map_system() {
+    let mut map = InfiniteMap::default();
+    let mut map = SimpleMap::default();
+    let mut start = Vec2::new(0., 0.);
+    map.add_path(start, 3);
+    // for x in (1..100) {
+    //     start = map.add_path(start, 3);
+    // }
 }
