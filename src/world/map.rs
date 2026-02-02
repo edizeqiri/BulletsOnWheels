@@ -13,10 +13,10 @@ pub trait Interpolator {
 pub trait NoiseApplier {
     fn apply(&self, points: &mut [Vec2]);
 }
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Path {
-    vertices: Vec<Vec2>,
-    points: Vec<Vec2>
+    pub vertices: Vec<Vec2>,
+    pub points: Vec<Vec2>
 }
 /// Trait for the map abstraction
 ///
@@ -38,8 +38,8 @@ pub struct PathStrategy {
 impl Default for PathStrategy {
     fn default() -> Self {
         PathStrategy {
-            vertex_gen: Box::new(SimpleVertex::default()),
-            interpolator: Box::new(SimpleInterpolator::default()),
+            vertex_gen: Box::new(SimpleVertex),
+            interpolator: Box::new(SimpleInterpolator),
             noise: None
         }
     }
@@ -58,7 +58,6 @@ impl Strategy for PathStrategy {
         Path { vertices, points }
     }
 }
-
 impl PathStrategy {
     pub fn new(vertex_gen: Box<dyn VertexGenerator>, interpolator: Box<dyn Interpolator>) -> Self {
         Self {

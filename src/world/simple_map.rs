@@ -12,20 +12,11 @@ pub struct SimpleMap {
 
 impl Map for SimpleMap {
     fn get_strategy(&mut self) -> &dyn Strategy {
-        todo!()
+        &self.strategy
     }
 
     fn get_paths(&mut self) -> &mut Vec<Path> {
-        todo!()
-    }
-}
-
-impl SimpleMap {
-    pub fn new(strategy: PathStrategy) -> Self {
-        SimpleMap {
-            strategy,
-            ..Default::default()
-        }
+        &mut self.paths
     }
 }
 
@@ -35,11 +26,11 @@ impl VertexGenerator for SimpleVertex {
     fn generate(&self, _start: Vec2, size: u32) -> Vec<Vec2> {
         let mut vertices: Vec<Vec2> = Vec::new();
         let mut rng = rand::rng();
-
+        let scale = size as f32 * 100.;
         for x in (0..size) {
             vertices.push(Vec2::new(
-                rng.random_range(0. ..100.),
-                rng.random_range(0. ..100.)
+                rng.random_range(0. ..scale),
+                rng.random_range(0. ..scale)
             ));
         }
         vertices
@@ -50,6 +41,10 @@ impl VertexGenerator for SimpleVertex {
 pub struct SimpleInterpolator;
 impl Interpolator for SimpleInterpolator {
     fn interpolate(&self, _vertices: &[Vec2]) -> Vec<Vec2> {
-        todo!()
+        let mut result = Vec::new();
+        _vertices.iter().for_each(|vert| {
+            result.push(*vert);
+        });
+        result
     }
 }
