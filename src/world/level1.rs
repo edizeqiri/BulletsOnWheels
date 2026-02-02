@@ -14,11 +14,11 @@ use crate::world::simple_map::SimpleMap;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(Time::<Fixed>::from_seconds(3.))
-        .insert_resource(ENEMY_DEFAULTS) // will be something else that depends on state = running
-        .add_systems(
-            FixedUpdate,
-            spawn_enemies_after_time.run_if(in_state(GameState::RUNNING))
-        );
+        .insert_resource(ENEMY_DEFAULTS); // will be something else that depends on state = running
+    // .add_systems(
+    //     FixedUpdate,
+    //     spawn_enemies_after_time.run_if(in_state(GameState::RUNNING))
+    // );
 }
 
 fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyResource>) {

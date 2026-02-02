@@ -4,14 +4,14 @@ use bevy_rapier2d::prelude::Velocity;
 
 use crate::character::player::Player;
 use crate::character::{Aim, ShootingState};
-use crate::gamestate::GameState;
 use crate::gamestate::start::StartGameMessage;
+use crate::gamestate::GameState;
 
-pub(super) fn plugin(app: &mut App) {
+pub(crate) fn plugin(app: &mut App) {
     app.add_message::<StartGameMessage>()
         .add_systems(
             Update,
-            ((gamepad_in_game_system, gamepad_aim, gamepad_movement)
+            ((gamepad_shoot_system, gamepad_aim, gamepad_movement)
                 .run_if(any_with_component::<Player>),)
         )
         .add_systems(
@@ -43,7 +43,7 @@ fn gamepad_movement(
     }
 }
 
-fn gamepad_in_game_system(
+fn gamepad_shoot_system(
     mut gamepad_event: MessageReader<GamepadEvent>,
     mut player_query: Query<&mut ShootingState, With<Player>>
 ) {
@@ -70,11 +70,8 @@ fn gamepad_in_menu_system(
     for event in gamepad_event.read() {
         if let GamepadEvent::Button(button_event) = event {
             info!("button {:?}", button_event.button);
-            match button_event.button {
-                GamepadButton::Start => {
-                    start_game_message.write(crate::gamestate::start::StartGameMessage {});
-                },
-                _ => {}
+            if let GamepadButton::Start = button_event.button {
+                start_game_message.write(StartGameMessage {});
             }
         }
     }

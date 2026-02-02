@@ -1,6 +1,6 @@
 mod character;
-mod gamepad;
 mod gamestate;
+pub mod input;
 mod physics;
 mod projectile;
 mod setup;
@@ -28,7 +28,7 @@ fn main() {
         .add_plugins(EguiPlugin::default())
         .add_plugins(WorldInspectorPlugin::new())
         .add_plugins(physics::plugin)
-        .add_plugins(gamepad::plugin)
+        .add_plugins(input::plugin)
         .add_plugins(setup::plugin)
         .add_plugins(weapon::plugin)
         .add_plugins(character::plugin)
