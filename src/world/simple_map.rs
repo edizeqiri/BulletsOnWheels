@@ -27,10 +27,10 @@ impl VertexGenerator for SimpleVertex {
         let mut vertices: Vec<Vec2> = Vec::new();
         let mut rng = rand::rng();
         let scale = size as f32 * 100.;
-        for x in (0..size) {
+        for x in 0..size {
             vertices.push(Vec2::new(
-                rng.random_range(0. ..scale),
-                rng.random_range(0. ..scale)
+                rng.random_range(x as f32..scale),
+                rng.random_range(x as f32..scale)
             ));
         }
         vertices
@@ -42,9 +42,18 @@ pub struct SimpleInterpolator;
 impl Interpolator for SimpleInterpolator {
     fn interpolate(&self, _vertices: &[Vec2]) -> Vec<Vec2> {
         let mut result = Vec::new();
-        _vertices.iter().for_each(|vert| {
-            result.push(*vert);
-        });
+        let mut paths: Vec<Vec2> = Vec::new();
+        for x in 1.._vertices.len() {
+            paths.insert(x - 1, _vertices[x] - _vertices[x - 1]);
+        }
+
+        for x in 0.._vertices.len() - 1 {
+            let len_of_path: f32 = _vertices[x].length();
+            for y in 0..(len_of_path / 20.) as i32 {
+                result.push(_vertices[x] + paths[x] * (y as f32 / (len_of_path / 20.)));
+            }
+        }
+
         result
     }
 }
