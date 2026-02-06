@@ -76,6 +76,9 @@ impl PathStrategy {
 pub trait Map {
     fn get_strategy(&mut self) -> &dyn Strategy;
     fn get_paths(&mut self) -> &mut Vec<Path>;
+    /// A [Path] is a collection of vertices and points between the vertices.
+    /// The size defines the amount of vertices and the spacing of the
+    /// vertices. Concrete implementation may vary based on map type
     fn add_path(&mut self, start: Vec2, size: u32) -> Vec2 {
         let new_path = self.get_strategy().build(start, size);
         self.get_paths().push(new_path.clone());

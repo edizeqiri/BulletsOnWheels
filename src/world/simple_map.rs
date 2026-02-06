@@ -1,3 +1,4 @@
+use bevy::prelude::*;
 use glam::Vec2;
 use rand::Rng;
 
@@ -46,14 +47,46 @@ impl Interpolator for SimpleInterpolator {
         for x in 1.._vertices.len() {
             paths.insert(x - 1, _vertices[x] - _vertices[x - 1]);
         }
-
-        for x in 0.._vertices.len() - 1 {
-            let len_of_path: f32 = _vertices[x].length();
+        print!("path len:{:?}", paths.len());
+        for x in 0..paths.len() {
+            let len_of_path: f32 = paths[x].length();
             for y in 0..(len_of_path / 20.) as i32 {
-                result.push(_vertices[x] + paths[x] * (y as f32 / (len_of_path / 20.)));
+                let scaled_path = paths[x] * (y as f32 / (len_of_path / 20.));
+                let scaled_inter_path = _vertices[x] + scaled_path;
+                let tunred_90 = if y == 0 {
+                    _vertices[x].normalize().perp()
+                } else {
+                    scaled_path.perp().normalize()
+                } * 40.;
+
+                result.push(tunred_90 + scaled_inter_path);
+                result.push(-tunred_90 + scaled_inter_path);
+                // result.push(scaled_inter_path);
             }
         }
 
         result
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use bevy::app::App;
+    use bevy::prelude::*;
+
+    use crate::world::map::Interpolator;
+    use crate::world::simple_map::SimpleInterpolator;
+
+    #[test]
+    fn interpolator_should_create_walls_around_points() {
+        let vertices = [
+            Vec2::new(0., 0.),
+            Vec2::new(40., 40.),
+            Vec2::new(120., 120.)
+        ];
+        let result = SimpleInterpolator::interpolate(&SimpleInterpolator::default(), &vertices);
+
+        print!("Result is: {:?} \n", result);
+        assert_eq!(result.len(), 6);
     }
 }

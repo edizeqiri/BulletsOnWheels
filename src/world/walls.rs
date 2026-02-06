@@ -11,10 +11,10 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Component)]
 #[require(RigidBody, Collider, ActiveEvents, Sprite, Transform)]
-struct Wall;
+pub struct Wall;
 
 #[derive(Bundle)]
-struct WallBundle {
+pub struct WallBundle {
     wall: Wall,
     body: RigidBody,
     collider: Collider,
@@ -23,11 +23,11 @@ struct WallBundle {
     sprite: Sprite
 }
 
-fn create_wall_bundle(transform: Transform) -> WallBundle {
+pub fn create_wall_bundle(transform: Transform) -> WallBundle {
     WallBundle {
         wall: Wall,
         body: RigidBody::Fixed,
-        collider: Collider::cuboid(10.0, 10.0),
+        collider: Collider::cuboid(20.0, 20.0),
         active_events: Default::default(),
         transform,
         sprite: square_sprite(Color::Srgba(PINK))
@@ -65,4 +65,13 @@ pub fn spawn_perimeter_walls(mut commands: Commands) {
             0.0
         )),)); // Right
     }
+}
+
+#[cfg(test)]
+
+mod tests {
+
+
+    #[test]
+    fn cannot_spawn
 }

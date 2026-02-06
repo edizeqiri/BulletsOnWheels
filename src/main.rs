@@ -26,7 +26,7 @@ fn main() {
         .init_state::<GameState>()
         .add_plugins(UiLunexPlugins)
         .add_plugins(EguiPlugin::default())
-        .add_plugins(WorldInspectorPlugin::new())
+        //.add_plugins(WorldInspectorPlugin::new())
         .add_plugins(physics::plugin)
         .add_plugins(input::plugin)
         .add_plugins(setup::plugin)

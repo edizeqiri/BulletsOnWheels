@@ -2,19 +2,20 @@ use bevy::app::{App, FixedUpdate};
 use bevy::color::palettes::css::VIOLET;
 use bevy::color::Color;
 use bevy::log::debug;
-use bevy::prelude::{in_state, Commands, IntoScheduleConfigs, Name, Res, Transform, Vec2};
+use bevy::prelude::*;
 use bevy::state::state::OnEnter;
 use bevy::time::{Fixed, Time};
 use rand::prelude::*;
 
 use crate::character::enemy::create_enemy_bundle;
+use crate::character::player::Player;
 use crate::character::square_sprite;
 use crate::gamestate::start::ENEMY_DEFAULTS;
 use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
-use crate::world::infinity_map::InfiniteMap;
 use crate::world::map::Map;
 use crate::world::simple_map::SimpleMap;
+use crate::world::walls::create_wall_bundle;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(Time::<Fixed>::from_seconds(300.))
@@ -23,7 +24,8 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(
             FixedUpdate,
             spawn_enemies_after_time.run_if(in_state(GameState::RUNNING))
-        );
+        )
+        .add_systems(Update, update_camera);
 }
 
 fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyResource>) {
@@ -48,14 +50,28 @@ fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyRe
 fn generate_level1_map_system(mut commad: Commands) {
     let mut map = SimpleMap::default();
     let mut start = Vec2::new(0., 0.);
-    map.add_path(start, 100);
+    map.add_path(start, 10);
     map.get_paths().iter().for_each(|path| {
         debug!("path: {:?}", path);
         path.points.iter().for_each(|vertice| {
             commad.spawn((
-                Transform::from_xyz(vertice.x, vertice.y, 0.),
-                square_sprite(Color::Srgba(VIOLET))
+                square_sprite(Color::Srgba(VIOLET)),
+                create_wall_bundle(Transform::from_xyz(vertice.x, vertice.y, 0.))
             ));
         });
     });
+}
+fn update_camera(
+    mut camera: Single<&mut Transform, (With<Camera2d>, Without<Player>)>,
+    player: Single<&Transform, (With<Player>, Without<Camera2d>)>,
+    time: Res<Time>
+) {
+    let Vec3 { x, y, .. } = player.translation;
+    let direction = Vec3::new(x, y, camera.translation.z);
+
+    // Applies a smooth effect to camera movement using stable interpolation
+    // between the camera position and the player position on the x and y axes.
+    camera
+        .translation
+        .smooth_nudge(&direction, 2.0, time.delta_secs());
 }
