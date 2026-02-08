@@ -25,6 +25,7 @@ pub struct Player;
 pub struct PlayerDeathMessage {
     pub entity: Entity
 }
+
 fn player_shoot_system(
     mut event_writer: MessageWriter<ShootEvent>,
     player_query: Query<(Entity, &ShootingState), With<Player>>,
@@ -60,6 +61,7 @@ pub fn create_player_bundle(
         square_sprite(Color::Srgba(BLUE))
     )
 }
+
 fn check_player_zero_health_system(
     mut death_message: MessageWriter<PlayerDeathMessage>,
     query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>
@@ -84,10 +86,13 @@ fn handle_player_zero_health_system(
 #[cfg(test)]
 mod tests {
     use bevy::app::App;
-    use bevy::prelude::{Entity, Name, Transform, With};
-
+    use bevy::{DefaultPlugins, MinimalPlugins};
+    use bevy::prelude::{AppExtStates, Entity, Name, NextState, Transform, With};
+    use bevy::state::app::StatesPlugin;
     use crate::character::player::{Player, create_player_bundle};
     use crate::character::{Health, player};
+    use crate::gamestate::GameState;
+    use crate::weapon;
     use crate::weapon::Weapons;
 
     // ----------- SETUP ----------- //
@@ -101,7 +106,12 @@ mod tests {
             // setup App
             let mut app = App::new();
 
-            app.add_plugins(player::plugin);
+            app
+                .add_plugins(MinimalPlugins)
+                .add_plugins(StatesPlugin)
+                .init_state::<GameState>()
+                .add_plugins(weapon::plugin)
+                .add_plugins(player::plugin);
 
             // setup Entities
             let player = app
@@ -129,6 +139,7 @@ mod tests {
 
         {
             let world = setup.app.world_mut();
+            world.resource_mut::<NextState<GameState>>().set(GameState::RUNNING);
 
             // when: player.health.current = 0
             world

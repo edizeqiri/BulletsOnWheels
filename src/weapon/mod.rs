@@ -9,7 +9,8 @@ use crate::character::{Aim, square_sprite};
 use crate::projectile::{ProjectileBundle, create_projectile};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_message::<ShootEvent>()
+    app
+        .add_message::<ShootEvent>()
         .add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
 }
 #[derive(Copy, Clone, Debug)]
