@@ -11,10 +11,10 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Component)]
 #[require(RigidBody, Collider, ActiveEvents, Sprite, Transform)]
-struct Wall;
+pub struct Wall;
 
 #[derive(Bundle)]
-struct WallBundle {
+pub struct WallBundle {
     wall: Wall,
     body: RigidBody,
     collider: Collider,
@@ -23,7 +23,7 @@ struct WallBundle {
     sprite: Sprite
 }
 
-fn create_wall_bundle(transform: Transform) -> WallBundle {
+pub fn create_wall_bundle(transform: Transform) -> WallBundle {
     WallBundle {
         wall: Wall,
         body: RigidBody::Fixed,

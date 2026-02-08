@@ -1,13 +1,13 @@
 use bevy::app::App;
 use bevy::prelude::{
-    in_state, Changed, Commands, Component, IntoScheduleConfigs, Justify, Name, OnEnter,
-    Query, Text2d, TextLayout, Transform, Update, Vec3, With
+    Changed, Commands, Component, IntoScheduleConfigs, Justify, Name, OnEnter, Query, Text2d,
+    TextLayout, Transform, Update, Vec3, With, in_state
 };
 
-use crate::character::player::Player;
 use crate::character::Health;
-use crate::gamestate::start::PLAYER_DEFAULTS;
+use crate::character::player::Player;
 use crate::gamestate::GameState;
+use crate::gamestate::start::PLAYER_DEFAULTS;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(GameState::RUNNING), spawn_health_display_system)

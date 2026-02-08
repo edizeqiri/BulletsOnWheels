@@ -7,5 +7,5 @@ mod simple_map;
 mod walls;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins(walls::plugin).add_plugins(level1::plugin);
+    app.add_plugins(level1::plugin);
 }

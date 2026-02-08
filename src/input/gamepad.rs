@@ -4,8 +4,8 @@ use bevy_rapier2d::prelude::Velocity;
 
 use crate::character::player::Player;
 use crate::character::{Aim, ShootingState};
-use crate::gamestate::start::StartGameMessage;
 use crate::gamestate::GameState;
+use crate::gamestate::start::StartGameMessage;
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_message::<StartGameMessage>()

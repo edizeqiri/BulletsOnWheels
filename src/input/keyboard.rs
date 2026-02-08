@@ -8,10 +8,6 @@ use crate::character::player::Player;
 
 pub(crate) fn plugin(app: &mut App) {
     app.insert_resource(setup_direction_map())
-        .add_systems(
-            Update,
-            debug_linvel.run_if(resource_changed::<ButtonInput<KeyCode>>)
-        )
         .add_systems(Update, keyboard_aim_system);
 }
 
