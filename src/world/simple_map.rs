@@ -28,12 +28,17 @@ impl VertexGenerator for SimpleVertex {
         let mut vertices: Vec<Vec2> = Vec::new();
         let mut rng = rand::rng();
         let scale = size as f32 * 100.;
-        for x in 0..size {
-            vertices.push(Vec2::new(
-                rng.random_range(x as f32..scale),
-                rng.random_range(x as f32..scale)
-            ));
-        }
+        let mut last: Vec2 = _start;
+        vertices.push(last);
+        (0..size).for_each(|_x: u32| {
+            let next = Vec2::from_angle(rng.random_range(-1. ..1.))
+                .rotate(last)
+                .normalize()
+                * rng.random_range(10. ..scale);
+
+            vertices.push(next + last);
+            last += next;
+        });
         vertices
     }
 }
@@ -47,7 +52,6 @@ impl Interpolator for SimpleInterpolator {
         for x in 1.._vertices.len() {
             paths.insert(x - 1, _vertices[x] - _vertices[x - 1]);
         }
-        print!("path len:{:?}", paths.len());
         for x in 0..paths.len() {
             let len_of_path: f32 = paths[x].length();
             for y in 0..(len_of_path / 20.) as i32 {
@@ -57,7 +61,7 @@ impl Interpolator for SimpleInterpolator {
                     _vertices[x].normalize().perp()
                 } else {
                     scaled_path.perp().normalize()
-                } * 40.;
+                } * 80.;
                 if tunred_90.is_nan() {
                     continue;
                 }

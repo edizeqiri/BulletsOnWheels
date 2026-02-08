@@ -27,7 +27,7 @@ pub fn create_wall_bundle(transform: Transform) -> WallBundle {
     WallBundle {
         wall: Wall,
         body: RigidBody::Fixed,
-        collider: Collider::cuboid(20.0, 20.0),
+        collider: Collider::cuboid(10.0, 10.0),
         active_events: Default::default(),
         transform,
         sprite: square_sprite(Color::Srgba(PINK))
@@ -68,7 +68,6 @@ pub fn spawn_perimeter_walls(mut commands: Commands) {
 }
 
 #[cfg(test)]
-
 mod tests {
 
     use bevy::prelude::*;
