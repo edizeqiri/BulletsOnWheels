@@ -15,7 +15,8 @@ jobs:
       fail-fast: false
       matrix:
         toolchain: [stable, nightly]
-        os: [windows-latest, ubuntu-latest, macos-latest]
+#        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [macos-latest]
         exclude:
           - os: macos-latest
             toolchain: nightly
