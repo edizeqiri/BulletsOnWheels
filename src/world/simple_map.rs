@@ -51,9 +51,9 @@ pub struct SimpleInterpolator;
 impl Interpolator for SimpleInterpolator {
     fn interpolate(&self, _vertices: &[Vec2]) -> Vec<Vec2> {
         let mut result = Vec::new();
-        let mut paths: Vec<Vec2> = Vec::new();
+        let mut paths: Vec<Vec2> = Vec::with_capacity(_vertices.len().saturating_sub(1));
         for x in 1.._vertices.len() {
-            paths.insert(x - 1, _vertices[x] - _vertices[x - 1]);
+            paths.push(_vertices[x] - _vertices[x - 1]);
         }
         for x in 0..paths.len() {
             let len_of_path: f32 = paths[x].length();
