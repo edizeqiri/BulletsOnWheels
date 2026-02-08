@@ -60,16 +60,16 @@ impl Interpolator for SimpleInterpolator {
             for y in 0..(len_of_path / 20.) as i32 {
                 let scaled_path = paths[x] * (y as f32 / (len_of_path / 20.));
                 let scaled_inter_path = _vertices[x] + scaled_path;
-                let tunred_90 = if y == 0 {
+                let perp_offset = if y == 0 {
                     _vertices[x].normalize().perp()
                 } else {
                     scaled_path.perp().normalize()
                 } * 80.;
-                if tunred_90.is_nan() {
+                if perp_offset.is_nan() {
                     continue;
                 }
-                result.push(tunred_90 + scaled_inter_path);
-                result.push(-tunred_90 + scaled_inter_path);
+                result.push(perp_offset + scaled_inter_path);
+                result.push(-perp_offset + scaled_inter_path);
                 // result.push(scaled_inter_path);
             }
         }
