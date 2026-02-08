@@ -21,8 +21,7 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(
             FixedUpdate,
             spawn_enemies_after_time.run_if(in_state(GameState::RUNNING))
-        )
-        .add_systems(Update, update_camera);
+        );
 }
 
 fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyResource>) {
@@ -56,18 +55,4 @@ fn generate_level1_map_system(mut commad: Commands) {
             )));
         });
     });
-}
-fn update_camera(
-    mut camera: Single<&mut Transform, (With<Camera2d>, Without<Player>)>,
-    player: Single<&Transform, (With<Player>, Without<Camera2d>)>,
-    time: Res<Time>
-) {
-    let Vec3 { x, y, .. } = player.translation;
-    let direction = Vec3::new(x, y, camera.translation.z);
-
-    // Applies a smooth effect to camera movement using stable interpolation
-    // between the camera position and the player position on the x and y axes.
-    camera
-        .translation
-        .smooth_nudge(&direction, 2.0, time.delta_secs());
 }

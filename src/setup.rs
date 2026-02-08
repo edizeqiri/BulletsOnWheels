@@ -7,7 +7,7 @@ use bevy::prelude::{
 use bevy_lunex::prelude::{Anchor, SystemCursorIcon};
 use bevy_lunex::{OnHoverSetCursor, Rl, UiFetchFromCamera, UiLayout, UiLayoutRoot, UiSourceCamera};
 
-use crate::character::player::create_player_bundle;
+use crate::character::player::{create_player_bundle, Player};
 use crate::gamestate::start::{apply_player_defaults, StartGameMessage, PLAYER_DEFAULTS};
 use crate::gamestate::{GameState, PlayerResource};
 use crate::weapon::Weapons;
@@ -19,7 +19,8 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(
             OnEnter(GameState::RUNNING),
             init.run_if(resource_exists::<PlayerResource>)
-        );
+        )
+        .add_systems(Update, update_camera);
 }
 
 fn setup_camera(mut commands: Commands) {
@@ -74,4 +75,18 @@ fn init(mut commands: Commands, player_resource: Res<PlayerResource>) {
         player_resource.max_health,
         Name::from("Player")
     ));
+}
+fn update_camera(
+    mut camera: Single<&mut Transform, (With<Camera2d>, Without<Player>)>,
+    player: Single<&Transform, (With<Player>, Without<Camera2d>)>,
+    time: Res<Time>
+) {
+    let Vec3 { x, y, .. } = player.translation;
+    let direction = Vec3::new(x, y, camera.translation.z);
+
+    // Applies a smooth effect to camera movement using stable interpolation
+    // between the camera position and the player position on the x and y axes.
+    camera
+        .translation
+        .smooth_nudge(&direction, 2.0, time.delta_secs());
 }
