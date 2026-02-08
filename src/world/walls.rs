@@ -71,7 +71,13 @@ pub fn spawn_perimeter_walls(mut commands: Commands) {
 
 mod tests {
 
+    use bevy::prelude::*;
 
     #[test]
-    fn cannot_spawn
+    fn cannot_spawn_same_position() {
+        let mut app = App::new();
+
+        
+        
+    }
 }

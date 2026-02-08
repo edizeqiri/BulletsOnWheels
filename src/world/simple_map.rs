@@ -58,20 +58,20 @@ impl Interpolator for SimpleInterpolator {
                 } else {
                     scaled_path.perp().normalize()
                 } * 40.;
-
+                if tunred_90.is_nan() {
+                    continue;
+                }
                 result.push(tunred_90 + scaled_inter_path);
                 result.push(-tunred_90 + scaled_inter_path);
                 // result.push(scaled_inter_path);
             }
         }
-
         result
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use bevy::app::App;
     use bevy::prelude::*;
 
     use crate::world::map::Interpolator;
@@ -84,9 +84,8 @@ mod tests {
             Vec2::new(40., 40.),
             Vec2::new(120., 120.)
         ];
-        let result = SimpleInterpolator::interpolate(&SimpleInterpolator::default(), &vertices);
+        let result = SimpleInterpolator::interpolate(&SimpleInterpolator, &vertices);
 
-        print!("Result is: {:?} \n", result);
-        assert_eq!(result.len(), 6);
+        assert_eq!(result.len(), 12);
     }
 }

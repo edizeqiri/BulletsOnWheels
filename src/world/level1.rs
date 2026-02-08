@@ -54,10 +54,9 @@ fn generate_level1_map_system(mut commad: Commands) {
     map.get_paths().iter().for_each(|path| {
         debug!("path: {:?}", path);
         path.points.iter().for_each(|vertice| {
-            commad.spawn((
-                square_sprite(Color::Srgba(VIOLET)),
-                create_wall_bundle(Transform::from_xyz(vertice.x, vertice.y, 0.))
-            ));
+            commad.spawn(create_wall_bundle(Transform::from_xyz(
+                vertice.x, vertice.y, 0.
+            )));
         });
     });
 }

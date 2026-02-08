@@ -2,7 +2,7 @@ use bevy::color::palettes::basic::RED;
 use bevy::prelude::*;
 
 use crate::character;
-use crate::character::{Health, enemy_collision_groups, square_sprite};
+use crate::character::{enemy_collision_groups, square_sprite, Health};
 use crate::weapon::Weapons;
 
 pub(super) fn plugin(app: &mut App) {
@@ -60,8 +60,8 @@ mod tests {
     use bevy::app::App;
     use bevy::prelude::{Entity, Name, Transform, With};
 
-    use crate::character::enemy::{Enemy, create_enemy_bundle};
-    use crate::character::{Health, enemy};
+    use crate::character::enemy::{create_enemy_bundle, Enemy};
+    use crate::character::{enemy, Health};
     use crate::weapon::Weapons;
 
     // ----------- SETUP ----------- //
