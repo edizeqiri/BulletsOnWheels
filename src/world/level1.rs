@@ -6,7 +6,6 @@ use bevy::time::{Fixed, Time};
 use rand::prelude::*;
 
 use crate::character::enemy::create_enemy_bundle;
-use crate::character::player::Player;
 use crate::gamestate::start::ENEMY_DEFAULTS;
 use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;

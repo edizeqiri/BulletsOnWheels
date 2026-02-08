@@ -13,6 +13,9 @@ pub trait Interpolator {
 pub trait NoiseApplier {
     fn apply(&self, points: &mut [Vec2]);
 }
+/// [vertices]: a [Vec2] of main points which act as joints or crossroads
+/// [points]: a [Vec2] of the connections between the [vertices]. Can be viewed as points on the
+/// path between two vertices
 #[derive(Clone, Debug)]
 pub struct Path {
     pub vertices: Vec<Vec2>,
