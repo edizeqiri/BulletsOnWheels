@@ -21,7 +21,7 @@ impl Map for InfiniteMap {
 
 struct InfinityVertex;
 impl VertexGenerator for InfinityVertex {
-    fn generate(&self, _start: Vec2, size: u32) -> Vec<Vec2> {
+    fn generate(&self, _start: Vec2, size: f32) -> Vec<Vec2> {
         todo!()
     }
 }
@@ -39,8 +39,10 @@ impl Default for InfiniteMap {
         let vertex_generator: Box<InfinityVertex> = Box::new(InfinityVertex);
         let interpolator: Box<InfinityInterpolator> = Box::new(InfinityInterpolator);
         let path_strategy: PathStrategy = PathStrategy::new(vertex_generator, interpolator);
-        let mut map = InfiniteMap::default();
-        map.strategy = path_strategy;
+        let map: InfiniteMap = InfiniteMap {
+            strategy: path_strategy,
+            ..default()
+        };
         map
     }
 }
