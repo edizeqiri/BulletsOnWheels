@@ -10,6 +10,7 @@ rand = "0.9.2"
 bevy_lunex = "*"
 bevy-inspector-egui = "0.35.0"
 glam = "0.30.9"
+test-case = "3.3.1"
 
 
 # Enable a small amount of optimization in the dev profile.

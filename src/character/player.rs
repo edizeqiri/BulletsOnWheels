@@ -89,6 +89,7 @@ mod tests {
     use bevy::{DefaultPlugins, MinimalPlugins};
     use bevy::prelude::{AppExtStates, Entity, Name, NextState, Transform, With};
     use bevy::state::app::StatesPlugin;
+    use test_case::test_case;
     use crate::character::player::{Player, create_player_bundle};
     use crate::character::{Health, player};
     use crate::gamestate::GameState;
@@ -133,13 +134,14 @@ mod tests {
 
     // ----------- TEST ----------- //
 
-    #[test]
-    fn zero_health_player_is_despawned() {
+    #[test_case(GameState::RUNNING, 0 ; "player dies in game")]
+    #[test_case(GameState::START, 1 ; "player can not die in menu")]
+    fn zero_health_player_is_despawned(game_state: GameState, expected_num_players: usize) {
         let mut setup = Setup::new();
 
         {
             let world = setup.app.world_mut();
-            world.resource_mut::<NextState<GameState>>().set(GameState::RUNNING);
+            world.resource_mut::<NextState<GameState>>().set(game_state);
 
             // when: player.health.current = 0
             world
@@ -161,7 +163,7 @@ mod tests {
                 .query_filtered::<Entity, With<Player>>()
                 .iter(&world)
                 .len(),
-            0
+            expected_num_players
         );
     }
 }
