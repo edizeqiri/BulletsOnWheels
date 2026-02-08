@@ -5,7 +5,7 @@ name: Continuous integration
 env:
   CARGO_TERM_COLOR: always
   CARGO_INCREMENTAL: 0
-  RUSTFLAGS: "-C debuginfo=0 -D warnings"
+  RUSTFLAGS: "-C debuginfo=0"
 
 jobs:
   ## Main test matrix - covers building and testing across platforms

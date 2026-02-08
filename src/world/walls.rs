@@ -76,8 +76,5 @@ mod tests {
     #[test]
     fn cannot_spawn_same_position() {
         let mut app = App::new();
-
-        
-        
     }
 }

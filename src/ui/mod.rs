@@ -1,7 +1,7 @@
 use bevy::app::App;
 use bevy::prelude::{
-    in_state, Changed, Commands, Component, IntoScheduleConfigs, Justify, Name, OnEnter,
-    Query, Text2d, TextLayout, Transform, Update, Vec3, With
+    in_state, Changed, Commands, Component, IntoScheduleConfigs, Justify, Name, OnEnter, Query,
+    Text2d, TextLayout, Transform, Update, Vec3, With
 };
 
 use crate::character::player::Player;
