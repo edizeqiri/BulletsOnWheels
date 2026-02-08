@@ -1,13 +1,9 @@
 use bevy::app::App;
-use bevy::prelude::{
-    Changed, Commands, Component, IntoScheduleConfigs, Justify, Name, OnEnter, Query, Text2d,
-    TextLayout, Transform, Update, Vec3, With, in_state
-};
+use bevy::prelude::*;
 
 use crate::character::Health;
 use crate::character::player::Player;
 use crate::gamestate::GameState;
-use crate::gamestate::start::PLAYER_DEFAULTS;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(GameState::RUNNING), spawn_health_display_system)
@@ -17,29 +13,46 @@ pub(super) fn plugin(app: &mut App) {
         );
 }
 
+const HEALTH_FONT_SIZE: f32 = 33.;
+const HEALTH_COLOR: Color = Color::srgb(1.0, 0.5, 0.5);
+const HEALTH_TEXT_PADDING: Val = Val::Px(5.0);
+
 #[derive(Component)]
 struct HealthText;
 
 fn spawn_health_display_system(mut commands: Commands) {
     commands.spawn((
         Name::new("Health Display"),
-        Text2d::new(format!(
-            "Player Health: {}",
-            PLAYER_DEFAULTS.max_health // todo: sth not right here ;)
-        )),
-        TextLayout::new_with_justify(Justify::Center),
-        Transform::from_translation(Vec3::new(-400.0, -250.0, 0.0)),
-        HealthText
+        Text::new("Player Health: "),
+        TextFont {
+            font_size: HEALTH_FONT_SIZE,
+            ..default()
+        },
+        TextColor(HEALTH_COLOR),
+        HealthText, // marker to find this text again
+        Node {
+            position_type: PositionType::Absolute,
+            top: HEALTH_TEXT_PADDING,
+            left: HEALTH_TEXT_PADDING,
+            ..default()
+        },
+        children![(
+            TextSpan::default(),
+            TextFont {
+                font_size: HEALTH_FONT_SIZE,
+                ..default()
+            },
+            TextColor(HEALTH_COLOR),
+        )]
     ));
 }
 
 fn update_health_display_system(
-    mut text_query: Query<&mut Text2d, With<HealthText>>,
-    health_query: Query<&Health, (With<Player>, Changed<Health>)>
+    text: Single<Entity, (With<HealthText>, With<Text>)>,
+    health_query: Query<&Health, (With<Player>, Changed<Health>)>,
+    mut writer: TextUiWriter
 ) {
     for health in &health_query {
-        for mut text in &mut text_query {
-            text.0 = format!("Player Health: {}", health.current);
-        }
+        *writer.text(*text, 1) = health.current.to_string();
     }
 }

@@ -25,6 +25,7 @@ pub struct Player;
 pub struct PlayerDeathMessage {
     pub entity: Entity
 }
+
 fn player_shoot_system(
     mut event_writer: MessageWriter<ShootEvent>,
     player_query: Query<(Entity, &ShootingState), With<Player>>,
@@ -60,6 +61,7 @@ pub fn create_player_bundle(
         square_sprite(Color::Srgba(BLUE))
     )
 }
+
 fn check_player_zero_health_system(
     mut death_message: MessageWriter<PlayerDeathMessage>,
     query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>
@@ -83,11 +85,16 @@ fn handle_player_zero_health_system(
 
 #[cfg(test)]
 mod tests {
+    use bevy::MinimalPlugins;
     use bevy::app::App;
-    use bevy::prelude::{Entity, Name, Transform, With};
+    use bevy::prelude::{AppExtStates, Entity, Name, NextState, Transform, With};
+    use bevy::state::app::StatesPlugin;
+    use test_case::test_case;
 
     use crate::character::player::{Player, create_player_bundle};
     use crate::character::{Health, player};
+    use crate::gamestate::GameState;
+    use crate::weapon;
     use crate::weapon::Weapons;
 
     // ----------- SETUP ----------- //
@@ -101,7 +108,11 @@ mod tests {
             // setup App
             let mut app = App::new();
 
-            app.add_plugins(player::plugin);
+            app.add_plugins(MinimalPlugins)
+                .add_plugins(StatesPlugin)
+                .init_state::<GameState>()
+                .add_plugins(weapon::plugin)
+                .add_plugins(player::plugin);
 
             // setup Entities
             let player = app
@@ -123,12 +134,14 @@ mod tests {
 
     // ----------- TEST ----------- //
 
-    #[test]
-    fn zero_health_player_is_despawned() {
+    #[test_case(GameState::RUNNING, 0 ; "player dies in game")]
+    #[test_case(GameState::START, 1 ; "player can not die in menu")]
+    fn zero_health_player_is_despawned(game_state: GameState, expected_num_players: usize) {
         let mut setup = Setup::new();
 
         {
             let world = setup.app.world_mut();
+            world.resource_mut::<NextState<GameState>>().set(game_state);
 
             // when: player.health.current = 0
             world
@@ -150,7 +163,7 @@ mod tests {
                 .query_filtered::<Entity, With<Player>>()
                 .iter(&world)
                 .len(),
-            0
+            expected_num_players
         );
     }
 }
