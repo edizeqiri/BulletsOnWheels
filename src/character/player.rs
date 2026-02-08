@@ -85,11 +85,12 @@ fn handle_player_zero_health_system(
 
 #[cfg(test)]
 mod tests {
+    use bevy::MinimalPlugins;
     use bevy::app::App;
-    use bevy::{DefaultPlugins, MinimalPlugins};
     use bevy::prelude::{AppExtStates, Entity, Name, NextState, Transform, With};
     use bevy::state::app::StatesPlugin;
     use test_case::test_case;
+
     use crate::character::player::{Player, create_player_bundle};
     use crate::character::{Health, player};
     use crate::gamestate::GameState;
@@ -107,8 +108,7 @@ mod tests {
             // setup App
             let mut app = App::new();
 
-            app
-                .add_plugins(MinimalPlugins)
+            app.add_plugins(MinimalPlugins)
                 .add_plugins(StatesPlugin)
                 .init_state::<GameState>()
                 .add_plugins(weapon::plugin)
