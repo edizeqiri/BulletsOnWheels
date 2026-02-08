@@ -1,14 +1,14 @@
 use bevy::app::App;
 use bevy::camera::visibility::RenderLayers;
 use bevy::prelude::{
-    resource_exists, Camera2d, Commands, IntoScheduleConfigs, Name, OnEnter, Res, Startup,
-    Transform, *
+    Camera2d, Commands, IntoScheduleConfigs, Name, OnEnter, Res, Startup, Transform,
+    resource_exists, *
 };
 use bevy_lunex::prelude::{Anchor, SystemCursorIcon};
 use bevy_lunex::{OnHoverSetCursor, Rl, UiFetchFromCamera, UiLayout, UiLayoutRoot, UiSourceCamera};
 
-use crate::character::player::{create_player_bundle, Player};
-use crate::gamestate::start::{apply_player_defaults, StartGameMessage, PLAYER_DEFAULTS};
+use crate::character::player::{Player, create_player_bundle};
+use crate::gamestate::start::{PLAYER_DEFAULTS, StartGameMessage, apply_player_defaults};
 use crate::gamestate::{GameState, PlayerResource};
 use crate::weapon::Weapons;
 

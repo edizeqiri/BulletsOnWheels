@@ -1,7 +1,7 @@
 use bevy::app::App;
 use bevy::prelude::{
-    in_state, IntoScheduleConfigs, Message, MessageReader, MessageWriter, NextState, Res, ResMut,
-    Resource, State, States, Update
+    IntoScheduleConfigs, Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource,
+    State, States, Update, in_state
 };
 
 use crate::character::player::PlayerDeathMessage;

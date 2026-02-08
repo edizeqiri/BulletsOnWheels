@@ -2,7 +2,7 @@ use bevy::color::palettes::css::BLUE;
 use bevy::prelude::*;
 
 use crate::character;
-use crate::character::{player_collision_groups, square_sprite, Health, ShootingState};
+use crate::character::{Health, ShootingState, player_collision_groups, square_sprite};
 use crate::gamestate::GameState;
 use crate::weapon::{ShootEvent, Weapons};
 
@@ -86,8 +86,8 @@ mod tests {
     use bevy::app::App;
     use bevy::prelude::{Entity, Name, Transform, With};
 
-    use crate::character::player::{create_player_bundle, Player};
-    use crate::character::{player, Health};
+    use crate::character::player::{Player, create_player_bundle};
+    use crate::character::{Health, player};
     use crate::weapon::Weapons;
 
     // ----------- SETUP ----------- //
