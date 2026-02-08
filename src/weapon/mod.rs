@@ -5,8 +5,8 @@ use bevy::math::Vec2;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::CollisionGroups;
 
-use crate::character::{Aim, square_sprite};
-use crate::projectile::{ProjectileBundle, create_projectile};
+use crate::character::{square_sprite, Aim};
+use crate::projectile::{create_projectile, ProjectileBundle};
 
 pub(super) fn plugin(app: &mut App) {
     app

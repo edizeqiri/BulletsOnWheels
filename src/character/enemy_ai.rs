@@ -5,7 +5,7 @@ use bevy_rapier2d::dynamics::Velocity;
 
 use crate::character::enemy::Enemy;
 use crate::character::player::Player;
-use crate::character::{Aim, enemy_collision_groups};
+use crate::character::{enemy_collision_groups, Aim};
 use crate::weapon::ShootEvent;
 
 pub(super) fn plugin(app: &mut App) {

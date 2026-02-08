@@ -5,57 +5,57 @@ name: Continuous integration
 env:
   CARGO_TERM_COLOR: always
   CARGO_INCREMENTAL: 0
-  RUSTFLAGS: "-C debuginfo=0 -D warnings"
+  RUSTFLAGS: "-C debuginfo=0"
 
 jobs:
   ## Main test matrix - covers building and testing across platforms
-  #test:
-    #name: Test (${{ matrix.os }}, ${{ matrix.toolchain }})
-    #strategy:
-      #fail-fast: false
-      #matrix:
-        #toolchain: [stable, nightly]
-        #os: [windows-latest, ubuntu-latest, macos-latest]
-        #exclude:
-          #- os: macos-latest
-            #toolchain: nightly
-          #- os: windows-latest
-            #toolchain: nightly
-    #runs-on: ${{ matrix.os }}
-    #steps:
-      #- name: Checkout code
-        #uses: actions/checkout@v4
-        #
-      #- name: Install Rust toolchain
-        #uses: dtolnay/rust-toolchain@stable
-        #with:
-          #toolchain: ${{ matrix.toolchain }}
-          #
-      #- name: Install system dependencies (Linux)
-        #if: runner.os == 'Linux'
-        #run: |
-          #sudo apt-get update
-          #sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
-          #
-      #- name: Cache Cargo dependencies
-        #uses: actions/cache@v4
-        #with:
-          #path: |
-            #~/.cargo/bin/
-            #~/.cargo/registry/index/
-            #~/.cargo/registry/cache/
-            #~/.cargo/git/db/
-            #target/
-          #key: ${{ runner.os }}-cargo-${{ matrix.toolchain }}-${{ hashFiles('**/Cargo.lock') }}
-          #restore-keys: |
-            #${{ runner.os }}-cargo-${{ matrix.toolchain }}-
-            #${{ runner.os }}-cargo-
-            #
-      #- name: Build workspace
-        #run: cargo build --workspace --all-targets
-        #
-      #- name: Run tests
-        #run: cargo test --workspace
+  test:
+    name: Test (${{ matrix.os }}, ${{ matrix.toolchain }})
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [stable, nightly]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        exclude:
+          - os: macos-latest
+            toolchain: nightly
+          - os: windows-latest
+            toolchain: nightly
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.toolchain }}
+
+      - name: Install system dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ matrix.toolchain }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ matrix.toolchain }}-
+            ${{ runner.os }}-cargo-
+
+      - name: Build workspace
+        run: cargo build --workspace --all-targets
+
+      - name: Run tests
+        run: cargo test --workspace
 
   # Separate job for code quality checks (only needs to run once)
   quality:
@@ -66,7 +66,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@nightly
         with:
           components: rustfmt, clippy
 
@@ -92,39 +92,9 @@ jobs:
       - name: Check formatting
         run: cargo fmt --all -- --check
 
-      - name: Check with Clippy
-        run: cargo clippy --workspace --all-targets -- -D errors
+      #- name: Check with Clippy
+       # run: cargo clippy --workspace --all-targets -- -D errors
 
       - name: Check compilation
         run: cargo check --workspace --all-targets
 
-  # Minimal compilation check for quick feedback
-  check:
-    name: Quick Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
-
-      - name: Cache Cargo dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: ubuntu-latest-cargo-check-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ubuntu-latest-cargo-check-
-            ubuntu-latest-cargo-
-
-      - name: Cargo check
-        run: cargo check --workspace

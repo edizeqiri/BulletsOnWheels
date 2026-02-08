@@ -1,6 +1,7 @@
 use bevy::app::{App, FixedUpdate};
 use bevy::log::debug;
-use bevy::prelude::{in_state, Commands, IntoScheduleConfigs, Name, Res, Transform, Vec2};
+use bevy::prelude::*;
+use bevy::state::state::OnEnter;
 use bevy::time::{Fixed, Time};
 use rand::prelude::*;
 
@@ -8,17 +9,18 @@ use crate::character::enemy::create_enemy_bundle;
 use crate::gamestate::start::ENEMY_DEFAULTS;
 use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
-use crate::world::infinity_map::InfiniteMap;
 use crate::world::map::Map;
 use crate::world::simple_map::SimpleMap;
+use crate::world::walls::create_wall_bundle;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(Time::<Fixed>::from_seconds(3.))
-        .insert_resource(ENEMY_DEFAULTS); // will be something else that depends on state = running
-    // .add_systems(
-    //     FixedUpdate,
-    //     spawn_enemies_after_time.run_if(in_state(GameState::RUNNING))
-    // );
+        .insert_resource(ENEMY_DEFAULTS)
+        .add_systems(OnEnter(GameState::RUNNING), generate_level1_map_system)
+        .add_systems(
+            FixedUpdate,
+            spawn_enemies_after_time.run_if(in_state(GameState::RUNNING))
+        );
 }
 
 fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyResource>) {
@@ -40,12 +42,16 @@ fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyRe
     ));
 }
 
-fn generate_level1_map_system() {
-    let mut map = InfiniteMap::default();
+fn generate_level1_map_system(mut commad: Commands) {
     let mut map = SimpleMap::default();
-    let mut start = Vec2::new(0., 0.);
-    map.add_path(start, 3);
-    // for x in (1..100) {
-    //     start = map.add_path(start, 3);
-    // }
+    let mut start = Vec2::new(100., 100.);
+    map.add_path(start, 10);
+    map.get_paths().iter().for_each(|path| {
+        debug!("path: {:?}", path);
+        path.points.iter().for_each(|vertice| {
+            commad.spawn(create_wall_bundle(Transform::from_xyz(
+                vertice.x, vertice.y, 0.
+            )));
+        });
+    });
 }

@@ -13,10 +13,13 @@ pub trait Interpolator {
 pub trait NoiseApplier {
     fn apply(&self, points: &mut [Vec2]);
 }
-#[derive(Clone)]
+/// [vertices]: a [Vec2] of main points which act as joints or crossroads
+/// [points]: a [Vec2] of the connections between the [vertices]. Can be viewed as points on the
+/// path between two vertices
+#[derive(Clone, Debug)]
 pub struct Path {
-    vertices: Vec<Vec2>,
-    points: Vec<Vec2>
+    pub vertices: Vec<Vec2>,
+    pub points: Vec<Vec2>
 }
 /// Trait for the map abstraction
 ///
@@ -38,8 +41,8 @@ pub struct PathStrategy {
 impl Default for PathStrategy {
     fn default() -> Self {
         PathStrategy {
-            vertex_gen: Box::new(SimpleVertex::default()),
-            interpolator: Box::new(SimpleInterpolator::default()),
+            vertex_gen: Box::new(SimpleVertex),
+            interpolator: Box::new(SimpleInterpolator),
             noise: None
         }
     }
@@ -58,7 +61,6 @@ impl Strategy for PathStrategy {
         Path { vertices, points }
     }
 }
-
 impl PathStrategy {
     pub fn new(vertex_gen: Box<dyn VertexGenerator>, interpolator: Box<dyn Interpolator>) -> Self {
         Self {
@@ -77,6 +79,9 @@ impl PathStrategy {
 pub trait Map {
     fn get_strategy(&mut self) -> &dyn Strategy;
     fn get_paths(&mut self) -> &mut Vec<Path>;
+    /// A [Path] is a collection of vertices and points between the vertices.
+    /// The size defines the amount of vertices and the spacing of the
+    /// vertices. Concrete implementation may vary based on map type
     fn add_path(&mut self, start: Vec2, size: u32) -> Vec2 {
         let new_path = self.get_strategy().build(start, size);
         self.get_paths().push(new_path.clone());
