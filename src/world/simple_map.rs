@@ -31,10 +31,13 @@ impl VertexGenerator for SimpleVertex {
         let mut last: Vec2 = _start;
         vertices.push(last);
         (0..size).for_each(|_x: u32| {
-            let next = Vec2::from_angle(rng.random_range(-1. ..1.))
-                .rotate(last)
-                .normalize()
-                * rng.random_range(10. ..scale);
+            let base_dir = Vec2::from_angle(rng.random_range(-1. ..1.));
+            let dir = if last.length_squared() == 0.0 {
+                base_dir
+            } else {
+                base_dir.rotate(last.normalize())
+            };
+            let next = dir * rng.random_range(10. ..scale);
 
             vertices.push(next + last);
             last += next;
