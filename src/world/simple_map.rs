@@ -3,8 +3,9 @@ use glam::Vec2;
 use rand::Rng;
 
 use crate::world::map::{Interpolator, Map, Path, PathStrategy, Strategy, VertexGenerator};
+use crate::world::walls::create_wall_bundle;
 
-#[derive(Default)]
+#[derive(Default, Component)]
 pub struct SimpleMap {
     paths: Vec<Path>,
     size: f32,
@@ -18,6 +19,18 @@ impl Map for SimpleMap {
 
     fn get_paths(&mut self) -> &mut Vec<Path> {
         &mut self.paths
+    }
+
+    fn render_map(&self, mut cmd: Commands) {
+        let to_render = self
+            .paths
+            .last()
+            .expect("Render should not be called before a Path has been generated");
+        to_render.points.iter().for_each(|vertice| {
+            cmd.spawn(create_wall_bundle(Transform::from_xyz(
+                vertice.x, vertice.y, 0.
+            )));
+        });
     }
 }
 

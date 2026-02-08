@@ -1,3 +1,5 @@
+#![feature(trivial_bounds)]
+
 mod character;
 mod gamestate;
 pub mod input;
@@ -15,7 +17,6 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_lunex::UiLunexPlugins;
 
 use crate::gamestate::GameState;
-
 fn main() {
     App::new()
         .add_plugins(

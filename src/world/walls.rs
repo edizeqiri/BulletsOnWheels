@@ -28,7 +28,7 @@ pub fn create_wall_bundle(transform: Transform) -> WallBundle {
         wall: Wall,
         body: RigidBody::Fixed,
         collider: Collider::cuboid(10.0, 10.0),
-        active_events: Default::default(),
+        active_events: ActiveEvents::COLLISION_EVENTS,
         transform,
         sprite: square_sprite(Color::Srgba(PINK))
     }

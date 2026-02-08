@@ -42,16 +42,8 @@ fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyRe
     ));
 }
 
-fn generate_level1_map_system(mut commad: Commands) {
+fn generate_level1_map_system(cmd: Commands) {
     let mut map = SimpleMap::default();
     let mut start = Vec2::new(100., 100.);
-    map.add_path(start, 10.);
-    map.get_paths().iter().for_each(|path| {
-        debug!("path: {:?}", path);
-        path.points.iter().for_each(|vertice| {
-            commad.spawn(create_wall_bundle(Transform::from_xyz(
-                vertice.x, vertice.y, 0.
-            )));
-        });
-    });
+    map.add_path(start, 10., cmd);
 }

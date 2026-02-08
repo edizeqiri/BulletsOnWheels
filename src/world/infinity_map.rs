@@ -17,6 +17,10 @@ impl Map for InfiniteMap {
     fn get_paths(&mut self) -> &mut Vec<Path> {
         &mut self.paths
     }
+
+    fn render_map(&self, mut cmd: Commands) {
+        todo!()
+    }
 }
 
 struct InfinityVertex;

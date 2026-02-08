@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::world::simple_map::{SimpleInterpolator, SimpleVertex};
+pub(super) fn plugin(app: &mut App) {}
 
 pub trait VertexGenerator {
     fn generate(&self, start: Vec2, size: f32) -> Vec<Vec2>;
@@ -16,7 +17,7 @@ pub trait NoiseApplier {
 /// [vertices]: a [Vec2] of main points which act as joints or crossroads
 /// [points]: a [Vec2] of the connections between the [vertices]. Can be viewed as points on the
 /// path between two vertices
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Component)]
 pub struct Path {
     pub vertices: Vec<Vec2>,
     pub points: Vec<Vec2>
@@ -82,12 +83,14 @@ pub trait Map {
     /// A [Path] is a collection of vertices and points between the vertices.
     /// The size defines the amount of vertices and the spacing of the
     /// vertices. Concrete implementation may vary based on map type
-    fn add_path(&mut self, start: Vec2, size: f32) -> Vec2 {
+    fn add_path(&mut self, start: Vec2, size: f32, cmd: Commands) -> Vec2 {
         let new_path = self.get_strategy().build(start, size);
         self.get_paths().push(new_path.clone());
+        self.render_map(cmd);
         match new_path.points.last() {
             Some(x) => *x,
             _ => start
         }
     }
+    fn render_map(&self, cmd: Commands);
 }
