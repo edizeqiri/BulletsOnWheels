@@ -1,6 +1,4 @@
 use bevy::app::{App, FixedUpdate};
-use bevy::color::palettes::css::VIOLET;
-use bevy::color::Color;
 use bevy::log::debug;
 use bevy::prelude::*;
 use bevy::state::state::OnEnter;
@@ -9,7 +7,6 @@ use rand::prelude::*;
 
 use crate::character::enemy::create_enemy_bundle;
 use crate::character::player::Player;
-use crate::character::square_sprite;
 use crate::gamestate::start::ENEMY_DEFAULTS;
 use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
@@ -18,9 +15,9 @@ use crate::world::simple_map::SimpleMap;
 use crate::world::walls::create_wall_bundle;
 
 pub(super) fn plugin(app: &mut App) {
-    app.insert_resource(Time::<Fixed>::from_seconds(300.))
+    app.insert_resource(Time::<Fixed>::from_seconds(3.))
         .insert_resource(ENEMY_DEFAULTS)
-        .add_systems(OnEnter(GameState::START), generate_level1_map_system)
+        .add_systems(OnEnter(GameState::RUNNING), generate_level1_map_system)
         .add_systems(
             FixedUpdate,
             spawn_enemies_after_time.run_if(in_state(GameState::RUNNING))
