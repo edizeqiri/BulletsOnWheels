@@ -22,6 +22,7 @@ struct HealthText;
 
 fn spawn_health_display_system(mut commands: Commands) {
     commands.spawn((
+        Name::new("Health Display"),
         Text::new("Player Health: "),
         TextFont {
             font_size: HEALTH_FONT_SIZE,
