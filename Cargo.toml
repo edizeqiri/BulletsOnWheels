@@ -11,6 +11,7 @@ bevy_lunex = "*"
 bevy-inspector-egui = "0.35.0"
 glam = "0.30.9"
 test-case = "3.3.1"
+enum_delegate = "0.2.0"
 
 
 # Enable a small amount of optimization in the dev profile.

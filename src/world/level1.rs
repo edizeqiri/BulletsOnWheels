@@ -6,6 +6,7 @@ use bevy::time::{Fixed, Time};
 use rand::prelude::*;
 
 use crate::character::enemy::create_enemy_bundle;
+use crate::character::enemy::EnemyType;
 use crate::gamestate::start::ENEMY_DEFAULTS;
 use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
@@ -38,7 +39,8 @@ fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyRe
         ),
         Weapons::default(),
         enemy_properties.max_health,
-        Name::from("Enemy".to_string() + rng.next_u32().to_string().as_str())
+        Name::from("Enemy".to_string() + rng.next_u32().to_string().as_str()),
+        EnemyType::default()
     ));
 }
 

@@ -3,6 +3,7 @@ use bevy::prelude::*;
 
 use crate::character;
 use crate::character::{Health, enemy_collision_groups, square_sprite};
+pub(crate) use crate::character::enemy_ai::EnemyType;
 use crate::weapon::Weapons;
 
 pub(super) fn plugin(app: &mut App) {
@@ -23,14 +24,16 @@ pub fn create_enemy_bundle(
     transform: Transform,
     weapons: Weapons,
     max_health: u32,
-    name: Name
+    name: Name,
+    enemy_type: EnemyType
 ) -> impl Bundle {
     (
         name,
         character::create_character(transform, weapons.clone(), max_health),
         enemy_collision_groups(),
         Enemy,
-        square_sprite(Color::Srgba(RED))
+        square_sprite(Color::Srgba(RED)),
+        enemy_type
     )
 }
 
@@ -62,6 +65,7 @@ mod tests {
 
     use crate::character::enemy::{Enemy, create_enemy_bundle};
     use crate::character::{Health, enemy};
+    use crate::character::enemy_ai::EnemyType;
     use crate::weapon::Weapons;
 
     // ----------- SETUP ----------- //
@@ -84,7 +88,8 @@ mod tests {
                     Transform::from_xyz(1.0, 1.0, 0.0),
                     Weapons::default(),
                     1,
-                    Name::from("Player")
+                    Name::from("Player"),
+                    EnemyType::default()
                 ))
                 .id();
 
