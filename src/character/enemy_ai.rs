@@ -5,12 +5,12 @@ use crate::character::enemy_ai::EnemyType::Hunter;
 use crate::character::player::Player;
 use crate::character::{Aim, enemy_collision_groups};
 use crate::weapon::ShootEvent;
+use crate::world::map::Level;
 use bevy::prelude::*;
 use bevy_rapier2d::dynamics::Velocity;
-
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, shoot_at_player)
-        .add_systems(Update, move_at_player);
+        .add_systems(Update, enemy_move);
 }
 
 #[enum_delegate::register]
@@ -18,7 +18,7 @@ trait EnemyAI {
     fn shooting(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         player.translation.xy() - enemy.translation.xy()
     }
-    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2;
+    fn moving(&self, player: &Transform, enemy: &Transform, level: Level) -> Vec2;
 }
 
 #[enum_delegate::implement(EnemyAI)]
@@ -40,7 +40,7 @@ impl Default for EnemyType {
 struct EnemyFugitive;
 
 impl EnemyAI for EnemyFugitive {
-    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
+    fn moving(&self, player: &Transform, enemy: &Transform, level: Level) -> Vec2 {
         todo!()
     }
 }
@@ -49,7 +49,7 @@ impl EnemyAI for EnemyFugitive {
 struct EnemySeeker;
 
 impl EnemyAI for EnemySeeker {
-    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
+    fn moving(&self, player: &Transform, enemy: &Transform, level: Level) -> Vec2 {
         todo!()
     }
 }
@@ -57,7 +57,7 @@ impl EnemyAI for EnemySeeker {
 #[derive(Component, Debug)]
 struct EnemyHunter;
 impl EnemyAI for EnemyHunter {
-    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
+    fn moving(&self, player: &Transform, enemy: &Transform, level: Level) -> Vec2 {
         (player.translation.xy() - enemy.translation.xy()) * 0.8
     }
 }
@@ -80,13 +80,20 @@ fn shoot_at_player(
     }
 }
 
-fn move_at_player(
+fn enemy_move(
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
     enemy_query: Query<(&mut Velocity, &Transform, &EnemyType), With<Enemy>>,
 ) {
     if let Ok(player_transform) = player_query.single() {
         for (mut enemy_velocity, enemy_transform, enemy_type) in enemy_query {
-            enemy_velocity.linvel = enemy_type.moving(player_transform, enemy_transform);
+            enemy_velocity.linvel = enemy_type.moving(
+                player_transform,
+                enemy_transform,
+                // TODO: add this in game and query to get it
+                Level {
+                    goal: Vec2::new(1000., 1000.),
+                },
+            );
         }
     }
 }

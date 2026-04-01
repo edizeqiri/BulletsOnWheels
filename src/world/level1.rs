@@ -5,8 +5,8 @@ use bevy::state::state::OnEnter;
 use bevy::time::{Fixed, Time};
 use rand::prelude::*;
 
-use crate::character::enemy::create_enemy_bundle;
 use crate::character::enemy::EnemyType;
+use crate::character::enemy::create_enemy_bundle;
 use crate::gamestate::start::ENEMY_DEFAULTS;
 use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
@@ -20,7 +20,7 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(OnEnter(GameState::RUNNING), generate_level1_map_system)
         .add_systems(
             FixedUpdate,
-            spawn_enemies_after_time.run_if(in_state(GameState::RUNNING))
+            spawn_enemies_after_time.run_if(in_state(GameState::RUNNING)),
         );
 }
 
@@ -35,12 +35,12 @@ fn spawn_enemies_after_time(mut command: Commands, enemy_properties: Res<EnemyRe
         Transform::from_xyz(
             rng.random_range(-100.0..100.0),
             rng.random_range(-100.0..100.0),
-            0.
+            0.,
         ),
         Weapons::default(),
         enemy_properties.max_health,
-        Name::from("Enemy".to_string() + rng.next_u32().to_string().as_str()),
-        EnemyType::default()
+        Name::new(format!("Enemy{}", rng.next_u32())),
+        EnemyType::default(),
     ));
 }
 
@@ -52,7 +52,7 @@ fn generate_level1_map_system(mut commad: Commands) {
         debug!("path: {:?}", path);
         path.points.iter().for_each(|vertice| {
             commad.spawn(create_wall_bundle(Transform::from_xyz(
-                vertice.x, vertice.y, 0.
+                vertice.x, vertice.y, 0.,
             )));
         });
     });

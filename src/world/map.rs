@@ -91,3 +91,7 @@ pub trait Map {
         }
     }
 }
+
+pub struct Level {
+    pub(crate) goal: Vec2
+}
