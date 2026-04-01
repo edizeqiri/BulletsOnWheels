@@ -15,7 +15,9 @@ pub(super) fn plugin(app: &mut App) {
 
 #[enum_delegate::register]
 trait EnemyAI {
-    fn shooting(&self, player: &Transform, enemy: &Transform) -> Vec2;
+    fn shooting(&self, player: &Transform, enemy: &Transform) -> Vec2 {
+        player.translation.xy() - enemy.translation.xy()
+    }
     fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2;
 }
 
@@ -38,10 +40,6 @@ impl Default for EnemyType {
 struct EnemyFugitive;
 
 impl EnemyAI for EnemyFugitive {
-    fn shooting(&self, player: &Transform, enemy: &Transform) -> Vec2 {
-        todo!()
-    }
-
     fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         todo!()
     }
@@ -51,10 +49,6 @@ impl EnemyAI for EnemyFugitive {
 struct EnemySeeker;
 
 impl EnemyAI for EnemySeeker {
-    fn shooting(&self, player: &Transform, enemy: &Transform) -> Vec2 {
-        todo!()
-    }
-
     fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         todo!()
     }
@@ -63,10 +57,6 @@ impl EnemyAI for EnemySeeker {
 #[derive(Component, Debug)]
 struct EnemyHunter;
 impl EnemyAI for EnemyHunter {
-    fn shooting(&self, player: &Transform, enemy: &Transform) -> Vec2 {
-        player.translation.xy() - enemy.translation.xy()
-    }
-
     fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         (player.translation.xy() - enemy.translation.xy()) * 0.8
     }
