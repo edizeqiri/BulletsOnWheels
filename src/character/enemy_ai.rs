@@ -16,7 +16,7 @@ pub(super) fn plugin(app: &mut App) {
 #[enum_delegate::register]
 trait EnemyAI {
     fn shooting(&self, player: &Transform, enemy: &Transform) -> Vec2;
-    fn moving(&self);
+    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2;
 }
 
 #[enum_delegate::implement(EnemyAI)]
@@ -42,7 +42,7 @@ impl EnemyAI for EnemyFugitive {
         todo!()
     }
 
-    fn moving(&self) {
+    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         todo!()
     }
 }
@@ -55,7 +55,7 @@ impl EnemyAI for EnemySeeker {
         todo!()
     }
 
-    fn moving(&self) {
+    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         todo!()
     }
 }
@@ -67,8 +67,8 @@ impl EnemyAI for EnemyHunter {
         player.translation.xy() - enemy.translation.xy()
     }
 
-    fn moving(&self) {
-        todo!()
+    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
+        (player.translation.xy() - enemy.translation.xy()) * 0.8
     }
 }
 
@@ -92,12 +92,11 @@ fn shoot_at_player(
 
 fn move_at_player(
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
-    enemy_query: Query<(&mut Velocity, &Transform), With<Enemy>>,
+    enemy_query: Query<(&mut Velocity, &Transform, &EnemyType), With<Enemy>>,
 ) {
     if let Ok(player_transform) = player_query.single() {
-        for (mut enemy_velocity, enemy_transform) in enemy_query {
-            enemy_velocity.linvel =
-                (player_transform.translation.xy() - enemy_transform.translation.xy()) * 0.8;
+        for (mut enemy_velocity, enemy_transform, enemy_type) in enemy_query {
+            enemy_velocity.linvel = enemy_type.moving(player_transform, enemy_transform);
         }
     }
 }
