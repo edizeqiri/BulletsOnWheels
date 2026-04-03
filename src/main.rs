@@ -10,6 +10,7 @@ mod world;
 
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
+use bevy::window::WindowResolution;
 use bevy_inspector_egui::bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_lunex::UiLunexPlugins;
@@ -22,11 +23,19 @@ fn main() {
             DefaultPlugins
                 .set(logger())
                 .set(ImagePlugin::default_nearest())
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        resolution: WindowResolution::new(1640, 1080),
+                        title: "BulletsOnWheels".into(),
+                        ..default()
+                    }),
+                    ..default()
+                })
         )
         .init_state::<GameState>()
         .add_plugins(UiLunexPlugins)
         .add_plugins(EguiPlugin::default())
-        //.add_plugins(WorldInspectorPlugin::new())
+        .add_plugins(WorldInspectorPlugin::new())
         .add_plugins(physics::plugin)
         .add_plugins(input::plugin)
         .add_plugins(setup::plugin)

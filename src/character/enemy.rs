@@ -2,8 +2,8 @@ use bevy::color::palettes::basic::RED;
 use bevy::prelude::*;
 
 use crate::character;
-use crate::character::{Health, enemy_collision_groups, square_sprite};
 pub(crate) use crate::character::enemy_ai::EnemyType;
+use crate::character::{Health, enemy_collision_groups, square_sprite};
 use crate::weapon::Weapons;
 
 pub(super) fn plugin(app: &mut App) {
@@ -53,7 +53,7 @@ fn handle_enemy_zero_health_system(
     mut enemy_death_messages: MessageReader<EnemyDeathMessage>
 ) {
     for message in enemy_death_messages.read() {
-        debug!("Enemy died!");
+        debug!("Enemy {:?} died!", message.entity);
         commands.entity(message.entity).despawn();
     }
 }
@@ -64,8 +64,8 @@ mod tests {
     use bevy::prelude::{Entity, Name, Transform, With};
 
     use crate::character::enemy::{Enemy, create_enemy_bundle};
-    use crate::character::{Health, enemy};
     use crate::character::enemy_ai::EnemyType;
+    use crate::character::{Health, enemy};
     use crate::weapon::Weapons;
 
     // ----------- SETUP ----------- //

@@ -72,6 +72,7 @@ pub fn aggregate_message_system<M>(
     }
 }
 
+// TODO: Refactor with enum delegate
 fn state_machine_system(
     mut messages: MessageReader<GameStateMessage>,
     current_state: Res<State<GameState>>,
