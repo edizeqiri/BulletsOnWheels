@@ -6,7 +6,7 @@ use bevy_rapier2d::geometry::{ActiveEvents, Collider};
 use crate::character::square_sprite;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Startup, spawn_perimeter_walls);
+    app;
 }
 
 #[derive(Component)]
@@ -31,38 +31,5 @@ pub fn create_wall_bundle(transform: Transform) -> WallBundle {
         active_events: Default::default(),
         transform,
         sprite: square_sprite(Color::Srgba(PINK))
-    }
-}
-
-pub fn spawn_perimeter_walls(mut commands: Commands) {
-    let (w, h) = (2 * 640, 2 * 320);
-    // Horizontal walls (top & bottom)
-    for x in (0..w).step_by(20) {
-        let x_pos = x as f32 - w as f32 / 2.0;
-        commands.spawn((create_wall_bundle(Transform::from_xyz(
-            x_pos,
-            h as f32 / 2.0,
-            0.0
-        )),)); // Top
-        commands.spawn((create_wall_bundle(Transform::from_xyz(
-            x_pos,
-            -h as f32 / 2.0,
-            0.0
-        )),)); // Bottom
-    }
-
-    // Vertical walls (left & right)
-    for y in (0..h).step_by(20) {
-        let y_pos = y as f32 - h as f32 / 2.0;
-        commands.spawn((create_wall_bundle(Transform::from_xyz(
-            -w as f32 / 2.0,
-            y_pos,
-            0.0
-        )),)); // Left
-        commands.spawn((create_wall_bundle(Transform::from_xyz(
-            w as f32 / 2.0,
-            y_pos,
-            0.0
-        )),)); // Right
     }
 }

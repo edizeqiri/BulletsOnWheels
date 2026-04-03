@@ -14,7 +14,8 @@ use crate::weapon::Weapons;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(PLAYER_DEFAULTS)
-        .add_systems(Startup, (setup_camera, setup_ui))
+        .add_systems(Startup, setup_camera)
+        .add_systems(OnEnter(GameState::START), (reset_camera, setup_ui))
         .add_systems(OnEnter(GameState::START), apply_player_defaults)
         .add_systems(
             OnEnter(GameState::RUNNING),
@@ -36,6 +37,10 @@ fn setup_camera(mut commands: Commands) {
     ));
 }
 
+fn reset_camera(mut camera: Single<&mut Transform, With<Camera2d>>) {
+    camera.translation = Vec3::Z * 1000.0;
+}
+
 fn setup_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
     // Create UI
     commands
@@ -54,7 +59,7 @@ fn setup_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
                     .size((200.0, 200.0)) // Set the size to [200.0, 50.0]
                     .pack(),
                 // UiColor::from(Color::srgb(1.0, 0.0, 0.0)),
-                Sprite::from_image(asset_server.load("start_button.png")),
+                Sprite::from_image(asset_server.load("red-start-png-5.png")),
                 OnHoverSetCursor::new(SystemCursorIcon::Pointer)
             ))
             .observe(

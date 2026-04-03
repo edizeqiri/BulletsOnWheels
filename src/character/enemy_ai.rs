@@ -1,13 +1,15 @@
 // move to player
 
+use bevy::prelude::*;
+use bevy_rapier2d::dynamics::Velocity;
+
 use crate::character::enemy::Enemy;
 use crate::character::enemy_ai::EnemyType::Hunter;
 use crate::character::player::Player;
 use crate::character::{Aim, enemy_collision_groups};
 use crate::weapon::ShootEvent;
-use crate::world::map::Level;
-use bevy::prelude::*;
-use bevy_rapier2d::dynamics::Velocity;
+use crate::world::LevelState;
+use crate::world::map::{Level};
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, shoot_at_player)
         .add_systems(Update, enemy_move);
@@ -29,7 +31,7 @@ pub enum EnemyType {
     // Wants to run away from player
     Fugitive(EnemyFugitive),
     // Wants to go to the exit as soon as possible
-    Seeker(EnemySeeker),
+    Seeker(EnemySeeker)
 }
 impl Default for EnemyType {
     fn default() -> Self {
@@ -46,7 +48,9 @@ impl EnemyAI for EnemyFugitive {
 }
 
 #[derive(Debug)]
-struct EnemySeeker;
+struct EnemySeeker {
+    goal: Vec2
+}
 
 impl EnemyAI for EnemySeeker {
     fn moving(&self, player: &Transform, enemy: &Transform, level: Level) -> Vec2 {
@@ -65,7 +69,7 @@ impl EnemyAI for EnemyHunter {
 fn shoot_at_player(
     mut shoot_event: MessageWriter<ShootEvent>,
     enemy_query: Query<(Entity, &mut Aim, &Transform, &EnemyType), With<Enemy>>,
-    player_query: Query<&Transform, With<Player>>,
+    player_query: Query<&Transform, With<Player>>
 ) {
     let Ok(player) = player_query.single() else {
         return;
@@ -75,14 +79,14 @@ fn shoot_at_player(
 
         shoot_event.write(ShootEvent {
             shooter: enemy,
-            collision_groups: enemy_collision_groups(),
+            collision_groups: enemy_collision_groups()
         });
     }
 }
 
 fn enemy_move(
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
-    enemy_query: Query<(&mut Velocity, &Transform, &EnemyType), With<Enemy>>,
+    enemy_query: Query<(&mut Velocity, &Transform, &EnemyType), With<Enemy>>
 ) {
     if let Ok(player_transform) = player_query.single() {
         for (mut enemy_velocity, enemy_transform, enemy_type) in enemy_query {
@@ -90,9 +94,7 @@ fn enemy_move(
                 player_transform,
                 enemy_transform,
                 // TODO: add this in game and query to get it
-                Level {
-                    goal: Vec2::new(1000., 1000.),
-                },
+                Level(LevelState::TWO)
             );
         }
     }

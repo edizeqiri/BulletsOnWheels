@@ -4,7 +4,7 @@ use rand::Rng;
 
 use crate::world::map::{Interpolator, Map, Path, PathStrategy, Strategy, VertexGenerator};
 
-#[derive(Default)]
+#[derive(Default, Component)]
 pub struct SimpleMap {
     paths: Vec<Path>,
     size: f32,

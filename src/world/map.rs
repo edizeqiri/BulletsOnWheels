@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-
+use crate::world::{LevelState};
 use crate::world::simple_map::{SimpleInterpolator, SimpleVertex};
 
 pub trait VertexGenerator {
@@ -33,9 +33,9 @@ pub trait Strategy {
 }
 
 pub struct PathStrategy {
-    pub(crate) vertex_gen: Box<dyn VertexGenerator>,
-    pub(crate) interpolator: Box<dyn Interpolator>,
-    pub(crate) noise: Option<Box<dyn NoiseApplier>>
+    pub(crate) vertex_gen: Box<dyn VertexGenerator + Send + Sync>,
+    pub(crate) interpolator: Box<dyn Interpolator + Send + Sync>,
+    pub(crate) noise: Option<Box<dyn NoiseApplier + Send + Sync>>
 }
 
 impl Default for PathStrategy {
@@ -62,7 +62,7 @@ impl Strategy for PathStrategy {
     }
 }
 impl PathStrategy {
-    pub fn new(vertex_gen: Box<dyn VertexGenerator>, interpolator: Box<dyn Interpolator>) -> Self {
+    pub fn new(vertex_gen: Box<dyn VertexGenerator + Send + Sync>, interpolator: Box<dyn Interpolator + Send + Sync>) -> Self {
         Self {
             vertex_gen,
             interpolator,
@@ -70,7 +70,7 @@ impl PathStrategy {
         }
     }
 
-    pub fn with_noise(mut self, noise: Box<dyn NoiseApplier>) -> Self {
+    pub fn with_noise(mut self, noise: Box<dyn NoiseApplier + Send + Sync >) -> Self {
         self.noise = Some(noise);
         self
     }
@@ -92,6 +92,5 @@ pub trait Map {
     }
 }
 
-pub struct Level {
-    pub(crate) goal: Vec2
-}
+#[derive(Component)]
+pub struct Level(pub LevelState);
