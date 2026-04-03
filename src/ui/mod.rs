@@ -106,6 +106,7 @@ fn dev_ui(
             }
             command.entity(player_query.entity()).despawn();
             command.set_state(GameState::START);
+            command.set_state(LevelState::NONE);
         }
 
         let current = current_state.get();
@@ -119,5 +120,8 @@ fn dev_ui(
         if mut_level != *current {
             command.set_state(mut_level);
         }
+
     });
+
+
 }

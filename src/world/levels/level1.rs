@@ -14,7 +14,7 @@ use crate::world::simple_map::SimpleMap;
 use crate::world::walls::create_wall_bundle;
 use crate::world::{LevelState, clean_up};
 
-pub(super) fn plugin(app: &mut App) {
+pub(crate) fn plugin(app: &mut App) {
     app.insert_resource(Time::<Fixed>::from_seconds(3.))
         .insert_resource(ENEMY_DEFAULTS)
         .add_systems(OnEnter(LevelState::ONE), generate_level1_map_system)
