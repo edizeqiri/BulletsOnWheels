@@ -1,3 +1,5 @@
+mod healthbar;
+
 use std::ops::Deref;
 
 use bevy::app::App;
@@ -7,21 +9,23 @@ use bevy_inspector_egui::egui;
 use bevy_inspector_egui::egui::{DragValue, TextBuffer};
 use rand::{Rng, RngCore};
 
+use crate::character::enemy::{
+    CreateEnemyMessage, Enemy, EnemyDeathMessage
+};
+use crate::character::player::Player;
 use crate::character::Health;
-use crate::character::enemy::{Enemy, EnemyDeathMessage, EnemyType, create_enemy_bundle, CreateEnemyMessage};
-use crate::character::player::{Player, PlayerDeathMessage};
 use crate::gamestate::{EnemyResource, GameState};
 use crate::projectile::Projectile;
-use crate::weapon::Weapons;
-use crate::world::LevelState;
 use crate::world::map::Level;
+use crate::world::LevelState;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(EguiPrimaryContextPass, dev_ui)
+    app.add_plugins(healthbar::plugin)
+        .add_systems(EguiPrimaryContextPass, dev_ui)
         .add_systems(OnEnter(GameState::RUNNING), spawn_health_display_system)
         .add_systems(
             Update,
-            update_health_display_system.run_if(in_state(GameState::RUNNING)),
+            update_health_display_system.run_if(in_state(GameState::RUNNING))
         );
 }
 
@@ -62,7 +66,7 @@ fn spawn_health_display_system(mut commands: Commands) {
 fn update_health_display_system(
     text: Single<Entity, (With<HealthText>, With<Text>)>,
     health_query: Query<&Health, (With<Player>, Changed<Health>)>,
-    mut writer: TextUiWriter,
+    mut writer: TextUiWriter
 ) {
     for health in &health_query {
         *writer.text(*text, 1) = health.current.to_string();
@@ -80,7 +84,7 @@ fn dev_ui(
     current_state: Res<State<LevelState>>,
     levels: Query<Entity, With<Level>>,
     mut enemy_health_res: ResMut<EnemyResource>,
-    mut enemy_create_writer: MessageWriter<CreateEnemyMessage>,
+    mut enemy_create_writer: MessageWriter<CreateEnemyMessage>
 ) {
     egui::SidePanel::right("Dev Panel").show(context.ctx_mut().unwrap(), |ui| {
         ui.heading("Dev Panel");
@@ -125,7 +129,6 @@ fn dev_ui(
         ui.separator();
         ui.label("Player Health");
         ui.add(DragValue::new(&mut player_health.current).speed(0.1));
-
 
         ui.separator();
         ui.label("Enemy max health");
