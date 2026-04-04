@@ -1,13 +1,19 @@
 use bevy::color::palettes::basic::RED;
 use bevy::prelude::*;
+use rand::{Rng, RngCore};
 
 use crate::character;
 pub(crate) use crate::character::enemy_ai::EnemyType;
 use crate::character::{Health, enemy_collision_groups, square_sprite};
+use crate::gamestate::EnemyResource;
 use crate::weapon::Weapons;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_message::<EnemyDeathMessage>()
+    app
+        .add_message::<EnemyDeathMessage>()
+        .add_message::<EnemySpawnedMessage>()
+        .add_message::<CreateEnemyMessage>()
+        .add_systems(Update, create_enemy)
         .add_systems(Update, check_enemy_zero_health_system)
         .add_systems(Update, handle_enemy_zero_health_system);
 }
@@ -15,9 +21,44 @@ pub(super) fn plugin(app: &mut App) {
 #[derive(Component)]
 pub struct Enemy;
 
+
+/// This message will be reused for any enemy entity, even bullets. Don't ask why.
 #[derive(Message)]
 pub struct EnemyDeathMessage {
     pub entity: Entity
+}
+
+#[derive(Message)]
+pub struct EnemySpawnedMessage {
+    pub entity: Entity
+}
+
+#[derive(Message)]
+pub struct CreateEnemyMessage;
+
+fn create_enemy(
+    mut command: Commands,
+    enemy_res: Res<EnemyResource>,
+    mut reader: MessageReader<CreateEnemyMessage>,
+    mut writer: MessageWriter<EnemySpawnedMessage>
+) {
+    for message in reader.read() {
+        let mut rng = rand::rng();
+        let id = command
+            .spawn(create_enemy_bundle(
+                Transform::from_xyz(
+                    rng.random_range(-100.0..100.0),
+                    rng.random_range(-100.0..100.0),
+                    0.
+                ),
+                Weapons::default(),
+                enemy_res.max_health,
+                Name::new(format!("Enemy{}", rng.next_u32())),
+                EnemyType::default()
+            ))
+            .id();
+        writer.write(EnemySpawnedMessage { entity: id });
+    }
 }
 
 pub fn create_enemy_bundle(

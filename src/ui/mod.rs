@@ -8,7 +8,7 @@ use bevy_inspector_egui::egui::{DragValue, TextBuffer};
 use rand::{Rng, RngCore};
 
 use crate::character::Health;
-use crate::character::enemy::{Enemy, EnemyDeathMessage, EnemyType, create_enemy_bundle};
+use crate::character::enemy::{Enemy, EnemyDeathMessage, EnemyType, create_enemy_bundle, CreateEnemyMessage};
 use crate::character::player::{Player, PlayerDeathMessage};
 use crate::gamestate::{EnemyResource, GameState};
 use crate::projectile::Projectile;
@@ -79,7 +79,8 @@ fn dev_ui(
     bullets: Query<Entity, With<Projectile>>,
     current_state: Res<State<LevelState>>,
     levels: Query<Entity, With<Level>>,
-    mut enemy_health_res: ResMut<EnemyResource>
+    mut enemy_health_res: ResMut<EnemyResource>,
+    mut enemy_create_writer: MessageWriter<CreateEnemyMessage>,
 ) {
     egui::SidePanel::right("Dev Panel").show(context.ctx_mut().unwrap(), |ui| {
         ui.heading("Dev Panel");
@@ -87,18 +88,7 @@ fn dev_ui(
         ui.separator();
         ui.label("Spawn a default enemy near center of screen");
         if ui.button("Spawn Enemy").clicked() {
-            let mut rng = rand::rng();
-            command.spawn(create_enemy_bundle(
-                Transform::from_xyz(
-                    rng.random_range(-100.0 ..100.0),
-                    rng.random_range(-100.0..100.0),
-                    0.,
-                ),
-                Weapons::default(),
-                enemy_health_res.max_health,
-                Name::new(format!("Enemy{}", rng.next_u32())),
-                EnemyType::default(),
-            ));
+            enemy_create_writer.write(CreateEnemyMessage);
         }
         ui.separator();
         ui.label("Delete all enemies and bullets");
@@ -140,6 +130,5 @@ fn dev_ui(
         ui.separator();
         ui.label("Enemy max health");
         ui.add(DragValue::new(&mut enemy_health_res.max_health).speed(0.1));
-
     });
 }
