@@ -1,13 +1,16 @@
+use std::ops::Deref;
+
 use bevy::app::App;
 use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::{EguiContexts, EguiPrimaryContextPass};
 use bevy_inspector_egui::egui;
+use bevy_inspector_egui::egui::{DragValue, TextBuffer};
 use rand::{Rng, RngCore};
 
 use crate::character::Health;
 use crate::character::enemy::{Enemy, EnemyDeathMessage, EnemyType, create_enemy_bundle};
 use crate::character::player::{Player, PlayerDeathMessage};
-use crate::gamestate::GameState;
+use crate::gamestate::{EnemyResource, GameState};
 use crate::projectile::Projectile;
 use crate::weapon::Weapons;
 use crate::world::LevelState;
@@ -18,7 +21,7 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(OnEnter(GameState::RUNNING), spawn_health_display_system)
         .add_systems(
             Update,
-            update_health_display_system.run_if(in_state(GameState::RUNNING))
+            update_health_display_system.run_if(in_state(GameState::RUNNING)),
         );
 }
 
@@ -59,7 +62,7 @@ fn spawn_health_display_system(mut commands: Commands) {
 fn update_health_display_system(
     text: Single<Entity, (With<HealthText>, With<Text>)>,
     health_query: Query<&Health, (With<Player>, Changed<Health>)>,
-    mut writer: TextUiWriter
+    mut writer: TextUiWriter,
 ) {
     for health in &health_query {
         *writer.text(*text, 1) = health.current.to_string();
@@ -70,45 +73,53 @@ fn update_health_display_system(
 fn dev_ui(
     mut command: Commands,
     mut context: EguiContexts,
-    player_query: Single<Entity, With<Player>>,
+    player_entity: Single<Entity, With<Player>>,
+    mut player_health: Single<(&mut Health), With<Player>>,
     enemy_query: Query<Entity, With<Enemy>>,
     bullets: Query<Entity, With<Projectile>>,
     current_state: Res<State<LevelState>>,
-    levels: Query<Entity, With<Level>>
+    levels: Query<Entity, With<Level>>,
+    mut enemy_health_res: ResMut<EnemyResource>
 ) {
     egui::SidePanel::right("Dev Panel").show(context.ctx_mut().unwrap(), |ui| {
         ui.heading("Dev Panel");
 
+        ui.separator();
+        ui.label("Spawn a default enemy near center of screen");
         if ui.button("Spawn Enemy").clicked() {
             let mut rng = rand::rng();
             command.spawn(create_enemy_bundle(
                 Transform::from_xyz(
+                    rng.random_range(-100.0 ..100.0),
                     rng.random_range(-100.0..100.0),
-                    rng.random_range(-100.0..100.0),
-                    0.
+                    0.,
                 ),
                 Weapons::default(),
-                10,
+                enemy_health_res.max_health,
                 Name::new(format!("Enemy{}", rng.next_u32())),
-                EnemyType::default()
+                EnemyType::default(),
             ));
         }
-
+        ui.separator();
+        ui.label("Delete all enemies and bullets");
         if ui.button("Clear Enemies").clicked() {
             enemy_query.iter().chain(bullets.iter()).for_each(|enemy| {
                 command.write_message(EnemyDeathMessage { entity: enemy });
             });
         };
-
+        ui.separator();
+        ui.label("Resets to Start Position");
         if ui.button("Reset Game").clicked() {
             for level in levels {
                 command.entity(level).despawn();
             }
-            command.entity(player_query.entity()).despawn();
+            command.entity(player_entity.entity()).despawn();
             command.set_state(GameState::START);
             command.set_state(LevelState::NONE);
         }
 
+        ui.separator();
+        ui.label("Change Level");
         let current = current_state.get();
         let mut mut_level = current.clone();
         egui::ComboBox::from_label("Take your pick")
@@ -121,7 +132,14 @@ fn dev_ui(
             command.set_state(mut_level);
         }
 
+        ui.separator();
+        ui.label("Player Health");
+        ui.add(DragValue::new(&mut player_health.current).speed(0.1));
+
+
+        ui.separator();
+        ui.label("Enemy max health");
+        ui.add(DragValue::new(&mut enemy_health_res.max_health).speed(0.1));
+
     });
-
-
 }
