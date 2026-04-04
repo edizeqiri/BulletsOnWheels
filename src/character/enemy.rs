@@ -7,6 +7,8 @@ pub(crate) use crate::character::enemy_ai::EnemyType;
 use crate::character::{Health, enemy_collision_groups, square_sprite};
 use crate::gamestate::EnemyResource;
 use crate::weapon::Weapons;
+use crate::world::LevelState;
+use crate::world::map::Level;
 
 pub(super) fn plugin(app: &mut App) {
     app
@@ -25,12 +27,12 @@ pub struct Enemy;
 /// This message will be reused for any enemy entity, even bullets. Don't ask why.
 #[derive(Message)]
 pub struct EnemyDeathMessage {
-    pub entity: Entity
+    pub entity: Entity,
 }
 
 #[derive(Message)]
 pub struct EnemySpawnedMessage {
-    pub entity: Entity
+    pub entity: Entity,
 }
 
 #[derive(Message)]
@@ -40,24 +42,28 @@ fn create_enemy(
     mut command: Commands,
     enemy_res: Res<EnemyResource>,
     mut reader: MessageReader<CreateEnemyMessage>,
-    mut writer: MessageWriter<EnemySpawnedMessage>
+    mut writer: MessageWriter<EnemySpawnedMessage>,
+    level: Single<Entity, With<Level>>,
 ) {
-    for message in reader.read() {
-        let mut rng = rand::rng();
-        let id = command
-            .spawn(create_enemy_bundle(
-                Transform::from_xyz(
-                    rng.random_range(-100.0..100.0),
-                    rng.random_range(-100.0..100.0),
-                    0.
-                ),
-                Weapons::default(),
-                enemy_res.max_health,
-                Name::new(format!("Enemy{}", rng.next_u32())),
-                EnemyType::default()
-            ))
-            .id();
-        writer.write(EnemySpawnedMessage { entity: id });
+    for _message in reader.read() {
+        command.entity(level.entity()).with_children(|command| {
+            let mut rng = rand::rng();
+            let id = command
+                .spawn(create_enemy_bundle(
+                    Transform::from_xyz(
+                        rng.random_range(-100.0..100.0),
+                        rng.random_range(-100.0..100.0),
+                        0.,
+                    ),
+                    Weapons::default(),
+                    enemy_res.max_health,
+                    Name::new(format!("Enemy{}", rng.next_u32())),
+                    EnemyType::default(),
+                )
+                )
+                .id();
+            writer.write(EnemySpawnedMessage { entity: id });
+        });
     }
 }
 
@@ -66,7 +72,7 @@ pub fn create_enemy_bundle(
     weapons: Weapons,
     max_health: u32,
     name: Name,
-    enemy_type: EnemyType
+    enemy_type: EnemyType,
 ) -> impl Bundle {
     (
         name,
@@ -80,7 +86,7 @@ pub fn create_enemy_bundle(
 
 fn check_enemy_zero_health_system(
     mut death_message: MessageWriter<EnemyDeathMessage>,
-    query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>
+    query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>,
 ) {
     for (health, entity) in &query {
         if health.current <= 0 {
@@ -91,7 +97,7 @@ fn check_enemy_zero_health_system(
 
 fn handle_enemy_zero_health_system(
     mut commands: Commands,
-    mut enemy_death_messages: MessageReader<EnemyDeathMessage>
+    mut enemy_death_messages: MessageReader<EnemyDeathMessage>,
 ) {
     for message in enemy_death_messages.read() {
         debug!("Enemy {:?} died!", message.entity);
@@ -112,7 +118,7 @@ mod tests {
     // ----------- SETUP ----------- //
     pub struct Setup {
         pub app: App,
-        pub player: Entity
+        pub player: Entity,
     }
 
     impl Setup {
@@ -130,7 +136,7 @@ mod tests {
                     Weapons::default(),
                     1,
                     Name::from("Player"),
-                    EnemyType::default()
+                    EnemyType::default(),
                 ))
                 .id();
 

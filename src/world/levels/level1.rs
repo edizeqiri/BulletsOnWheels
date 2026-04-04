@@ -5,7 +5,7 @@ use bevy::state::state::OnEnter;
 use bevy::time::{Fixed, Time};
 use rand::prelude::*;
 
-use crate::character::enemy::{EnemyType, create_enemy_bundle};
+use crate::character::enemy::{EnemyType, create_enemy_bundle, CreateEnemyMessage};
 use crate::gamestate::start::ENEMY_DEFAULTS;
 use crate::gamestate::{EnemyResource, GameState};
 use crate::weapon::Weapons;
@@ -28,30 +28,9 @@ pub(crate) fn plugin(app: &mut App) {
 }
 
 fn spawn_enemies_after_time(
-    mut command: Commands,
-    enemy_properties: Res<EnemyResource>,
-    level: Single<Entity, With<Level>>
+    mut enemy_writer: MessageWriter<CreateEnemyMessage>
 ) {
-    let mut rng = rand::rng();
-
-    debug!(
-        "spawn enemy with max health: {}",
-        enemy_properties.max_health
-    );
-
-    command.entity(level.entity()).with_children(|command| {
-        command.spawn(create_enemy_bundle(
-            Transform::from_xyz(
-                rng.random_range(-100.0..100.0),
-                rng.random_range(-100.0..100.0),
-                0.
-            ),
-            Weapons::default(),
-            enemy_properties.max_health,
-            Name::new(format!("Enemy{}", rng.next_u32())),
-            EnemyType::default()
-        ));
-    });
+    enemy_writer.write(CreateEnemyMessage);
 }
 
 pub fn generate_level1_map_system(mut command: Commands) {
