@@ -1,0 +1,7 @@
+/target
+.idea
+.DS_Store
+assets/.DS_Store
+
+godot/.godot
+godot/rust/target
