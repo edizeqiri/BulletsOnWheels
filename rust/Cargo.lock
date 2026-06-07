@@ -3,21 +3,6 @@
 version = 4
 
 [[package]]
-name = "BulletOnWheels"
-version = "0.1.0"
-dependencies = [
- "bevy 0.18.1",
- "bevy_rapier2d",
- "cargo-godot-lib",
- "enum_delegate",
- "glam 0.30.9",
- "godot",
- "godot-bevy",
- "rand 0.9.2",
- "test-case",
-]
-
-[[package]]
 name = "accesskit"
 version = "0.21.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1529,6 +1514,21 @@ dependencies = [
  "futures-io",
  "futures-lite",
  "piper",
+]
+
+[[package]]
+name = "bullets_on_wheels"
+version = "0.1.0"
+dependencies = [
+ "bevy 0.18.1",
+ "bevy_rapier2d",
+ "cargo-godot-lib",
+ "enum_delegate",
+ "glam 0.30.9",
+ "godot",
+ "godot-bevy",
+ "rand 0.9.2",
+ "test-case",
 ]
 
 [[package]]

@@ -1,5 +1,5 @@
 [package]
-name = "BulletOnWheels"
+name = "bullets_on_wheels"
 version = "0.1.0"
 edition = "2024"
 
