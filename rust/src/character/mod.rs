@@ -51,8 +51,11 @@ impl Default for Aim {
     }
 }
 
-#[derive(Bundle)]
+#[derive(Bundle, GodotNode)]
+#[godot_node(base(CharacterBody2D), class_name(RCharacter2D))]
 pub struct CharacterBundle {
+
+    #[export_fields(value(export_type(f32)))]
     health: Health,
     weapon: Weapons,
     velocity: Velocity,
