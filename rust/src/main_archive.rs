@@ -19,7 +19,7 @@ use crate::gamestate::GameState;
 
 
 
-fn main() {
+fn main_archive() {
     App::new()
         .add_plugins(
             DefaultPlugins
