@@ -3,11 +3,8 @@ mod enemy_ai;
 pub mod player;
 
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::*;
-
-use crate::weapon::Weapons;
-pub const PLAYER_GROUP: Group = Group::GROUP_1;
-pub const ENEMY_GROUP: Group = Group::GROUP_2;
+use godot::prelude::*;
+use godot_bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(enemy_ai::plugin)
@@ -15,38 +12,26 @@ pub(super) fn plugin(app: &mut App) {
         .add_plugins(player::plugin);
 }
 
-pub fn player_collision_groups() -> CollisionGroups {
-    CollisionGroups::new(PLAYER_GROUP, ENEMY_GROUP)
-}
-
-pub fn enemy_collision_groups() -> CollisionGroups {
-    CollisionGroups::new(ENEMY_GROUP, PLAYER_GROUP)
-}
-
-fn collider() -> Collider {
-    Collider::ball(10.0)
-}
-
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Default)]
 pub struct Health {
     pub current: u32,
-    pub(crate) max: u32
+    pub(crate) max: u32,
 }
 
 #[derive(Component, Default)]
 pub struct ShootingState {
-    pub(crate) is_shooting: bool
+    pub(crate) is_shooting: bool,
 }
 
 #[derive(Component, Copy, Clone)]
 pub struct Aim {
-    pub vec: Vec2
+    pub vec: Vec2,
 }
 
 impl Default for Aim {
     fn default() -> Self {
         Self {
-            vec: Vec2::new(0., 0.)
+            vec: Vec2::new(0., 0.),
         }
     }
 }
@@ -54,55 +39,27 @@ impl Default for Aim {
 #[derive(Bundle, GodotNode)]
 #[godot_node(base(CharacterBody2D), class_name(RCharacter2D))]
 pub struct CharacterBundle {
-
-    #[export_fields(value(export_type(f32)))]
+    #[export_fields(current(export_type(u32)), max(export_type(u32)))]
     health: Health,
-    weapon: Weapons,
-    velocity: Velocity,
-    body: RigidBody,
-    // sensor: Sensor,
-    collider: Collider,
-    active_events: ActiveEvents,
+    //weapon: Weapons,
     transform: Transform,
-    gravity_scale: GravityScale,
-    locked_axes: LockedAxes,
-    damping: Damping,
     aim: Aim,
-    shooting_state: ShootingState
+    shooting_state: ShootingState,
 }
 
 pub fn create_character(
     transform: Transform,
-    weapons: Weapons,
-    max_health: u32
+    //weapons: Weapons,
+    max_health: u32,
 ) -> CharacterBundle {
     CharacterBundle {
         health: Health {
             current: max_health,
-            max: max_health
+            max: max_health,
         },
-        weapon: weapons,
-        velocity: Velocity::linear(Vec2::new(0., 0.)),
-        body: RigidBody::Dynamic,
-        // sensor: Sensor,
-        collider: collider(),
+        //weapon: weapons,
         transform,
-        active_events: ActiveEvents::COLLISION_EVENTS,
-        locked_axes: LockedAxes::ROTATION_LOCKED, // Prevent spinning
-        gravity_scale: GravityScale(0.0),         // Disable gravity
-        damping: Damping {
-            linear_damping: 10.0,
-            angular_damping: 10.0
-        }, // High damping
         aim: Aim::default(),
-        shooting_state: ShootingState::default()
-    }
-}
-
-pub fn square_sprite(color: Color) -> Sprite {
-    Sprite {
-        color,
-        custom_size: Some(Vec2::new(20.0, 20.0)),
-        ..Default::default()
+        shooting_state: ShootingState::default(),
     }
 }

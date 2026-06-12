@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
+mod character;
 
 mod weapon;
 
@@ -13,7 +14,8 @@ fn build_app(app: &mut App) {
     //     .add_plugins(BevyInputBridgePlugin);
     app
         .add_plugins(GodotDefaultPlugins)
-        .add_plugins(weapon::plugin);
+        .add_plugins(weapon::plugin)
+        .add_plugins(character::plugin);
 
     // Add your systems here
     app.add_systems(Update, hello_world_system);
