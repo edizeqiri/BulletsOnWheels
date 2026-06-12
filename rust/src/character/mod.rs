@@ -39,7 +39,7 @@ impl Default for Aim {
 #[derive(Bundle, GodotNode)]
 #[godot_node(base(CharacterBody2D), class_name(RCharacter2D))]
 pub struct CharacterBundle {
-    #[export_fields(current(export_type(u32)), max(export_type(u32)))]
+    #[export_fields(current(export_type(u32), default(10)), max(export_type(u32), default(10)))]
     health: Health,
     //weapon: Weapons,
     transform: Transform,
