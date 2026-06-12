@@ -2,6 +2,8 @@ use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
+mod weapon;
+
 #[bevy_app]
 fn build_app(app: &mut App) {
     // GodotDefaultPlugins provides all standard godot-bevy functionality
@@ -9,7 +11,9 @@ fn build_app(app: &mut App) {
     // app.add_plugins(GodotTransformSyncPlugin)
     //     .add_plugins(GodotAudioPlugin)
     //     .add_plugins(BevyInputBridgePlugin);
-    app.add_plugins(GodotDefaultPlugins);
+    app
+        .add_plugins(GodotDefaultPlugins)
+        .add_plugins(weapon::plugin);
 
     // Add your systems here
     app.add_systems(Update, hello_world_system);

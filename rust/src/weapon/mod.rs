@@ -1,5 +1,6 @@
 use std::time::Duration;
 
+use godot_bevy::prelude::*;
 use bevy::color::palettes::basic::GREEN;
 use bevy::math::Vec2;
 use bevy::prelude::*;
@@ -12,15 +13,29 @@ pub(super) fn plugin(app: &mut App) {
     app.add_message::<ShootEvent>()
         .add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
 }
+
+#[derive(Component, GodotNode, Default, Debug, Clone)]
+#[godot_node(base(Node2D), class_name(Weapon2D))]
+pub struct Weapon {
+    #[export_fields(value(export_type(u32)))]
+    damage: u32,
+    #[export_fields(value(export_type(f32)))]
+    speed: f32,
+    #[export_fields(value(export_type(f32)))]
+    fire_rate: f32,
+    #[export_fields(value(export_type(Timer)))]
+    pub timer: Timer
+}
+
 #[derive(Copy, Clone, Debug)]
 pub enum WeaponKind {
     Bow,
     Gun
 }
 
-#[derive(Clone, Debug)]
+#[derive(Component, GodotNode, Default, Debug, Clone)]
+#[godot_node(class_name(Weapon2D))]
 pub struct Weapon {
-    kind: WeaponKind,
     damage: u32,
     speed: f32,
     fire_rate: f32,
@@ -33,7 +48,6 @@ impl Weapon {
             fire_rate = 1.
         }
         Self {
-            kind,
             damage,
             speed,
             fire_rate,
