@@ -1,10 +1,10 @@
-use bevy::color::palettes::css::BLUE;
 use bevy::prelude::*;
 
 use crate::character;
-use crate::character::{Health, ShootingState, player_collision_groups, square_sprite};
-use crate::gamestate::GameState;
-use crate::weapon::{ShootEvent, Weapons};
+use crate::character::{Health, ShootingState};
+// TODO: gamestate
+//use crate::gamestate::GameState; 
+//use crate::weapon::{ShootEvent, Weapons};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<PlayerDeathMessage>().add_systems(
@@ -14,7 +14,7 @@ pub(super) fn plugin(app: &mut App) {
             check_player_zero_health_system,
             handle_player_zero_health_system
         )
-            .run_if(in_state(GameState::RUNNING))
+            //.run_if(in_state(GameState::RUNNING))
     );
 }
 
@@ -27,38 +27,25 @@ pub struct PlayerDeathMessage {
 }
 
 fn player_shoot_system(
-    mut event_writer: MessageWriter<ShootEvent>,
     player_query: Query<(Entity, &ShootingState), With<Player>>,
     mut shoot_timer: Local<f32>,
     time: Res<Time>
 ) {
-    let Ok((player, shooting_state)) = player_query.single() else {
-        return;
-    };
 
-    *shoot_timer -= time.delta_secs();
-
-    if shooting_state.is_shooting && *shoot_timer <= 0.0 {
-        event_writer.write(ShootEvent {
-            shooter: player,
-            collision_groups: player_collision_groups()
-        });
-        *shoot_timer = 0.01;
-    }
 }
 
 pub fn create_player_bundle(
     transform: Transform,
-    weapons: Weapons,
+    //weapons: Weapons,
     max_health: u32,
     name: Name
 ) -> impl Bundle {
     (
         name,
-        character::create_character(transform, weapons.clone(), max_health),
-        player_collision_groups(),
+        character::create_character(transform,
+           // weapons.clone(),
+            max_health),
         Player,
-        square_sprite(Color::Srgba(BLUE))
     )
 }
 
@@ -78,7 +65,6 @@ fn handle_player_zero_health_system(
     mut player_death_messages: MessageReader<PlayerDeathMessage>
 ) {
     for message in player_death_messages.read() {
-        debug!("Player died!");
         commands.entity(message.entity).despawn();
     }
 }
@@ -93,9 +79,10 @@ mod tests {
 
     use crate::character::player::{Player, create_player_bundle};
     use crate::character::{Health, player};
-    use crate::gamestate::GameState;
-    use crate::weapon;
-    use crate::weapon::Weapons;
+    //TODO: packages
+    //use crate::gamestate::GameState;
+    //use crate::weapon;
+    //use crate::weapon::Weapons;
 
     // ----------- SETUP ----------- //
     pub struct Setup {
@@ -119,7 +106,7 @@ mod tests {
                 .world_mut()
                 .spawn(create_player_bundle(
                     Transform::from_xyz(1.0, 1.0, 0.0),
-                    Weapons::default(),
+                    //Weapons::default(),
                     1,
                     Name::from("Player")
                 ))
@@ -133,7 +120,7 @@ mod tests {
     }
 
     // ----------- TEST ----------- //
-
+    /*/
     #[test_case(GameState::RUNNING, 0 ; "player dies in game")]
     #[test_case(GameState::START, 1 ; "player can not die in menu")]
     fn zero_health_player_is_despawned(game_state: GameState, expected_num_players: usize) {
@@ -165,5 +152,5 @@ mod tests {
                 .len(),
             expected_num_players
         );
-    }
+    }*/
 }

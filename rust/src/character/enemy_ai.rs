@@ -1,18 +1,18 @@
 // move to player
 
 use bevy::prelude::*;
-use bevy_rapier2d::dynamics::Velocity;
 
+use crate::character::Aim;
 use crate::character::enemy::Enemy;
 use crate::character::enemy_ai::EnemyType::Hunter;
 use crate::character::player::Player;
-use crate::character::{Aim, enemy_collision_groups};
-use crate::weapon::ShootEvent;
-use crate::world::LevelState;
-use crate::world::map::map::Level;
+//use crate::weapon::ShootEvent;
+//use crate::world::LevelState;
+//use crate::world::map::map::Level;
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, shoot_at_player)
-        .add_systems(Update, enemy_move);
+    app;
+    //.add_systems(Update, shoot_at_player)
+    //.add_systems(Update, enemy_move);
 }
 
 #[enum_delegate::register]
@@ -20,7 +20,7 @@ trait EnemyAI {
     fn shooting(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         player.translation.xy() - enemy.translation.xy()
     }
-    fn moving(&self, player: &Transform, enemy: &Transform, level: Level) -> Vec2;
+    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2;
 }
 
 #[enum_delegate::implement(EnemyAI)]
@@ -31,7 +31,7 @@ pub enum EnemyType {
     // Wants to run away from player
     Fugitive(EnemyFugitive),
     // Wants to go to the exit as soon as possible
-    Seeker(EnemySeeker)
+    Seeker(EnemySeeker),
 }
 impl Default for EnemyType {
     fn default() -> Self {
@@ -42,18 +42,18 @@ impl Default for EnemyType {
 struct EnemyFugitive;
 
 impl EnemyAI for EnemyFugitive {
-    fn moving(&self, player: &Transform, enemy: &Transform, level: Level) -> Vec2 {
+    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         todo!()
     }
 }
 
 #[derive(Debug)]
 struct EnemySeeker {
-    goal: Vec2
+    goal: Vec2,
 }
 
 impl EnemyAI for EnemySeeker {
-    fn moving(&self, player: &Transform, enemy: &Transform, level: Level) -> Vec2 {
+    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         todo!()
     }
 }
@@ -61,11 +61,11 @@ impl EnemyAI for EnemySeeker {
 #[derive(Component, Debug)]
 struct EnemyHunter;
 impl EnemyAI for EnemyHunter {
-    fn moving(&self, player: &Transform, enemy: &Transform, level: Level) -> Vec2 {
+    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         (player.translation.xy() - enemy.translation.xy()) * 0.8
     }
 }
-
+/*
 fn shoot_at_player(
     mut shoot_event: MessageWriter<ShootEvent>,
     enemy_query: Query<(Entity, &mut Aim, &Transform, &EnemyType), With<Enemy>>,
@@ -98,4 +98,4 @@ fn enemy_move(
             );
         }
     }
-}
+}*/

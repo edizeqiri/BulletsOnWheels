@@ -1,19 +1,17 @@
-use bevy::color::palettes::basic::RED;
 use bevy::prelude::*;
 use rand::{Rng, RngCore};
 
 use crate::character;
+use crate::character::Health;
 pub(crate) use crate::character::enemy_ai::EnemyType;
-use crate::character::{Health, enemy_collision_groups, square_sprite};
-use crate::gamestate::EnemyResource;
-use crate::weapon::Weapons;
-use crate::world::map::map::Level;
+//use crate::gamestate::EnemyResource;
+//use crate::weapon::Weapons;
+//use crate::world::map::map::Level;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<EnemyDeathMessage>()
         .add_message::<EnemySpawnedMessage>()
         .add_message::<CreateEnemyMessage>()
-        .add_systems(Update, create_enemy)
         .add_systems(Update, check_enemy_zero_health_system)
         .add_systems(Update, handle_enemy_zero_health_system);
 }
@@ -25,65 +23,38 @@ pub struct Enemy;
 /// why.
 #[derive(Message)]
 pub struct EnemyDeathMessage {
-    pub entity: Entity
+    pub entity: Entity,
 }
 
 #[derive(Message)]
 pub struct EnemySpawnedMessage {
-    pub entity: Entity
+    pub entity: Entity,
 }
 
 #[derive(Message)]
 pub struct CreateEnemyMessage;
 
-fn create_enemy(
-    mut command: Commands,
-    enemy_res: Res<EnemyResource>,
-    mut reader: MessageReader<CreateEnemyMessage>,
-    mut writer: MessageWriter<EnemySpawnedMessage>,
-    level: Single<Entity, With<Level>>
-) {
-    for _message in reader.read() {
-        command.entity(level.entity()).with_children(|command| {
-            let mut rng = rand::rng();
-            let id = command
-                .spawn(create_enemy_bundle(
-                    Transform::from_xyz(
-                        rng.random_range(-100.0..100.0),
-                        rng.random_range(-100.0..100.0),
-                        0.
-                    ),
-                    Weapons::default(),
-                    enemy_res.max_health,
-                    Name::new(format!("Enemy{}", rng.next_u32())),
-                    EnemyType::default()
-                ))
-                .id();
-            writer.write(EnemySpawnedMessage { entity: id });
-        });
-    }
-}
-
 pub fn create_enemy_bundle(
     transform: Transform,
-    weapons: Weapons,
+    //weapons: Weapons,
     max_health: u32,
     name: Name,
-    enemy_type: EnemyType
+    enemy_type: EnemyType,
 ) -> impl Bundle {
     (
         name,
-        character::create_character(transform, weapons.clone(), max_health),
-        enemy_collision_groups(),
+        character::create_character(
+            transform, // weapons.clone(),
+            max_health,
+        ),
         Enemy,
-        square_sprite(Color::Srgba(RED)),
-        enemy_type
+        enemy_type,
     )
 }
 
 fn check_enemy_zero_health_system(
     mut death_message: MessageWriter<EnemyDeathMessage>,
-    query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>
+    query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>,
 ) {
     for (health, entity) in &query {
         if health.current <= 0 {
@@ -94,10 +65,9 @@ fn check_enemy_zero_health_system(
 
 fn handle_enemy_zero_health_system(
     mut commands: Commands,
-    mut enemy_death_messages: MessageReader<EnemyDeathMessage>
+    mut enemy_death_messages: MessageReader<EnemyDeathMessage>,
 ) {
     for message in enemy_death_messages.read() {
-        debug!("Enemy {:?} died!", message.entity);
         commands.entity(message.entity).despawn();
     }
 }
@@ -110,12 +80,12 @@ mod tests {
     use crate::character::enemy::{Enemy, create_enemy_bundle};
     use crate::character::enemy_ai::EnemyType;
     use crate::character::{Health, enemy};
-    use crate::weapon::Weapons;
+    //use crate::weapon::Weapons;
 
     // ----------- SETUP ----------- //
     pub struct Setup {
         pub app: App,
-        pub player: Entity
+        pub player: Entity,
     }
 
     impl Setup {
@@ -130,10 +100,10 @@ mod tests {
                 .world_mut()
                 .spawn(create_enemy_bundle(
                     Transform::from_xyz(1.0, 1.0, 0.0),
-                    Weapons::default(),
+                    //Weapons::default(),
                     1,
                     Name::from("Player"),
-                    EnemyType::default()
+                    EnemyType::default(),
                 ))
                 .id();
 
