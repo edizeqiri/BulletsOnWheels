@@ -2,21 +2,23 @@ use bevy::prelude::*;
 use godot::classes::Input;
 
 use crate::character::player::{Player, RPlayer2D};
-use crate::{character::Aim, gamestate::start::StartGameMessage};
+use crate::{character::Aim, 
+    //gamestate::start::StartGameMessage
+    };
 
 use godot::global::JoyAxis;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
 pub(crate) fn plugin(app: &mut App) {
-    app.add_message::<StartGameMessage>()
+    app//.add_message::<StartGameMessage>()
         .add_systems(Update, gamepad.run_if(any_with_component::<Player>));
 }
 
 fn gamepad(
     mut player_aim_query: Query<(&GodotNodeHandle, &mut Aim), With<Player>>,
     mut godot: GodotAccess,
-    mut start_game_message: MessageWriter<StartGameMessage>,
+    //mut start_game_message: MessageWriter<StartGameMessage>,
 ) {
     let Ok((controller, mut aim)) = player_aim_query.single_mut() else {
         return;
@@ -45,8 +47,8 @@ fn gamepad(
     // TODO: Shoot
 
     // menu system
-
+    
     if input.is_action_just_pressed("start") {
-        start_game_message.write(StartGameMessage {});
+        //start_game_message.write(StartGameMessage {});
     }
 }

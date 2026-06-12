@@ -7,7 +7,7 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
-bevy = { version = "0.18", default-features = false, features = ["bevy_state","bevy_asset", "bevy_log"] }
+bevy = { version = "0.18", default-features = false, features = ["bevy_state","bevy_asset"] }
 godot-bevy = { git = "https://github.com/bytemeadow/godot-bevy", rev = "c6caed09cac2ff41dde2264fc0326de37ac8d04d" }
 godot = "0.5"
 rand = "0.9.2"
