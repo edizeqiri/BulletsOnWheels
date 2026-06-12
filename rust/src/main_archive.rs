@@ -11,9 +11,6 @@ mod world;
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
 use bevy::window::WindowResolution;
-use bevy_inspector_egui::bevy_egui::EguiPlugin;
-use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use bevy_lunex::UiLunexPlugins;
 
 use crate::gamestate::GameState;
 

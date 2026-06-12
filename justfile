@@ -2,10 +2,9 @@ godot := "godot"
 godot_project := "godot"
 
 build:
-    cargo build --manifest-path rust/Cargo.toml
-
+    cargo build
 build-release:
-    cargo build --release --manifest-path rust/Cargo.toml
+    cargo build --release
 
 run: build
     {{godot}} --path {{godot_project}}
@@ -17,4 +16,4 @@ editor: build
     {{godot}} --path {{godot_project}} --editor
 
 watch:
-    cargo watch -x "build --manifest-path rust/Cargo.toml"
+    cargo watch -x "build
