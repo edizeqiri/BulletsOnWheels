@@ -31,6 +31,7 @@ pub struct PlayerBundle {
         max(export_type(u32), default(10))
     )]
     health: Health,
+
     //weapon: Weapons,
     transform: Transform,
     aim: Aim,

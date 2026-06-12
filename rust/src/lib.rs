@@ -2,6 +2,8 @@ use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 mod character;
+mod input;
+mod gamestate;
 
 #[bevy_app]
 fn build_app(app: &mut App) {
@@ -12,6 +14,8 @@ fn build_app(app: &mut App) {
     //     .add_plugins(BevyInputBridgePlugin);
     app
         .add_plugins(GodotDefaultPlugins)
+        .add_plugins(gamestate::plugin)
+        .add_plugins(input::plugin)
         .add_plugins(character::plugin);
 
     // Add your systems here
