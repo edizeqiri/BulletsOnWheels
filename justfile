@@ -17,3 +17,8 @@ editor: build
 
 watch:
     cargo watch -x "build
+
+reload-godot: build
+    pkill godot || true
+    sleep 1
+    {{godot}} --editor --path {{godot_project}} &
