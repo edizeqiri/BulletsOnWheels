@@ -21,7 +21,6 @@ fn build_app(app: &mut App) {
         .add_plugins(character::plugin)
         //.add_plugins(gamestate::plugin)
         .add_plugins(input::plugin)
-        .add_plugins(character::plugin)
         .add_plugins(level_manager::LevelManagerPlugin);
 
 }
