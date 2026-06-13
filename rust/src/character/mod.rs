@@ -11,7 +11,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_plugins(enemy_ai::plugin)
         .add_plugins(enemy::plugin)
         .add_plugins(player::plugin)
-        .add_systems(PhysicsUpdate, apply_movement);
+        .add_systems(PhysicsUpdate, apply_character_movement);
 }
 
 #[derive(Component, Reflect, Default)]
@@ -61,7 +61,7 @@ pub struct CharacterCore {
     shooting_state: ShootingState,
 }
 
-fn apply_movement(
+fn apply_character_movement(
     query: Query<(&GodotNodeHandle, &Movement, &MovementSpeed)>,
     mut godot: GodotAccess,
 ) {
