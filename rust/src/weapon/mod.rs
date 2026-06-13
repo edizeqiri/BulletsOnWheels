@@ -1,121 +1,12 @@
-use std::time::Duration;
-
-use godot_bevy::prelude::*;
-use bevy::color::palettes::basic::GREEN;
-use bevy::math::Vec2;
+use bevy::app::App;
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::CollisionGroups;
 
-use crate::character::{Aim, square_sprite};
-use crate::projectile::{ProjectileBundle, create_projectile};
+pub(crate) mod projectile;
+pub(crate) mod weapon;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_message::<ShootEvent>()
-        .add_systems(Update, (update_weapon_cooldowns, shoot_on_event));
+    app.add_plugins(weapon::plugin);
 }
 
-#[derive(Component, GodotNode, Default, Debug, Clone)]
-#[godot_node(base(Node2D), class_name(Weapon2D))]
-pub struct Weapon {
-    #[export_fields(value(export_type(u32)))]
-    damage: u32,
-    #[export_fields(value(export_type(f32)))]
-    speed: f32,
-    #[export_fields(value(export_type(f32)))]
-    fire_rate: f32,
-    #[export_fields(value(export_type(Timer)))]
-    pub timer: Timer
-}
-
-#[derive(Copy, Clone, Debug)]
-pub enum WeaponKind {
-    Bow,
-    Gun
-}
-
-#[derive(Component, GodotNode, Default, Debug, Clone)]
-#[godot_node(class_name(Weapon2D))]
-pub struct Weapon {
-    damage: u32,
-    speed: f32,
-    fire_rate: f32,
-    pub timer: Timer
-}
-
-impl Weapon {
-    pub fn new(kind: WeaponKind, damage: u32, speed: f32, mut fire_rate: f32) -> Self {
-        if fire_rate == 0. {
-            fire_rate = 1.
-        }
-        Self {
-            damage,
-            speed,
-            fire_rate,
-            timer: Timer::new(Duration::from_secs_f32(1.0 / fire_rate), TimerMode::Once)
-        }
-    }
-
-    pub(crate) fn shoot(&self, direction: Vec2) -> ProjectileBundle {
-        create_projectile(self.damage, self.speed, direction)
-    }
-
-    pub fn can_shoot(&self) -> bool {
-        self.timer.is_finished()
-    }
-
-    pub fn reset(&mut self) {
-        self.timer.reset();
-    }
-}
-
-#[derive(Message)]
-pub struct ShootEvent {
-    pub shooter: Entity,
-    pub collision_groups: CollisionGroups
-}
-
-#[derive(Component, Clone)]
-pub struct Weapons {
-    pub list: Vec<Weapon>
-}
-
-pub(crate) fn shoot_on_event(
-    mut commands: Commands,
-    mut shoot_event: MessageReader<ShootEvent>,
-    mut shooter_query: Query<(&mut Weapons, &Aim, &Transform)>
-) {
-    for event in shoot_event.read() {
-        if let Ok((mut weapons, aim, transform)) = shooter_query.get_mut(event.shooter) {
-            for weapon in &mut weapons.list {
-                if weapon.can_shoot() {
-                    commands.spawn((
-                        weapon.shoot(aim.vec),
-                        square_sprite(Color::Srgba(GREEN)),
-                        event.collision_groups,
-                        *transform
-                    ));
-                    weapon.reset();
-                }
-            }
-        }
-    }
-}
-
-pub(crate) fn update_weapon_cooldowns(time: Res<Time>, mut weapon_query: Query<&mut Weapons>) {
-    for mut weapons in &mut weapon_query {
-        for weapon in &mut weapons.list {
-            weapon.timer.tick(time.delta());
-        }
-    }
-}
-
-impl Default for Weapons {
-    fn default() -> Self {
-        Weapons {
-            list: vec![
-                Weapon::new(WeaponKind::Bow, 1, 1000., 0.5),
-                Weapon::new(WeaponKind::Gun, 1, 250., 5.),
-            ]
-        }
-    }
-}
+#[derive(Component, Debug, Clone, Default, Copy)]
+pub struct Damage(pub f32);
