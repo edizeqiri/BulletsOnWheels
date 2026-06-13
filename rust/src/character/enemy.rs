@@ -2,8 +2,7 @@ use bevy::prelude::*;
 use godot_bevy::prelude::*;
 use rand::{Rng, RngCore};
 
-use crate::character::Health;
-use crate::character::{self, Aim, Movement, MovementSpeed, ShootingState};
+use crate::character::{CharacterCore, Health};
 /*
 use crate::gamestate::EnemyResource;
 use crate::weapon::Weapons;
@@ -32,11 +31,7 @@ pub struct EnemyBundle {
     )]
     health: Health,
 
-    //weapon: Weapons,
-    aim: Aim,
-    movement: Movement,
-    speed: MovementSpeed,
-    shooting_state: ShootingState,
+    core: CharacterCore,
 }
 
 /// This message will be reused for any enemy entity, even bullets. Don't ask

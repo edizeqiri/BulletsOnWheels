@@ -1,5 +1,5 @@
 use crate::character;
-use crate::character::{Aim, Health, Movement, MovementSpeed, ShootingState};
+use crate::character::{CharacterCore, Health, ShootingState};
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
@@ -32,11 +32,7 @@ pub struct PlayerBundle {
     )]
     health: Health,
 
-    //weapon: Weapons,
-    aim: Aim,
-    movement: Movement,
-    speed: MovementSpeed,
-    shooting_state: ShootingState,
+    core: CharacterCore,
 }
 
 #[derive(Message)]

@@ -52,19 +52,11 @@ impl Default for MovementSpeed {
     }
 }
 
-#[derive(Bundle, GodotNode)]
-#[godot_node(base(CharacterBody2D), class_name(RCharacter2D))]
-pub struct CharacterBundle {
-    #[export_fields(
-        current(export_type(u32), default(10)),
-        max(export_type(u32), default(10))
-    )]
-    health: Health,
+#[derive(Bundle, Default)]
+pub struct CharacterCore {
     //weapon: Weapons,
-    transform: Transform,
     aim: Aim,
     movement: Movement,
-    #[export_fields(value(export_type(f32), default(100.)))]
     speed: MovementSpeed,
     shooting_state: ShootingState,
 }
