@@ -33,7 +33,6 @@ pub struct PlayerBundle {
     health: Health,
 
     //weapon: Weapons,
-    transform: Transform,
     aim: Aim,
     movement: Movement,
     speed: MovementSpeed,
