@@ -1,5 +1,5 @@
 use crate::character;
-use crate::character::{Aim, Health, ShootingState};
+use crate::character::{Aim, Health, Movement, MovementSpeed, ShootingState};
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
@@ -35,6 +35,8 @@ pub struct PlayerBundle {
     //weapon: Weapons,
     transform: Transform,
     aim: Aim,
+    movement: Movement,
+    speed: MovementSpeed,
     shooting_state: ShootingState,
 }
 
@@ -48,22 +50,6 @@ fn player_shoot_system(
     mut shoot_timer: Local<f32>,
     time: Res<Time>,
 ) {
-}
-
-pub fn create_player_bundle(
-    transform: Transform,
-    //weapons: Weapons,
-    max_health: u32,
-    name: Name,
-) -> impl Bundle {
-    (
-        name,
-        character::create_character(
-            transform, // weapons.clone(),
-            max_health,
-        ),
-        Player,
-    )
 }
 
 fn check_player_zero_health_system(
@@ -84,90 +70,4 @@ fn handle_player_zero_health_system(
     for message in player_death_messages.read() {
         commands.entity(message.entity).despawn();
     }
-}
-
-#[cfg(test)]
-mod tests {
-    use bevy::MinimalPlugins;
-    use bevy::app::App;
-    use bevy::prelude::{AppExtStates, Entity, Name, NextState, Transform, With};
-    use bevy::state::app::StatesPlugin;
-    use test_case::test_case;
-
-    use crate::character::player::{Player, create_player_bundle};
-    use crate::character::{Health, player};
-    //TODO: packages
-    //use crate::gamestate::GameState;
-    //use crate::weapon;
-    //use crate::weapon::Weapons;
-
-    // ----------- SETUP ----------- //
-    pub struct Setup {
-        pub app: App,
-        pub player: Entity,
-    }
-
-    impl Setup {
-        pub fn new() -> Self {
-            // setup App
-            let mut app = App::new();
-
-            app.add_plugins(MinimalPlugins)
-                .add_plugins(StatesPlugin)
-                .init_state::<GameState>()
-                .add_plugins(weapon::plugin)
-                .add_plugins(player::plugin);
-
-            // setup Entities
-            let player = app
-                .world_mut()
-                .spawn(create_player_bundle(
-                    Transform::from_xyz(1.0, 1.0, 0.0),
-                    //Weapons::default(),
-                    1,
-                    Name::from("Player"),
-                ))
-                .id();
-
-            // start app
-            app.update();
-
-            Self { app, player }
-        }
-    }
-
-    // ----------- TEST ----------- //
-    /*/
-    #[test_case(GameState::RUNNING, 0 ; "player dies in game")]
-    #[test_case(GameState::START, 1 ; "player can not die in menu")]
-    fn zero_health_player_is_despawned(game_state: GameState, expected_num_players: usize) {
-        let mut setup = Setup::new();
-
-        {
-            let world = setup.app.world_mut();
-            world.resource_mut::<NextState<GameState>>().set(game_state);
-
-            // when: player.health.current = 0
-            world
-                .query::<&mut Health>()
-                .get_mut(world, setup.player)
-                .unwrap()
-                .current = 0;
-        }
-
-        // 1. message: health changes
-        setup.app.update();
-        // 2. message: player died
-        setup.app.update();
-
-        // then: no player exists
-        let world = setup.app.world_mut();
-        assert_eq!(
-            world
-                .query_filtered::<Entity, With<Player>>()
-                .iter(&world)
-                .len(),
-            expected_num_players
-        );
-    }*/
 }

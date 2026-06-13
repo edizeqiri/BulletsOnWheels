@@ -3,10 +3,11 @@ use rand::{Rng, RngCore};
 
 use crate::character;
 use crate::character::Health;
-pub(crate) use crate::character::enemy_ai::EnemyType;
-//use crate::gamestate::EnemyResource;
-//use crate::weapon::Weapons;
-//use crate::world::map::map::Level;
+/*
+use crate::gamestate::EnemyResource;
+use crate::weapon::Weapons;
+use crate::world::map::map::Level;
+*/
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<EnemyDeathMessage>()
@@ -34,23 +35,6 @@ pub struct EnemySpawnedMessage {
 #[derive(Message)]
 pub struct CreateEnemyMessage;
 
-pub fn create_enemy_bundle(
-    transform: Transform,
-    //weapons: Weapons,
-    max_health: u32,
-    name: Name,
-    enemy_type: EnemyType,
-) -> impl Bundle {
-    (
-        name,
-        character::create_character(
-            transform, // weapons.clone(),
-            max_health,
-        ),
-        Enemy,
-        enemy_type,
-    )
-}
 
 fn check_enemy_zero_health_system(
     mut death_message: MessageWriter<EnemyDeathMessage>,

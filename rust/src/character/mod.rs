@@ -3,13 +3,15 @@ mod enemy_ai;
 pub mod player;
 
 use bevy::prelude::*;
+use godot::classes::CharacterBody2D;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(enemy_ai::plugin)
         .add_plugins(enemy::plugin)
-        .add_plugins(player::plugin);
+        .add_plugins(player::plugin)
+        .add_systems(PhysicsUpdate, apply_movement);
 }
 
 #[derive(Component, Reflect, Default)]
@@ -36,30 +38,47 @@ impl Default for Aim {
     }
 }
 
+#[derive(Component, Copy, Clone, Default)]
+pub struct Movement {
+    pub vec: Vec2,
+}
+
+#[derive(Component, Reflect, Copy, Clone)]
+pub struct MovementSpeed(pub f32);
+
+impl Default for MovementSpeed {
+    fn default() -> Self {
+        Self(200.)
+    }
+}
+
 #[derive(Bundle, GodotNode)]
 #[godot_node(base(CharacterBody2D), class_name(RCharacter2D))]
 pub struct CharacterBundle {
-    #[export_fields(current(export_type(u32), default(10)), max(export_type(u32), default(10)))]
+    #[export_fields(
+        current(export_type(u32), default(10)),
+        max(export_type(u32), default(10))
+    )]
     health: Health,
     //weapon: Weapons,
     transform: Transform,
     aim: Aim,
+    movement: Movement,
+    #[export_fields(value(export_type(f32), default(100.)))]
+    speed: MovementSpeed,
     shooting_state: ShootingState,
 }
 
-pub fn create_character(
-    transform: Transform,
-    //weapons: Weapons,
-    max_health: u32,
-) -> CharacterBundle {
-    CharacterBundle {
-        health: Health {
-            current: max_health,
-            max: max_health,
-        },
-        //weapon: weapons,
-        transform,
-        aim: Aim::default(),
-        shooting_state: ShootingState::default(),
+fn apply_movement(
+    query: Query<(&GodotNodeHandle, &Movement, &MovementSpeed)>,
+    mut godot: GodotAccess,
+) {
+    for (handle, movement, speed) in &query {
+        let Some(mut body) = godot.try_get::<CharacterBody2D>(*handle) else {
+            continue;
+        };
+        let velocity = Vector2::new(movement.vec.x, movement.vec.y) * speed.0;
+        body.set_velocity(velocity);
+        body.move_and_slide();
     }
 }
