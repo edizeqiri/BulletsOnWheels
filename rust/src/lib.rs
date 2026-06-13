@@ -2,6 +2,9 @@ use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 mod character;
+//mod gamestate;
+mod input;
+mod level_manager;
 
 mod weapon;
 
@@ -15,10 +18,12 @@ fn build_app(app: &mut App) {
     app
         .add_plugins(GodotDefaultPlugins)
         .add_plugins(weapon::plugin)
-        .add_plugins(character::plugin);
+        .add_plugins(character::plugin)
+        //.add_plugins(gamestate::plugin)
+        .add_plugins(input::plugin)
+        .add_plugins(character::plugin)
+        .add_plugins(level_manager::LevelManagerPlugin);
 
-    // Add your systems here
-    app.add_systems(Update, hello_world_system);
 }
 
 fn hello_world_system(mut timer: Local<f32>, time: Res<Time>) {

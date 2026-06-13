@@ -1,9 +1,10 @@
-use bevy::prelude::*;
-
 use crate::character;
-use crate::character::{Health, ShootingState};
+use crate::character::{Aim, Health, ShootingState};
+use bevy::prelude::*;
+use godot_bevy::prelude::*;
+
 // TODO: gamestate
-//use crate::gamestate::GameState; 
+//use crate::gamestate::GameState;
 //use crate::weapon::{ShootEvent, Weapons};
 
 pub(super) fn plugin(app: &mut App) {
@@ -12,46 +13,62 @@ pub(super) fn plugin(app: &mut App) {
         (
             player_shoot_system,
             check_player_zero_health_system,
-            handle_player_zero_health_system
-        )
-            //.run_if(in_state(GameState::RUNNING))
+            handle_player_zero_health_system,
+        ), //.run_if(in_state(GameState::RUNNING))
     );
 }
 
-#[derive(Component)]
+#[derive(Component,Default)]
 pub struct Player;
+
+#[derive(Bundle, GodotNode)]
+#[godot_node(base(CharacterBody2D), class_name(RPlayer2D))]
+pub struct PlayerBundle {
+    player: Player,
+
+    #[export_fields(
+        current(export_type(u32), default(10)),
+        max(export_type(u32), default(10))
+    )]
+    health: Health,
+
+    //weapon: Weapons,
+    transform: Transform,
+    aim: Aim,
+    shooting_state: ShootingState,
+}
 
 #[derive(Message)]
 pub struct PlayerDeathMessage {
-    pub entity: Entity
+    pub entity: Entity,
 }
 
 fn player_shoot_system(
     player_query: Query<(Entity, &ShootingState), With<Player>>,
     mut shoot_timer: Local<f32>,
-    time: Res<Time>
+    time: Res<Time>,
 ) {
-
 }
 
 pub fn create_player_bundle(
     transform: Transform,
     //weapons: Weapons,
     max_health: u32,
-    name: Name
+    name: Name,
 ) -> impl Bundle {
     (
         name,
-        character::create_character(transform,
-           // weapons.clone(),
-            max_health),
+        character::create_character(
+            transform, // weapons.clone(),
+            max_health,
+        ),
         Player,
     )
 }
 
 fn check_player_zero_health_system(
     mut death_message: MessageWriter<PlayerDeathMessage>,
-    query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>
+    query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>,
 ) {
     for (health, entity) in &query {
         if health.current <= 0 {
@@ -62,7 +79,7 @@ fn check_player_zero_health_system(
 
 fn handle_player_zero_health_system(
     mut commands: Commands,
-    mut player_death_messages: MessageReader<PlayerDeathMessage>
+    mut player_death_messages: MessageReader<PlayerDeathMessage>,
 ) {
     for message in player_death_messages.read() {
         commands.entity(message.entity).despawn();
@@ -87,7 +104,7 @@ mod tests {
     // ----------- SETUP ----------- //
     pub struct Setup {
         pub app: App,
-        pub player: Entity
+        pub player: Entity,
     }
 
     impl Setup {
@@ -108,7 +125,7 @@ mod tests {
                     Transform::from_xyz(1.0, 1.0, 0.0),
                     //Weapons::default(),
                     1,
-                    Name::from("Player")
+                    Name::from("Player"),
                 ))
                 .id();
 
