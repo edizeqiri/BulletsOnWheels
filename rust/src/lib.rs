@@ -6,6 +6,8 @@ mod character;
 mod input;
 mod level_manager;
 
+mod weapon;
+
 #[bevy_app]
 fn build_app(app: &mut App) {
     // GodotDefaultPlugins provides all standard godot-bevy functionality
@@ -15,6 +17,8 @@ fn build_app(app: &mut App) {
     //     .add_plugins(BevyInputBridgePlugin);
     app
         .add_plugins(GodotDefaultPlugins)
+        .add_plugins(weapon::plugin)
+        .add_plugins(character::plugin)
         //.add_plugins(gamestate::plugin)
         .add_plugins(input::plugin)
         .add_plugins(character::plugin)
