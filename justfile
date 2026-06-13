@@ -3,6 +3,7 @@ godot_project := "godot"
 
 build:
     cargo build
+
 build-release:
     cargo build --release
 

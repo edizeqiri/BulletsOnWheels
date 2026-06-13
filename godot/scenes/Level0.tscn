@@ -143,11 +143,11 @@ separation = Vector2i(1, 1)
 [sub_resource type="TileSet" id="TileSet_odhdn"]
 sources/0 = SubResource("TileSetAtlasSource_bwv4p")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sdi4c"]
+
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_a0yht"]
 a = Vector2(4, 1)
 b = Vector2(-6, 11)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sdi4c"]
 
 [node name="Level0" type="Node2D" unique_id=1164780848]
 
@@ -158,7 +158,19 @@ use_parent_material = true
 tile_map_data = PackedByteArray("AAABAAEAAAABAAAAAAABAAIAAAABAAEAAAABAAMAAAABAAEAAAABAAQAAAABAAEAAAABAAUAAAABAAEAAAABAAYAAAABAAEAAAABAAcAAAABAAIAAAACAAEAAAACAAAAAAACAAIAAAAJAAQAAAACAAMAAAAEAAQAAGACAAQAAAACAAQAAGACAAUAAAACAAQAAGACAAYAAAACAAQAAGACAAcAAAACAAIAAAADAAEAAAACAAAAAAADAAIAAAAEAAIAAAADAAMAAAACAAQAAAADAAQAAAAGAAMAAAADAAUAAAAAAAQAAAADAAYAAAAGAAMAAAADAAcAAAACAAIAAAAEAAEAAAACAAAAAAAEAAIAAAAEAAMAAAAEAAMAAAACAAQAAAAEAAQAAAAAAAQAAAAEAAUAAAABAAQAAAAEAAYAAAAAAAQAAAAEAAcAAAACAAIAAAAFAAEAAAACAAAAAAAFAAIAAAAJAAEAAAAFAAMAAAADAAQAAAAFAAQAAAAAAAQAAAAFAAUAAAAAAAQAAAAFAAYAAAAAAAQAAAAFAAcAAAACAAIAAAAGAAcAAAACAAIAAAAHAAcAAAACAAIAAAAIAAcAAAADAAIAAAAGAAEAAAACAAAAAAAGAAIAAAALAAQAAAAGAAMAAAAFAAQAAAAGAAQAAAAAAAQAAAAGAAUAAAAAAAQAAAAGAAYAAAABAAQAAAAHAAEAAAACAAAAAAAHAAIAAAALAAQAAAAHAAMAAAAFAAQAAAAHAAQAAAAAAAQAAAAHAAUAAAAAAAQAAAAHAAYAAAABAAQAAAAIAAEAAAADAAAAAAAIAAIAAAADAAEAAAAIAAMAAAADAAEAAAAIAAQAAAADAAEAAAAIAAUAAAADAAEAAAAIAAYAAAADAAEAAAA=")
 tile_set = SubResource("TileSet_odhdn")
 
+[node name="RPlayer2D" type="RPlayer2D" parent="." unique_id=812171170]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RPlayer2D" unique_id=679622914]
+position = Vector2(89, 75)
+shape = SubResource("RectangleShape2D_sdi4c")
+
+[node name="Sprite2D" type="Sprite2D" parent="RPlayer2D" unique_id=1588358240]
+position = Vector2(89, 75)
+texture = ExtResource("2_nkg6q")
+
 [node name="WeaponTrident" type="RWeapon2D" parent="." unique_id=555689413]
+fire_rate = 1.0
+weapon_kind = "STAFF"
 position = Vector2(112, 68)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WeaponTrident" unique_id=1169423592]
@@ -169,13 +181,3 @@ shape = SubResource("SegmentShape2D_a0yht")
 position = Vector2(-7, 7)
 scale = Vector2(0.41666666, 0.41666666)
 texture = ExtResource("3_sdi4c")
-
-[node name="RPlayer2D" type="RPlayer2D" parent="." unique_id=812171170]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RPlayer2D" unique_id=679622914]
-position = Vector2(89, 75)
-shape = SubResource("RectangleShape2D_sdi4c")
-
-[node name="Sprite2D" type="Sprite2D" parent="RPlayer2D" unique_id=1588358240]
-position = Vector2(89, 75)
-texture = ExtResource("2_nkg6q")
