@@ -1,8 +1,9 @@
 use bevy::prelude::*;
+use godot_bevy::prelude::*;
 use rand::{Rng, RngCore};
 
-use crate::character;
 use crate::character::Health;
+use crate::character::{self, Aim, Movement, MovementSpeed, ShootingState};
 /*
 use crate::gamestate::EnemyResource;
 use crate::weapon::Weapons;
@@ -17,8 +18,26 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(Update, handle_enemy_zero_health_system);
 }
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Enemy;
+
+#[derive(Bundle, GodotNode)]
+#[godot_node(base(CharacterBody2D), class_name(REnemy2D))]
+pub struct EnemyBundle {
+    enemy: Enemy,
+
+    #[export_fields(
+        current(export_type(u32), default(10)),
+        max(export_type(u32), default(10))
+    )]
+    health: Health,
+
+    //weapon: Weapons,
+    aim: Aim,
+    movement: Movement,
+    speed: MovementSpeed,
+    shooting_state: ShootingState,
+}
 
 /// This message will be reused for any enemy entity, even bullets. Don't ask
 /// why.
@@ -34,7 +53,6 @@ pub struct EnemySpawnedMessage {
 
 #[derive(Message)]
 pub struct CreateEnemyMessage;
-
 
 fn check_enemy_zero_health_system(
     mut death_message: MessageWriter<EnemyDeathMessage>,
