@@ -22,7 +22,7 @@ impl LevelId {
     /// Get the Godot scene path for this level
     pub fn scene_path(&self) -> &'static str {
         match self {
-            LevelId::Level0 => "scenes/Level0.tscn",
+            LevelId::Level0 => "scenes/levelsLevel0.tscn",
         }
     }
 

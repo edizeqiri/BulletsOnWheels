@@ -1,11 +1,10 @@
 [gd_scene format=4 uid="uid://c8hm5l356pnnm"]
 
-[ext_resource type="Texture2D" uid="uid://r4hlroxtgq1t" path="res://assets/kenney_tiny-dungeon/Tilemap/tilemap.png" id="1_k7nap"]
-[ext_resource type="Texture2D" uid="uid://j24o1cefeagl" path="res://assets/kenney_tiny-dungeon/Tiles/tile_0084.png" id="2_nkg6q"]
-[ext_resource type="Texture2D" uid="uid://bv7sv6y6dr581" path="res://assets/staff/trident_staff.png" id="3_sdi4c"]
+[ext_resource type="Texture2D" uid="uid://r4hlroxtgq1t" path="res://assets/kenney_tiny-dungeon/Tilemap/tilemap.png" id="1_wnydg"]
+[ext_resource type="PackedScene" uid="uid://dkfbqgsl3ty8c" path="res://scenes/player.tscn" id="2_0l7rd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bwv4p"]
-texture = ExtResource("1_k7nap")
+texture = ExtResource("1_wnydg")
 separation = Vector2i(1, 1)
 0:0/0 = 0
 1:0/0 = 0
@@ -143,12 +142,6 @@ separation = Vector2i(1, 1)
 [sub_resource type="TileSet" id="TileSet_odhdn"]
 sources/0 = SubResource("TileSetAtlasSource_bwv4p")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sdi4c"]
-
-[sub_resource type="SegmentShape2D" id="SegmentShape2D_a0yht"]
-a = Vector2(4, 1)
-b = Vector2(-6, 11)
-
 [node name="Level0" type="Node2D" unique_id=1164780848]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=870836250]
@@ -158,23 +151,5 @@ use_parent_material = true
 tile_map_data = PackedByteArray("AAAAAAAAAAABAAAAAAAAAAEAAAABAAEAAAAAAAIAAAABAAEAAAAAAAMAAAABAAEAAAAAAAQAAAABAAEAAAAAAAUAAAABAAEAAAAAAAYAAAABAAIAAAABAAAAAAACAAAAAAABAAEAAAAJAAQAAAABAAIAAAAEAAQAAGABAAMAAAACAAQAAGABAAQAAAACAAQAAGABAAUAAAACAAQAAGABAAYAAAACAAIAAAACAAAAAAACAAAAAAACAAEAAAAEAAIAAAACAAIAAAACAAQAAAACAAMAAAAGAAMAAAACAAQAAAAAAAQAAAACAAUAAAAGAAMAAAACAAYAAAACAAIAAAADAAAAAAACAAAAAAADAAEAAAAEAAMAAAADAAIAAAACAAQAAAADAAMAAAAAAAQAAAADAAQAAAABAAQAAAADAAUAAAAAAAQAAAADAAYAAAACAAIAAAAEAAAAAAACAAAAAAAEAAEAAAAJAAEAAAAEAAIAAAADAAQAAAAEAAMAAAAAAAQAAAAEAAQAAAAAAAQAAAAEAAUAAAAAAAQAAAAEAAYAAAACAAIAAAAFAAAAAAACAAAAAAAFAAEAAAALAAQAAAAFAAIAAAAFAAQAAAAFAAMAAAAAAAQAAAAFAAQAAAAAAAQAAAAFAAUAAAABAAQAAAAFAAYAAAACAAIAAAAGAAAAAAACAAAAAAAGAAEAAAALAAQAAAAGAAIAAAAFAAQAAAAGAAMAAAAAAAQAAAAGAAQAAAAAAAQAAAAGAAUAAAABAAQAAAAGAAYAAAACAAIAAAAHAAAAAAADAAAAAAAHAAEAAAADAAEAAAAHAAIAAAADAAEAAAAHAAMAAAADAAEAAAAHAAQAAAADAAEAAAAHAAUAAAADAAEAAAAHAAYAAAADAAIAAAA=")
 tile_set = SubResource("TileSet_odhdn")
 
-[node name="Player" type="RPlayer2D" parent="." unique_id=36264899]
+[node name="Player" parent="." unique_id=113791534 instance=ExtResource("2_0l7rd")]
 position = Vector2(70, 60)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=679622914]
-shape = SubResource("RectangleShape2D_sdi4c")
-
-[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1588358240]
-texture = ExtResource("2_nkg6q")
-
-[node name="WeaponTrident" type="RigidBody2D" parent="Player" unique_id=555689413]
-position = Vector2(16, -6)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/WeaponTrident" unique_id=1169423592]
-position = Vector2(-6, 1)
-shape = SubResource("SegmentShape2D_a0yht")
-
-[node name="Sprite2D" type="Sprite2D" parent="Player/WeaponTrident" unique_id=982004079]
-position = Vector2(-7, 7)
-scale = Vector2(0.41666666, 0.41666666)
-texture = ExtResource("3_sdi4c")
