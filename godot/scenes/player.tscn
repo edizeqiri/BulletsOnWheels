@@ -17,7 +17,7 @@ shape = SubResource("RectangleShape2D_sdi4c")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=798882074]
 texture = ExtResource("1_g2els")
 
-[node name="WeaponTrident" type="RigidBody2D" parent="." unique_id=1946013730]
+[node name="WeaponTrident" type="RWeapon2D" parent="." unique_id=607374442]
 position = Vector2(16, -6)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WeaponTrident" unique_id=43980024]
