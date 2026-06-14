@@ -13,15 +13,16 @@ pub(crate) fn plugin(app: &mut App) {
 }
 
 fn handle_mouse_motion_system(
-    mut query: Query<&mut Aim, With<Player>>,
+    mut query: Query<(&mut Aim, &Transform), With<Player>>,
     mut events: MessageReader<MouseMotion>,
 ) {
-    let Ok(mut aim) = query.single_mut() else {
+    let Ok((mut aim, transform)) = query.single_mut() else {
         return;
     };
 
     for event in events.read() {
-        aim.vec = event.position;
+        aim.vec.x = event.position.x - transform.translation.x;
+        aim.vec.y = event.position.y - transform.translation.y;
     }
 }
 
