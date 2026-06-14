@@ -2,7 +2,10 @@ use bevy::prelude::*;
 use godot_bevy::prelude::*;
 use rand::{Rng, RngCore};
 
-use crate::character::{CharacterCore, Health};
+use crate::character::{
+    CharacterCore, Health, MovementSpeed,
+    enemy_ai::{EnemyAI, EnemyFugitive, EnemyType},
+};
 /*
 use crate::gamestate::EnemyResource;
 use crate::weapon::Weapons;
@@ -30,6 +33,9 @@ pub struct EnemyBundle {
         max(export_type(u32), default(10))
     )]
     health: Health,
+
+    #[export_fields(value(export_type(f32), default(100.)))]
+    speed: MovementSpeed,
 
     core: CharacterCore,
 }

@@ -1,22 +1,29 @@
 // move to player
 
-use bevy::prelude::*;
+use std::default;
 
-use crate::character::Aim;
-use crate::character::enemy::Enemy;
-use crate::character::enemy_ai::EnemyType::Hunter;
-use crate::character::player::Player;
+use bevy::prelude::*;
+use godot::prelude::*;
+use godot_bevy::prelude::*;
+
+use crate::{
+    character::{
+        Aim, Movement, MovementSpeed, enemy::Enemy, enemy_ai::EnemyType::Hunter, player::Player,
+    },
+    weapon::weapon::ShootEvent,
+};
 //use crate::weapon::ShootEvent;
 //use crate::world::LevelState;
 //use crate::world::map::map::Level;
 pub(super) fn plugin(app: &mut App) {
-    app;
-    //.add_systems(Update, shoot_at_player)
-    //.add_systems(Update, enemy_move);
+    app.insert_resource(GodotTransformConfig::two_way())
+        .add_systems(Update, shoot_at_player_system)
+        .add_systems(Update, enemy_move_system)
+        .add_systems(Update, set_all_fugitive_system);
 }
 
 #[enum_delegate::register]
-trait EnemyAI {
+pub trait EnemyAI {
     fn shooting(&self, player: &Transform, enemy: &Transform) -> Vec2 {
         player.translation.xy() - enemy.translation.xy()
     }
@@ -39,7 +46,7 @@ impl Default for EnemyType {
     }
 }
 #[derive(Debug)]
-struct EnemyFugitive;
+pub struct EnemyFugitive;
 
 impl EnemyAI for EnemyFugitive {
     fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
@@ -48,9 +55,7 @@ impl EnemyAI for EnemyFugitive {
 }
 
 #[derive(Debug)]
-struct EnemySeeker {
-    goal: Vec2,
-}
+pub struct EnemySeeker;
 
 impl EnemyAI for EnemySeeker {
     fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
@@ -65,11 +70,11 @@ impl EnemyAI for EnemyHunter {
         (player.translation.xy() - enemy.translation.xy()) * 0.8
     }
 }
-/*
-fn shoot_at_player(
+
+fn shoot_at_player_system(
     mut shoot_event: MessageWriter<ShootEvent>,
     enemy_query: Query<(Entity, &mut Aim, &Transform, &EnemyType), With<Enemy>>,
-    player_query: Query<&Transform, With<Player>>
+    player_query: Query<&Transform, With<Player>>,
 ) {
     let Ok(player) = player_query.single() else {
         return;
@@ -77,25 +82,28 @@ fn shoot_at_player(
     for (enemy, mut aim, enemy_transform, enemy_type) in enemy_query {
         aim.vec = enemy_type.shooting(player, enemy_transform);
 
-        shoot_event.write(ShootEvent {
-            shooter: enemy,
-            collision_groups: enemy_collision_groups()
-        });
+        shoot_event.write(ShootEvent { shooter: enemy });
     }
 }
 
-fn enemy_move(
+fn enemy_move_system(
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
-    enemy_query: Query<(&mut Velocity, &Transform, &EnemyType), With<Enemy>>
+    enemy_query: Query<(&mut Movement, &Transform, &EnemyType), With<Enemy>>,
 ) {
     if let Ok(player_transform) = player_query.single() {
         for (mut enemy_velocity, enemy_transform, enemy_type) in enemy_query {
-            enemy_velocity.linvel = enemy_type.moving(
-                player_transform,
-                enemy_transform,
-                // TODO: add this in game and query to get it
-                Level(LevelState::TWO)
-            );
+            enemy_velocity.vec = enemy_type
+                .moving(player_transform, enemy_transform)
+                .normalize();
+            info!("enemy movement vec is: {} ", enemy_velocity.vec);
         }
     }
-}*/
+}
+
+fn set_all_fugitive_system(mut commands: Commands, enemy_query: Query<Entity, With<Enemy>>) {
+    for enemy in enemy_query {
+        commands
+            .entity(enemy)
+            .insert(EnemyType::Hunter(EnemyHunter));
+    }
+}

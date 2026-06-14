@@ -1,4 +1,4 @@
-use crate::character;
+use crate::character::{self, MovementSpeed};
 use crate::character::{CharacterCore, Health, ShootingState};
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
@@ -18,7 +18,7 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-#[derive(Component,Default)]
+#[derive(Component, Default)]
 pub struct Player;
 
 #[derive(Bundle, GodotNode)]
@@ -31,6 +31,9 @@ pub struct PlayerBundle {
         max(export_type(u32), default(10))
     )]
     health: Health,
+
+    #[export_fields(value(export_type(f32), default(200.)))]
+    speed: MovementSpeed,
 
     core: CharacterCore,
 }

@@ -7,9 +7,7 @@
 [node name="REnemy2D" type="REnemy2D" unique_id=1197690428]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=772759740]
-position = Vector2(220, 70)
 texture = ExtResource("1_llyn4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=940602930]
-position = Vector2(220, 71)
 shape = SubResource("RectangleShape2D_y1qmp")

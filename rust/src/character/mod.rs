@@ -48,7 +48,7 @@ pub struct MovementSpeed(pub f32);
 
 impl Default for MovementSpeed {
     fn default() -> Self {
-        Self(2.)
+        Self(200.)
     }
 }
 
@@ -57,7 +57,6 @@ pub struct CharacterCore {
     //weapon: Weapons,
     aim: Aim,
     movement: Movement,
-    speed: MovementSpeed,
     shooting_state: ShootingState,
 }
 
