@@ -16,7 +16,8 @@ use crate::{
 //use crate::world::LevelState;
 //use crate::world::map::map::Level;
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, shoot_at_player_system)
+    app.insert_resource(GodotTransformConfig::two_way())
+        .add_systems(Update, shoot_at_player_system)
         .add_systems(Update, enemy_move_system)
         .add_systems(Update, set_all_fugitive_system);
 }
@@ -66,7 +67,7 @@ impl EnemyAI for EnemySeeker {
 struct EnemyHunter;
 impl EnemyAI for EnemyHunter {
     fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
-        (player.translation.xy() - enemy.translation.xy()) * 0.8
+        player.translation.xy() - enemy.translation.xy()
     }
 }
 
@@ -94,7 +95,10 @@ fn enemy_move_system(
             enemy_velocity.vec = enemy_type
                 .moving(player_transform, enemy_transform)
                 .normalize();
-            info!("enemy movement vec is: {} ", enemy_velocity.vec);
+            info!(
+                "enemy movement vec is: {} ",
+                enemy_type.moving(player_transform, enemy_transform)
+            );
         }
     }
 }

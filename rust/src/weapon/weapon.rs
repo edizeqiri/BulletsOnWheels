@@ -14,7 +14,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(Component, GodotNode, Default, Clone)]
-#[godot_node(base(RigidBody2D), class_name(RWeapon2D))]
+#[godot_node(base(Node2D), class_name(RWeapon2D))]
 pub struct Weapon {
     #[export_fields(value(export_type(f32), default(1.)))]
     damage: Damage,
@@ -32,7 +32,7 @@ pub enum WeaponKind {
     #[default]
     GUN,
     BOW,
-    STAFF
+    STAFF,
 }
 #[derive(Component, Debug, Clone, Default, Copy)]
 pub struct Speed(pub f32);

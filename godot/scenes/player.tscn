@@ -5,10 +5,6 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sdi4c"]
 
-[sub_resource type="SegmentShape2D" id="SegmentShape2D_a0yht"]
-a = Vector2(4, 1)
-b = Vector2(-6, 11)
-
 [node name="Player" type="RPlayer2D" unique_id=113791534]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=531665763]
@@ -19,10 +15,6 @@ texture = ExtResource("1_g2els")
 
 [node name="WeaponTrident" type="RWeapon2D" parent="." unique_id=607374442]
 position = Vector2(16, -6)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WeaponTrident" unique_id=43980024]
-position = Vector2(-6, 1)
-shape = SubResource("SegmentShape2D_a0yht")
 
 [node name="Sprite2D" type="Sprite2D" parent="WeaponTrident" unique_id=1844268808]
 position = Vector2(-7, 7)
