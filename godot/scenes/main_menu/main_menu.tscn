@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://r4hlroxtgq1t" path="res://assets/kenney_tiny-dungeon/Tilemap/tilemap.png" id="1_0ebjn"]
 [ext_resource type="PackedScene" uid="uid://p01ccnvlydbl" path="res://scenes/main_menu/main_menu_button.tscn" id="2_ob46e"]
+[ext_resource type="PackedScene" uid="uid://dkfbqgsl3ty8c" path="res://scenes/player.tscn" id="3_ob46e"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_leamy"]
 texture = ExtResource("1_0ebjn")
@@ -162,3 +163,19 @@ offset_bottom = -9.0
 theme_override_font_sizes/font_size = 5
 text = "Hit me to start the game!!!"
 autowrap_mode = 2
+
+[node name="Button2" parent="." unique_id=1043904465 instance=ExtResource("2_ob46e")]
+button_type = "EXIT"
+position = Vector2(158, 81)
+
+[node name="Label" type="Label" parent="Button2" unique_id=1224845380]
+offset_left = -22.0
+offset_top = -20.0
+offset_right = 78.0
+offset_bottom = -10.0
+theme_override_font_sizes/font_size = 5
+text = "Do not hit mee!!!"
+autowrap_mode = 2
+
+[node name="Player" parent="." unique_id=113791534 instance=ExtResource("3_ob46e")]
+position = Vector2(74, 95)

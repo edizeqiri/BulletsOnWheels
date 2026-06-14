@@ -49,13 +49,13 @@ fn handle_start_button_system(
 ) {
     let event = collision.event();
 
-    if let Ok(handle) = button_query.get(event.entity1) {
+    if let Ok(_) = button_query.get(event.entity1) {
         if projectile_query.get(event.entity2).is_ok() {
             commands.trigger(LoadLevelMessage {
                 level_id: LevelId::Level1,
             });
         }
-    } else if let Ok(handle) = projectile_query.get(event.entity2) {
+    } else if let Ok(_) = projectile_query.get(event.entity2) {
         if button_query.get(event.entity1).is_ok() {
             commands.trigger(LoadLevelMessage {
                 level_id: LevelId::Level1,
