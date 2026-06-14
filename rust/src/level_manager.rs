@@ -5,6 +5,8 @@ use godot_bevy::interop::signal_names::SceneTreeSignals;
 use godot_bevy::plugins::scene_tree::{SceneTreeMessage, SceneTreeMessageType};
 use godot_bevy::prelude::*;
 
+/// FYI: This code comes from godot_bevy.
+
 /// Event fired when the Godot scene changes.
 /// This demonstrates using `connect_object` to listen to singleton signals.
 #[derive(Event, Debug, Clone)]

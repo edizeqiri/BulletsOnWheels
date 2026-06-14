@@ -95,10 +95,6 @@ fn enemy_move_system(
             enemy_velocity.vec = enemy_type
                 .moving(player_transform, enemy_transform)
                 .normalize();
-            info!(
-                "enemy movement vec is: {} ",
-                enemy_type.moving(player_transform, enemy_transform)
-            );
         }
     }
 }

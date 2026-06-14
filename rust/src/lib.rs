@@ -5,7 +5,7 @@ mod character;
 //mod gamestate;
 mod input;
 mod level_manager;
-
+mod main_menu;
 mod weapon;
 
 #[bevy_app]
