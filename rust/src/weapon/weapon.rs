@@ -1,16 +1,19 @@
-use std::str::FromStr;
-
 use bevy::math::Vec2;
 use bevy::prelude::*;
+use bevy_asset_loader::asset_collection::AssetCollection;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
 use crate::character::Aim;
+use crate::gamestate::GameState;
 use crate::weapon::Damage;
 use crate::weapon::projectile::{ProjectileBundle, create_projectile};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_message::<ShootEvent>();
+    app.add_message::<ShootMessage>().add_systems(
+        Update,
+        on_shoot_message_system.run_if(in_state(GameState::START)),
+    );
 }
 
 #[derive(Component, GodotNode, Default, Clone)]
@@ -56,7 +59,7 @@ impl Weapon {
 }
 
 #[derive(Message)]
-pub struct ShootEvent {
+pub struct ShootMessage {
     pub shooter: Entity,
 }
 
@@ -65,16 +68,35 @@ pub struct Weapons {
     pub list: Vec<Weapon>,
 }
 
-pub(crate) fn shoot_on_event(
+#[derive(AssetCollection, Resource)]
+pub(crate) struct ProjectileAssets {
+    #[asset(path = "scenes/projectile.tscn")]
+    pub projectile_scene: Handle<GodotResource>,
+}
+
+pub(crate) fn on_shoot_message_system(
     mut commands: Commands,
-    mut shoot_event: MessageReader<ShootEvent>,
-    mut shooter_query: Query<(&mut Weapons, &Aim, &Transform)>,
+    mut shoot_event: MessageReader<ShootMessage>,
+    mut shooter_query: Query<(&Transform)>,
+    assets: Option<Res<ProjectileAssets>>,
 ) {
+    // If the projectile assets are not yet loaded/inserted, consume any queued shoot
+    // messages (to avoid a burst once assets arrive) and skip spawning projectiles.
+    let assets = match assets {
+        Some(a) => a,
+        None => {
+            for _ in shoot_event.read() { /* drop events until assets are ready */ }
+            return;
+        },
+    };
+
     for event in shoot_event.read() {
-        if let Ok((mut weapons, aim, transform)) = shooter_query.get_mut(event.shooter) {
-            for weapon in &mut weapons.list {
-                commands.spawn((weapon.shoot(aim.vec), *transform));
-            }
+        if let Ok(transform) = shooter_query.get_mut(event.shooter) {
+            info!("shoot message received");
+            commands
+                .spawn_empty()
+                .insert(transform.clone())
+                .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
         }
     }
 }

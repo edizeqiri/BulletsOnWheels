@@ -8,7 +8,7 @@ use crate::character::player::PlayerDeathMessage;
 use crate::gamestate::start::StartGameMessage;
 
 pub(crate) mod start;
-
+/*
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<GameStateMessage>()
         .add_systems(Update, state_machine_system)
@@ -21,11 +21,11 @@ pub(super) fn plugin(app: &mut App) {
             aggregate_message_system::<StartGameMessage>.run_if(in_state(GameState::START)),
         );
 }
-
+*/
 // ---------- GAME STATE ---------- //
 
 #[derive(States, Debug, Clone, Eq, PartialEq, Hash, Default)]
-pub enum GameState {
+pub(crate) enum GameState {
     #[default]
     START,
     RUNNING,

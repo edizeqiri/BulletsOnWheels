@@ -7,6 +7,8 @@ use godot::classes::CharacterBody2D;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
+use crate::weapon::weapon::Weapon;
+
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(enemy_ai::plugin)
         .add_plugins(enemy::plugin)
@@ -54,7 +56,7 @@ impl Default for MovementSpeed {
 
 #[derive(Bundle, Default)]
 pub struct CharacterCore {
-    //weapon: Weapons,
+    weapon: Weapon,
     aim: Aim,
     movement: Movement,
     shooting_state: ShootingState,

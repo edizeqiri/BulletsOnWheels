@@ -10,7 +10,7 @@ use crate::{
     character::{
         Aim, Movement, MovementSpeed, enemy::Enemy, enemy_ai::EnemyType::Hunter, player::Player,
     },
-    weapon::weapon::ShootEvent,
+    weapon::weapon::ShootMessage,
 };
 //use crate::weapon::ShootEvent;
 //use crate::world::LevelState;
@@ -72,7 +72,7 @@ impl EnemyAI for EnemyHunter {
 }
 
 fn shoot_at_player_system(
-    mut shoot_event: MessageWriter<ShootEvent>,
+    mut shoot_event: MessageWriter<ShootMessage>,
     enemy_query: Query<(Entity, &mut Aim, &Transform, &EnemyType), With<Enemy>>,
     player_query: Query<&Transform, With<Player>>,
 ) {
@@ -82,7 +82,7 @@ fn shoot_at_player_system(
     for (enemy, mut aim, enemy_transform, enemy_type) in enemy_query {
         aim.vec = enemy_type.shooting(player, enemy_transform);
 
-        shoot_event.write(ShootEvent { shooter: enemy });
+        shoot_event.write(ShootMessage { shooter: enemy });
     }
 }
 
