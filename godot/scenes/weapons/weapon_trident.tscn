@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://cem8xn74owfta"]
+
+[ext_resource type="Texture2D" uid="uid://bv7sv6y6dr581" path="res://assets/staff/trident_staff.png" id="1_bcdgi"]
+
+[node name="WeaponTrident" type="RWeapon2D" unique_id=127622143]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=125212372]
+position = Vector2(-7, 7)
+scale = Vector2(0.41666666, 0.41666666)
+texture = ExtResource("1_bcdgi")

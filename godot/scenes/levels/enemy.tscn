@@ -1,13 +1,18 @@
 [gd_scene format=3 uid="uid://ccsypye2gp2j0"]
 
 [ext_resource type="Texture2D" uid="uid://7hi6bdg1vshk" path="res://assets/kenney_tiny-dungeon/Tiles/tile_0111.png" id="1_llyn4"]
+[ext_resource type="PackedScene" uid="uid://cem8xn74owfta" path="res://scenes/weapons/weapon_trident.tscn" id="2_y1qmp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y1qmp"]
+size = Vector2(16, 16)
 
-[node name="REnemy2D" type="REnemy2D" unique_id=1197690428]
+[node name="Enemy" type="REnemy2D" unique_id=1197690428]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=772759740]
 texture = ExtResource("1_llyn4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=940602930]
 shape = SubResource("RectangleShape2D_y1qmp")
+
+[node name="WeaponTrident" parent="." unique_id=127622143 instance=ExtResource("2_y1qmp")]
+position = Vector2(16, -7)
