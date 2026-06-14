@@ -73,6 +73,7 @@ fn apply_character_movement(
             continue;
         };
         let velocity = Vector2::new(movement.vec.x, movement.vec.y) * speed.0;
+        info!("velo {:?}", velocity);
         body.set_velocity(velocity);
         body.move_and_slide();
     }
