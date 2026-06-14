@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{math::VectorSpace, prelude::*};
 use godot::global::Key;
 use godot_bevy::prelude::*;
 
@@ -20,12 +20,14 @@ fn handle_keyboard_system(
     for event in events.read() {
         if event.pressed {
             movement.vec = match event.keycode {
-                Key::W => Vec2 { x: 0., y: 1. },
+                Key::W => Vec2 { x: 0., y: -1. },
                 Key::A => Vec2 { x: -1., y: 0. },
-                Key::S => Vec2 { x: 0., y: -1. },
+                Key::S => Vec2 { x: 0., y: 1. },
                 Key::D => Vec2 { x: 1., y: 0. },
                 _ => Vec2::ZERO
             };
+        } else {
+            movement.vec = Vec2::ZERO
         }
     }
 }
