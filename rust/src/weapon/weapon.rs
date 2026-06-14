@@ -57,7 +57,7 @@ impl Weapon {
     pub fn new(damage: f32, speed: f32, fire_rate: f32, weapon_kind: WeaponKind) -> Self {
         Self {
             damage: Damage(damage),
-            speed: Speed(speed),
+            speed: Speed { speed: speed },
             fire_rate: FireRate(fire_rate),
             weapon_kind: WeaponKindComponent(weapon_kind),
         }
@@ -70,7 +70,7 @@ impl Weapon {
 #[derive(Message)]
 pub struct ShootMessage {
     pub shooter: Entity,
-    pub velocity: Velocity
+    pub aim: Aim
 }
 
 #[derive(Component, Clone)]
@@ -86,8 +86,8 @@ pub(crate) struct ProjectileAssets {
 
 pub(crate) fn on_shoot_message_system(
     mut commands: Commands,
-    mut shoot_event: MessageReader<ShootMessage>,
-    mut shooter_query: Query<(&Transform)>,
+    mut shoot_message: MessageReader<ShootMessage>,
+    mut shooter_query: Query<(&Transform, &Weapon)>,
     assets: Option<Res<ProjectileAssets>>,
 ) {
     // If the projectile assets are not yet loaded/inserted, consume any queued shoot
