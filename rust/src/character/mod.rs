@@ -48,7 +48,7 @@ pub struct MovementSpeed(pub f32);
 
 impl Default for MovementSpeed {
     fn default() -> Self {
-        Self(200.)
+        Self(2.)
     }
 }
 
@@ -61,6 +61,8 @@ pub struct CharacterCore {
     shooting_state: ShootingState,
 }
 
+/// Movement Sink, godot style
+/// move_and_slide is needed so that we do not have teleports by just changing translation in transform
 fn apply_character_movement(
     query: Query<(&GodotNodeHandle, &Movement, &MovementSpeed)>,
     mut godot: GodotAccess,

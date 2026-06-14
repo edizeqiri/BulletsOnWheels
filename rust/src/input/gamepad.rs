@@ -10,7 +10,7 @@ use crate::{
 use godot::global::JoyAxis;
 use godot_bevy::prelude::*;
 
-const DEADZONE: f32 = 0.2;
+const DEADZONE: f32 = 0.05;
 
 pub(crate) fn plugin(app: &mut App) {
     app //.add_message::<StartGameMessage>()

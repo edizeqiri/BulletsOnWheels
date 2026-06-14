@@ -9,13 +9,13 @@ pub struct Projectile {
 }
 
 #[derive(Default, Bundle, GodotNode)]
-#[godot_node(base(Node2D), class_name(RProjectile2D))]
+#[godot_node(base(Area2D), class_name(RProjectile2D))]
 pub struct ProjectileBundle {
-    projectile: Projectile
+    projectile: Projectile,
 }
 
 pub fn create_projectile(damage: Damage, speed: Speed, direction: Vec2) -> ProjectileBundle {
     ProjectileBundle {
-        projectile: Projectile { damage }
+        projectile: Projectile { damage },
     }
 }
