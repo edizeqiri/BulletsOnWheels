@@ -22,7 +22,7 @@ BevyAppSingleton="*uid://bjsfwt816j4tp"
 [display]
 
 window/size/viewport_width=320
-window/size/viewport_height=180
+window/size/viewport_height=178
 window/size/mode=2
 window/size/always_on_top=true
 window/stretch/mode="canvas_items"

@@ -1,7 +1,7 @@
 use bevy::app::App;
 use bevy::prelude::{
     IntoScheduleConfigs, Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource,
-    State, States, Update, in_state
+    State, States, Update, in_state,
 };
 
 use crate::character::player::PlayerDeathMessage;
@@ -14,11 +14,11 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(Update, state_machine_system)
         .add_systems(
             Update,
-            aggregate_message_system::<PlayerDeathMessage>.run_if(in_state(GameState::RUNNING))
+            aggregate_message_system::<PlayerDeathMessage>.run_if(in_state(GameState::RUNNING)),
         )
         .add_systems(
             Update,
-            aggregate_message_system::<StartGameMessage>.run_if(in_state(GameState::START))
+            aggregate_message_system::<StartGameMessage>.run_if(in_state(GameState::START)),
         );
 }
 
@@ -30,20 +30,20 @@ pub enum GameState {
     START,
     RUNNING,
     PAUSE,
-    STOP
+    STOP,
 }
 
 // ---------- STATE MACHINE ---------- //
 
 #[derive(Message)]
 pub struct GameStateMessage {
-    kind: GameStateEnum
+    kind: GameStateEnum,
 }
 
 #[derive(Copy, Clone)]
 pub enum GameStateEnum {
     PlayerDeath,
-    StartGame
+    StartGame,
 }
 
 impl From<&PlayerDeathMessage> for GameStateEnum {
@@ -60,14 +60,14 @@ impl From<&StartGameMessage> for GameStateEnum {
 
 pub fn aggregate_message_system<M>(
     mut messages: MessageReader<M>,
-    mut writer: MessageWriter<GameStateMessage>
+    mut writer: MessageWriter<GameStateMessage>,
 ) where
     M: Message,
-    for<'a> &'a M: Into<GameStateEnum>
+    for<'a> &'a M: Into<GameStateEnum>,
 {
     for message in messages.read() {
         writer.write(GameStateMessage {
-            kind: message.into()
+            kind: message.into(),
         });
     }
 }
@@ -76,7 +76,7 @@ pub fn aggregate_message_system<M>(
 fn state_machine_system(
     mut messages: MessageReader<GameStateMessage>,
     current_state: Res<State<GameState>>,
-    mut next_state: ResMut<NextState<GameState>>
+    mut next_state: ResMut<NextState<GameState>>,
 ) {
     for message in messages.read() {
         match (message.kind, current_state.get()) {
@@ -86,7 +86,7 @@ fn state_machine_system(
             (GameStateEnum::StartGame, GameState::START) => {
                 next_state.set(GameState::RUNNING);
             },
-            _ => {}
+            _ => {},
         }
     }
 }
@@ -96,7 +96,7 @@ pub struct PlayerResource {
     // x_range: Range<i32>,
     // y_range: Range<i32>,
     // pub weapons: Weapons,
-    pub max_health: u32
+    pub max_health: u32,
 }
 
 #[derive(Resource, Clone)]
@@ -104,5 +104,5 @@ pub struct EnemyResource {
     // x_range: Range<i32>,
     // y_range: Range<i32>,
     // pub weapons: Weapons,
-    pub max_health: u32
+    pub max_health: u32,
 }
