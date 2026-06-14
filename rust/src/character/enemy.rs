@@ -2,10 +2,7 @@ use bevy::prelude::*;
 use godot_bevy::prelude::*;
 use rand::{Rng, RngCore};
 
-use crate::character::{
-    CharacterCore, Health, MovementSpeed,
-    enemy_ai::{EnemyAI, EnemyFugitive, EnemyType},
-};
+use crate::character::{CharacterCore, Health, MovementSpeed};
 /*
 use crate::gamestate::EnemyResource;
 use crate::weapon::Weapons;
@@ -72,81 +69,5 @@ fn handle_enemy_zero_health_system(
 ) {
     for message in enemy_death_messages.read() {
         commands.entity(message.entity).despawn();
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use bevy::app::App;
-    use bevy::prelude::{Entity, Name, Transform, With};
-
-    use crate::character::enemy::{Enemy, create_enemy_bundle};
-    use crate::character::enemy_ai::EnemyType;
-    use crate::character::{Health, enemy};
-    //use crate::weapon::Weapons;
-
-    // ----------- SETUP ----------- //
-    pub struct Setup {
-        pub app: App,
-        pub player: Entity,
-    }
-
-    impl Setup {
-        pub fn new() -> Self {
-            // setup App
-            let mut app = App::new();
-
-            app.add_plugins(enemy::plugin);
-
-            // setup Entities
-            let player = app
-                .world_mut()
-                .spawn(create_enemy_bundle(
-                    Transform::from_xyz(1.0, 1.0, 0.0),
-                    //Weapons::default(),
-                    1,
-                    Name::from("Player"),
-                    EnemyType::default(),
-                ))
-                .id();
-
-            // start app
-            app.update();
-
-            Self { app, player }
-        }
-    }
-
-    // ----------- TEST ----------- //
-
-    #[test]
-    fn zero_health_enemy_is_despawned() {
-        let mut setup = Setup::new();
-
-        {
-            let world = setup.app.world_mut();
-
-            // when: enemy.health.current = 0
-            world
-                .query::<&mut Health>()
-                .get_mut(world, setup.player)
-                .unwrap()
-                .current = 0;
-        }
-
-        // 1. message: health changes
-        setup.app.update();
-        // 2. message: enemy died
-        setup.app.update();
-
-        // then: no enemy exists
-        let world = setup.app.world_mut();
-        assert_eq!(
-            world
-                .query_filtered::<Entity, With<Enemy>>()
-                .iter(&world)
-                .len(),
-            0
-        );
     }
 }

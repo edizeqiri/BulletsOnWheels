@@ -15,7 +15,7 @@ fn build_app(app: &mut App) {
     // app.add_plugins(GodotTransformSyncPlugin)
     //     .add_plugins(GodotAudioPlugin)
     //     .add_plugins(BevyInputBridgePlugin);
-    app.insert_resource(GodotTransformConfig::two_way())
+    app
         .add_plugins(GodotDefaultPlugins)
         .add_plugins(weapon::plugin)
         .add_plugins(character::plugin)
