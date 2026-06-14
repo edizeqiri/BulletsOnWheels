@@ -16,8 +16,7 @@ use crate::{
 //use crate::world::LevelState;
 //use crate::world::map::map::Level;
 pub(super) fn plugin(app: &mut App) {
-    app.insert_resource(GodotTransformConfig::two_way())
-        .add_systems(Update, shoot_at_player_system)
+    app.add_systems(Update, shoot_at_player_system)
         .add_systems(Update, enemy_move_system)
         .add_systems(Update, set_all_fugitive_system);
 }
