@@ -82,7 +82,7 @@ fn shoot_at_player_system(
     for (enemy, mut aim, enemy_transform, enemy_type) in enemy_query {
         aim.vec = enemy_type.shooting(player, enemy_transform);
 
-        shoot_event.write(ShootMessage { shooter: enemy });
+        //shoot_event.write(ShootMessage { shooter: enemy });
     }
 }
 

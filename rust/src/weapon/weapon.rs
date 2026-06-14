@@ -7,24 +7,27 @@ use godot_bevy::prelude::*;
 use crate::character::Aim;
 use crate::gamestate::GameState;
 use crate::weapon::Damage;
-use crate::weapon::projectile::{ProjectileBundle, create_projectile};
+use crate::weapon::projectile::{Projectile, ProjectileBundle, Velocity, create_projectile};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<ShootMessage>().add_systems(
         Update,
         on_shoot_message_system.run_if(in_state(GameState::START)),
-    );
+    ).add_systems(Update, update_projectile_system);
 }
 
 #[derive(Component, GodotNode, Default, Clone)]
-#[godot_node(base(Node2D), class_name(pRWeapon2D))]
+#[godot_node(base(Node2D), class_name(RWeapon2D))]
 pub struct Weapon {
     #[export_fields(value(export_type(f32), default(1.)))]
     damage: Damage,
+    
     #[export_fields(value(export_type(f32), default(1.)))]
-    speed: Speed,
+    pub speed: Speed,
+    
     #[export_fields(value(export_type(f32), default(0.)))]
     fire_rate: FireRate,
+    
     #[export_fields(value(export_type(WeaponKind), default(WeaponKind::GUN)))]
     weapon_kind: WeaponKindComponent,
 }
@@ -37,8 +40,14 @@ pub enum WeaponKind {
     BOW,
     STAFF,
 }
-#[derive(Component, Debug, Clone, Default, Copy)]
+#[derive(Component, Debug, Clone, Copy)]
 pub struct Speed(pub f32);
+
+impl Default for Speed {
+    fn default() -> Self {
+        Self(10.)
+    }
+}
 #[derive(Component, Debug, Clone, Default)]
 pub struct FireRate(pub f32);
 #[derive(Component, Clone, Default)]
@@ -61,6 +70,7 @@ impl Weapon {
 #[derive(Message)]
 pub struct ShootMessage {
     pub shooter: Entity,
+    pub velocity: Velocity
 }
 
 #[derive(Component, Clone)]
@@ -95,9 +105,27 @@ pub(crate) fn on_shoot_message_system(
             info!("shoot message received");
             commands
                 .spawn_empty()
+                .insert(Projectile)
                 .insert(transform.clone())
-                .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
+                .insert(GodotScene::from_handle(assets.projectile_scene.clone()))
+                .insert(event.velocity.clone());
         }
+    }
+}
+
+fn update_projectile_system(projectile_query: Query<(&mut Transform, &Velocity), With<Projectile>>) {
+    for (mut transform, velocity) in projectile_query {
+        transform.translation.x += velocity.0.x;
+        transform.translation.y += velocity.0.y;
+    }
+
+}
+
+fn debug_projectile_system(
+    projectile_query: Query<Entity, Added<Projectile>>
+) {
+    for p in projectile_query {
+        info!("Found projectile {}", p);
     }
 }
 

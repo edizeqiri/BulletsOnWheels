@@ -4,7 +4,7 @@ use godot_bevy::{plugins::input::MouseButton, prelude::*};
 
 use crate::{
     character::{Aim, player::Player},
-    weapon::weapon::ShootMessage,
+    weapon::{projectile::Velocity, weapon::{ShootMessage, Weapon}},
 };
 
 pub(crate) fn plugin(app: &mut App) {
@@ -28,19 +28,21 @@ fn handle_mouse_motion_system(
 fn handle_mouse_system(
     mut events: MessageReader<MouseButtonInput>,
     mut shoot_message: MessageWriter<ShootMessage>,
-    player_query: Query<Entity, With<Player>>, // todo: which player?
+    player_query: Query<(Entity, &Aim, &Weapon), With<Player>>, // todo: which player?
 ) {
     for event in events.read() {
         if event.pressed {
             match event.button {
                 MouseButton::Left => {
-                    info!("shoot message sent");
-                    let Ok(player_entity) = player_query.single() else {
+                    let Ok((player_entity, aim, weapon)) = player_query.single() else {
                         return;
                     };
                     shoot_message.write(ShootMessage {
                         shooter: player_entity,
+                        velocity: Velocity(aim.vec.normalize() * weapon.speed.0)
                     });
+                    info!("gaga: {:?}",aim.vec.normalize() * weapon.speed.0)
+                    
                 },
                 _ => {},
             }
