@@ -1,6 +1,7 @@
 use bevy::{math::VectorSpace, prelude::*};
-use godot::global::Key;
+use godot::{global::Key, prelude::*};
 use godot_bevy::prelude::*;
+use godot::classes::Input;
 
 use crate::character::{Movement, player::Player};
 
@@ -12,22 +13,21 @@ pub(crate) fn plugin(app: &mut App) {
 fn handle_keyboard_system(
     mut events: MessageReader<KeyboardInput>,
     mut query: Query<(&mut Movement), With<Player>>,
+    mut godot: GodotAccess
 ) {
     let Ok(mut movement) = query.single_mut() else {
         return;
     };
-    
-    for event in events.read() {
-        if event.pressed {
-            movement.vec = match event.keycode {
-                Key::W => Vec2 { x: 0., y: -1. },
-                Key::A => Vec2 { x: -1., y: 0. },
-                Key::S => Vec2 { x: 0., y: 1. },
-                Key::D => Vec2 { x: 1., y: 0. },
-                _ => Vec2::ZERO
-            };
-        } else {
-            movement.vec = Vec2::ZERO
-        }
-    }
+
+    let gd_input = godot.singleton::<Input>();
+
+    let mut base = Vec2::ZERO;
+    if gd_input.is_key_pressed(Key::W) { base += Vec2 { x: 0., y: -1. };}
+    if gd_input.is_key_pressed(Key::A) { base += Vec2 { x: -1., y: 0. };}
+    if gd_input.is_key_pressed(Key::S) { base += Vec2 { x: 0., y: 1. };}
+    if gd_input.is_key_pressed(Key::D) { base += Vec2 { x: 1., y: 0. };}
+
+
+    movement.vec = base.normalize_or_zero();
+
 }
