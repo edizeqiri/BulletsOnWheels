@@ -1,6 +1,6 @@
 use std::default;
 
-use bevy::prelude::*;
+use bevy::{log::tracing::instrument::WithSubscriber, prelude::*};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
@@ -32,7 +32,7 @@ struct ShootableButtonBundle {
 #[derive(Component, Default)]
 struct ButtonTypeComponent(ButtonType);
 
-#[derive(GodotConvert, Var, Export, Default, Clone)]
+#[derive(GodotConvert, Var, Export, Default, Clone, Debug)]
 #[godot(via = GString)] // provides enum as string
 pub enum ButtonType {
     #[default]
@@ -47,6 +47,7 @@ fn handle_button_system(
     button_query: Query<&ButtonTypeComponent, (With<MenuButton>, With<Shootable>)>,
     projectile_query: Query<Entity, With<Projectile>>,
     mut exit: MessageWriter<AppExit>,
+    mut scene_tree: SceneTreeRef
 ) {
     let event = collision.event();
 
@@ -61,7 +62,8 @@ fn handle_button_system(
     let Some(button_type) = button_type else {
         return;
     };
-
+    
+    info!("Button type hit: {:?}", button_type.0 );
     match &button_type.0 {
         ButtonType::START => {
             commands.trigger(LoadLevelMessage {
@@ -72,7 +74,11 @@ fn handle_button_system(
             // TODO: open settings
         },
         ButtonType::EXIT => {
+            // bevy exit
             exit.write(AppExit::Success);
+
+            // godot exit
+            scene_tree.get().quit();
         },
     }
 }
