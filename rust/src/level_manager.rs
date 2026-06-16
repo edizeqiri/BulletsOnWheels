@@ -72,6 +72,9 @@ impl CurrentLevel {
 #[derive(Resource, Default)]
 struct LevelLoadingState {
     pub loading_handle: Option<Handle<GodotResource>>,
+    /// Whether the initial menu scene (Godot's main scene) has been torn down.
+    /// It isn't tracked as a Bevy entity, so we free it once on the first load.
+    pub menu_cleared: bool,
 }
 
 /// Resource that tracks the pending level
@@ -173,6 +176,7 @@ fn handle_level_scene_change(
     mut loading_state: ResMut<LevelLoadingState>,
     mut pending_level: ResMut<PendingLevel>,
     mut assets: ResMut<Assets<GodotResource>>,
+    mut scene_tree: SceneTreeRef,
 ) {
     let Some(level_id) = current_level.level_id else {
         return;
@@ -192,6 +196,17 @@ fn handle_level_scene_change(
     // Despawn the previously active level's scene root, if any
     if let Some(old_entity) = current_level.entity.take() {
         commands.entity(old_entity).despawn();
+    }
+
+    // Tear down the initial menu scene the first time we load a level.
+    // It's Godot's main scene (not a Bevy entity), so nothing else frees it;
+    // leaving it in the tree overlaps the level and keeps its shootable
+    // buttons live, re-triggering LoadLevelMessage.
+    if !loading_state.menu_cleared {
+        if let Some(mut menu) = scene_tree.get().get_current_scene() {
+            menu.queue_free();
+        }
+        loading_state.menu_cleared = true;
     }
 
     // Spawn the new level scene at the scene tree root

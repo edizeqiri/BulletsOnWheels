@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="BulletsOnWheels"
-run/main_scene="uid://c8hm5l356pnnm"
+run/main_scene="uid://dsujmi6xvwtcn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
