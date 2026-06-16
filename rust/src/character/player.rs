@@ -27,8 +27,8 @@ pub struct PlayerBundle {
     player: Player,
 
     #[export_fields(
-        current(export_type(u32), default(10)),
-        max(export_type(u32), default(10))
+        current(export_type(f32), default(10.)),
+        max(export_type(f32), default(10.))
     )]
     health: Health,
 
@@ -55,7 +55,7 @@ fn check_player_zero_health_system(
     query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>,
 ) {
     for (health, entity) in &query {
-        if health.current <= 0 {
+        if health.current <= 0. {
             death_message.write(PlayerDeathMessage { entity });
         }
     }
