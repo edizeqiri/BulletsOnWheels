@@ -57,7 +57,7 @@ impl Weapon {
     pub fn new(damage: f32, speed: f32, fire_rate: f32, weapon_kind: WeaponKind) -> Self {
         Self {
             damage: Damage(damage),
-            speed: Speed { speed: speed },
+            speed: Speed(speed),
             fire_rate: FireRate(fire_rate),
             weapon_kind: WeaponKindComponent(weapon_kind),
         }
