@@ -27,6 +27,10 @@ fn gamepad_input(
 
     let gd_input = godot.singleton::<Input>();
 
+    if gd_input.get_connected_joypads().is_empty() {
+        return;
+    };
+
     let aim_vec = Vec2::new(
         gd_input.get_joy_axis(0, JoyAxis::RIGHT_X),
         gd_input.get_joy_axis(0, JoyAxis::RIGHT_Y),

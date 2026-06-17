@@ -1,9 +1,12 @@
 use bevy::{prelude::*, state::app::StatesPlugin};
-use bevy_asset_loader::{asset_collection::AssetCollectionApp, loading_state::{LoadingState, LoadingStateAppExt, config::ConfigureLoadingState}};
+use bevy_asset_loader::{
+    asset_collection::AssetCollectionApp,
+    loading_state::{LoadingState, LoadingStateAppExt, config::ConfigureLoadingState},
+};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::gamestate::{GameState};
+use crate::gamestate::GameState;
 use crate::weapon::weapon::ProjectileAssets;
 mod character;
 
@@ -25,8 +28,10 @@ fn build_app(app: &mut App) {
         .add_plugins(character::plugin)
         .add_plugins(input::plugin)
         .add_plugins(level_manager::LevelManagerPlugin)
+        .add_plugins(main_menu::plugin)
         .add_plugins(StatesPlugin)
         .init_state::<GameState>()
-        .add_loading_state(LoadingState::new(GameState::START)
-            .load_collection::<ProjectileAssets>());
+        .add_loading_state(
+            LoadingState::new(GameState::START).load_collection::<ProjectileAssets>(),
+        );
 }

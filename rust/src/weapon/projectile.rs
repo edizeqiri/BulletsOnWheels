@@ -28,7 +28,3 @@ pub fn create_projectile(damage: Damage, speed: Speed, direction: Vec2) -> Proje
         velocity: Velocity(direction.normalize() * speed.0)
     }
 }
-
-pub fn move_projectile() {
-    
-}
