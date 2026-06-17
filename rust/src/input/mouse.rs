@@ -42,8 +42,7 @@ fn handle_mouse_system(
                         shooter: player_entity,
                         velocity: Velocity(aim.vec.normalize() * weapon.speed.0)
                     });
-                    info!("gaga: {:?}",aim.vec.normalize() * weapon.speed.0)
-                    
+                  
                 },
                 _ => {},
             }

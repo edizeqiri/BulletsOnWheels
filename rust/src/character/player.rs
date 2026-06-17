@@ -66,6 +66,7 @@ fn handle_player_zero_health_system(
     mut player_death_messages: MessageReader<PlayerDeathMessage>,
 ) {
     for message in player_death_messages.read() {
+        info!("Player dead");
         commands.entity(message.entity).despawn();
     }
 }

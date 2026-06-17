@@ -99,7 +99,8 @@ fn enemy_move_system(
     }
 }
 
-fn set_all_fugitive_system(mut commands: Commands, enemy_query: Query<Entity, With<Enemy>>) {
+// TODO: refactor this into its correct enemy type setter which tracks enemies spawned
+fn set_all_fugitive_system(mut commands: Commands, enemy_query: Query<Entity, Added<Enemy>>) {
     for enemy in enemy_query {
         commands
             .entity(enemy)

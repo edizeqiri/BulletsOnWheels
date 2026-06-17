@@ -155,7 +155,7 @@ fn on_load_level_request(
     asset_server: Res<AssetServer>,
 ) {
     let event = trigger.event();
-    //info!("Loading level asset: {:?}", event.level_id);
+    info!("Loading level asset: {:?}", event.level_id);
 
     // Load the level scene through Bevy's asset system
     let level_handle: Handle<GodotResource> = asset_server.load(event.level_id.scene_path());
@@ -166,7 +166,7 @@ fn on_load_level_request(
     // Update current level
     current_level.set(event.level_id);
 
-    //info!("Level asset loading started for: {:?}", event.level_id);
+    info!("Level asset loading started for: {:?}", event.level_id);
 }
 
 /// System that handles actual scene changing once assets are loaded
@@ -191,7 +191,7 @@ fn handle_level_scene_change(
         return;
     }
 
-    //info!("Spawning level scene: {:?}", level_id);
+    info!("Spawning level scene: {:?}", level_id);
 
     // Despawn the previously active level's scene root, if any
     if let Some(old_entity) = current_level.entity.take() {
