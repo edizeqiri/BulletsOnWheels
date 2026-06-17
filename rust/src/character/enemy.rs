@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
-use rand::{Rng, RngCore};
 
 use crate::character::{CharacterCore, Health, MovementSpeed};
 /*
