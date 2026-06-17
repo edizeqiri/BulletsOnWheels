@@ -72,7 +72,7 @@ impl Weapon {
 #[derive(Message)]
 pub struct ShootMessage {
     pub shooter: Entity,
-    pub velocity: Velocity,
+    pub aim: Aim
 }
 
 #[derive(Component, Clone)]
@@ -88,8 +88,8 @@ pub(crate) struct ProjectileAssets {
 
 pub(crate) fn on_shoot_message_system(
     mut commands: Commands,
-    mut shoot_event: MessageReader<ShootMessage>,
-    mut shooter_query: Query<&Transform>,
+    mut shoot_message: MessageReader<ShootMessage>,
+    mut shooter_query: Query<(&Transform, &Weapon)>,
     assets: Option<Res<ProjectileAssets>>,
 ) {
     // If the projectile assets are not yet loaded/inserted, consume any queued shoot
@@ -97,19 +97,20 @@ pub(crate) fn on_shoot_message_system(
     let assets = match assets {
         Some(a) => a,
         None => {
-            for _ in shoot_event.read() { /* drop events until assets are ready */ }
+            for _ in shoot_message.read() { /* drop events until assets are ready */ }
             return;
         },
     };
 
-    for event in shoot_event.read() {
-        if let Ok(transform) = shooter_query.get_mut(event.shooter) {
+    for message in shoot_message.read() {
+        if let Ok((transform, weapon)) = shooter_query.get_mut(message.shooter) {
+            info!("shoot message received");
+            let projectile_bundle = weapon.shoot(message.aim.vec);
             commands
                 .spawn_empty()
-                .insert(Projectile)
+                .insert(projectile_bundle)
                 .insert(transform.clone())
-                .insert(GodotScene::from_handle(assets.projectile_scene.clone()))
-                .insert(event.velocity.clone());
+                .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
         }
     }
 }
@@ -121,6 +122,7 @@ fn update_projectile_system(
         transform.translation.x += velocity.0.x;
         transform.translation.y += velocity.0.y;
     }
+
 }
 
 impl Default for Weapons {
