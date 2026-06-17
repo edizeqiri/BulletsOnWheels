@@ -72,13 +72,15 @@ impl Weapon {
 #[derive(Message)]
 pub struct ShootMessage {
     pub shooter: Entity,
-    pub aim: Aim
+    pub aim: Aim,
 }
 
 #[derive(Component, Clone)]
 pub struct Weapons {
     pub list: Vec<Weapon>,
 }
+#[derive(Component)]
+pub struct Shooter(pub Entity);
 
 #[derive(AssetCollection, Resource)]
 pub(crate) struct ProjectileAssets {
@@ -104,12 +106,12 @@ pub(crate) fn on_shoot_message_system(
 
     for message in shoot_message.read() {
         if let Ok((transform, weapon)) = shooter_query.get_mut(message.shooter) {
-            info!("shoot message received");
             let projectile_bundle = weapon.shoot(message.aim.vec);
             commands
                 .spawn_empty()
                 .insert(projectile_bundle)
                 .insert(transform.clone())
+                .insert(Shooter(message.shooter))
                 .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
         }
     }
@@ -122,7 +124,6 @@ fn update_projectile_system(
         transform.translation.x += velocity.0.x;
         transform.translation.y += velocity.0.y;
     }
-
 }
 
 impl Default for Weapons {

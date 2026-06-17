@@ -17,7 +17,7 @@ fn handle_keyboard_system(mut query: Query<(&mut Movement), With<Player>>, mut g
     let gd_input = godot.singleton::<Input>();
 
     let mut base = Vec2::ZERO;
-    
+
     // Up
     if gd_input.is_key_pressed(Key::W) {
         base += Vec2 { x: 0., y: -1. };
@@ -36,5 +36,4 @@ fn handle_keyboard_system(mut query: Query<(&mut Movement), With<Player>>, mut g
     }
 
     movement.vec = base.normalize_or_zero();
-
 }

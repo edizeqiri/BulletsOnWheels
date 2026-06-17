@@ -7,11 +7,12 @@ use crate::{
     weapon::{Damage, weapon::Speed},
 };
 
-#[derive(Default, Bundle, GodotNode)]
-#[godot_node(base(Area2D), class_name(RProjectile2D))]
+// Pure Bevy bundle: the projectile scene is dumb visuals + collider, all
+// gameplay data is owned here. No `GodotNode` derive => no autosync entity that
+// would split the collider onto a separate entity and clobber these values.
+#[derive(Default, Bundle)]
 pub struct ProjectileBundle {
     projectile: Projectile,
-    #[export_fields(value(export_type(f32), default(1.)))]
     damage: Damage,
     velocity: Velocity,
 }

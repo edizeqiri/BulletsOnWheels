@@ -2,7 +2,6 @@ pub mod enemy;
 mod enemy_ai;
 pub mod player;
 
-use bevy::ecs::query::QueryData;
 use bevy::prelude::*;
 use godot::classes::CharacterBody2D;
 use godot::prelude::*;
@@ -10,7 +9,7 @@ use godot_bevy::prelude::*;
 
 use crate::weapon::Damage;
 use crate::weapon::projectile::Projectile;
-use crate::weapon::weapon::Weapon;
+use crate::weapon::weapon::{Shooter, Weapon};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(enemy_ai::plugin)
@@ -84,22 +83,39 @@ fn apply_character_movement(
 
 fn character_bullet_collision_system(
     collision: On<CollisionStarted>,
-    mut health_query: Query<&mut Health>,
+    mut health_query: Query<(&mut Health)>,
     projectile_query: Query<&Damage, With<Projectile>>,
+    shooter_query: Query<&Shooter>,
 ) {
     let event = collision.event();
 
-    let (damage, target_entity) = if let Ok(damage) = projectile_query.get(event.entity2) {
-        (damage, event.entity1)
-    } else if let Ok(damage) = projectile_query.get(event.entity1) {
-        (damage, event.entity2)
-    } else {
-        return;
-    };
+    let (damage, target_entity, bullet_entity) =
+        if let Ok(damage) = projectile_query.get(event.entity2) {
+            (damage, event.entity1, event.entity2)
+        } else if let Ok(damage) = projectile_query.get(event.entity1) {
+            (damage, event.entity2, event.entity1)
+        } else {
+            return;
+        };
 
     let Ok(mut health) = health_query.get_mut(target_entity) else {
+        warn!("target has no health");
         return;
     };
 
+    let Ok(shooter) = shooter_query.get(bullet_entity) else {
+        error!("bullet has no shooter");
+        return;
+    };
+
+    // skip self-hit
+    if shooter.0 == target_entity {
+        info!("Self hit");
+        return;
+    }
+    info!(
+        "Health at {} and receiving damage {}",
+        health.current, damage.0
+    );
     health.current -= damage.0;
 }

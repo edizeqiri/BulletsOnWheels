@@ -47,7 +47,7 @@ fn handle_button_system(
     button_query: Query<&ButtonTypeComponent, (With<MenuButton>, With<Shootable>)>,
     projectile_query: Query<Entity, With<Projectile>>,
     mut exit: MessageWriter<AppExit>,
-    mut scene_tree: SceneTreeRef
+    mut scene_tree: SceneTreeRef,
 ) {
     let event = collision.event();
 
@@ -62,8 +62,8 @@ fn handle_button_system(
     let Some(button_type) = button_type else {
         return;
     };
-    
-    info!("Button type hit: {:?}", button_type.0 );
+
+    info!("Button type hit: {:?}", button_type.0);
     match &button_type.0 {
         ButtonType::START => {
             commands.trigger(LoadLevelMessage {

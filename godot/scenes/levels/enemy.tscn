@@ -15,4 +15,6 @@ texture = ExtResource("1_llyn4")
 shape = SubResource("RectangleShape2D_y1qmp")
 
 [node name="WeaponTrident" parent="." unique_id=127622143 instance=ExtResource("2_y1qmp")]
-position = Vector2(16, -7)
+fire_rate = 1.0
+position = Vector2(18.999998, 1)
+rotation = 0.78100085

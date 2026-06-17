@@ -4,16 +4,14 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jn8kl"]
 
-[node name="Projectile" type="Node2D" unique_id=1353451259]
+[node name="RProjectile2D" type="Area2D" unique_id=712941796]
 
-[node name="RProjectile2D" type="RProjectile2D" parent="." unique_id=1709354280]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RProjectile2D" unique_id=1990186912]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1990186912]
 position = Vector2(16, 9)
 scale = Vector2(0.30410594, 0.29537603)
 shape = SubResource("CircleShape2D_jn8kl")
 
-[node name="Sprite2D" type="Sprite2D" parent="RProjectile2D" unique_id=347537565]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=347537565]
 position = Vector2(16, 9)
 scale = Vector2(0.40350214, 0.40350214)
 texture = ExtResource("1_c8fcr")
