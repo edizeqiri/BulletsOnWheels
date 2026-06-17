@@ -30,11 +30,11 @@ pub struct Weapon {
     #[export_fields(value(export_type(f32), default(0.)))]
     fire_rate: FireRate,
 
-    #[godot_export(default(WeaponKind::GUN))]
-    weapon_kind: WeaponKind,
+    #[export_fields(value(export_type(WeaponKind), default(WeaponKind::GUN)))]
+    weapon_kind: WeaponKindComponent,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, GodotConvert, Var, Export)]
+#[derive(GodotConvert, Var, Export, Default, Clone)]
 #[godot(via = GString)] // provides enum as string
 pub enum WeaponKind {
     #[default]
@@ -52,6 +52,8 @@ impl Default for Speed {
 }
 #[derive(Component, Debug, Clone, Default)]
 pub struct FireRate(pub f32);
+#[derive(Component, Clone, Default)]
+pub struct WeaponKindComponent(pub WeaponKind);
 
 impl Weapon {
     pub fn new(damage: f32, speed: f32, fire_rate: f32, weapon_kind: WeaponKind) -> Self {
@@ -59,7 +61,7 @@ impl Weapon {
             damage: Damage(damage),
             speed: Speed(speed),
             fire_rate: FireRate(fire_rate),
-            weapon_kind: weapon_kind,
+            weapon_kind: WeaponKindComponent(weapon_kind),
         }
     }
     pub(crate) fn shoot(&self, direction: Vec2) -> ProjectileBundle {
