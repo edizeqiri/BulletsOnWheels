@@ -95,20 +95,20 @@ pub(crate) fn on_shoot_message_system(
     let assets = match assets {
         Some(a) => a,
         None => {
-            for _ in shoot_event.read() { /* drop events until assets are ready */ }
+            for _ in shoot_message.read() { /* drop events until assets are ready */ }
             return;
         },
     };
 
-    for event in shoot_event.read() {
-        if let Ok(transform) = shooter_query.get_mut(event.shooter) {
+    for message in shoot_message.read() {
+        if let Ok((transform, weapon)) = shooter_query.get_mut(message.shooter) {
             info!("shoot message received");
+            let projectile_bundle = weapon.shoot(message.aim.vec);
             commands
                 .spawn_empty()
-                .insert(Projectile)
+                .insert(projectile_bundle)
                 .insert(transform.clone())
-                .insert(GodotScene::from_handle(assets.projectile_scene.clone()))
-                .insert(event.velocity.clone());
+                .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
         }
     }
 }
@@ -119,14 +119,6 @@ fn update_projectile_system(projectile_query: Query<(&mut Transform, &Velocity),
         transform.translation.y += velocity.0.y;
     }
 
-}
-
-fn debug_projectile_system(
-    projectile_query: Query<Entity, Added<Projectile>>
-) {
-    for p in projectile_query {
-        info!("Found projectile {}", p);
-    }
 }
 
 impl Default for Weapons {

@@ -40,7 +40,9 @@ fn handle_mouse_system(
                     };
                     shoot_message.write(ShootMessage {
                         shooter: player_entity,
-                        velocity: Velocity(aim.vec.normalize() * weapon.speed.0)
+                        aim: Aim {
+                            vec: aim.vec.normalize()
+                        }
                     });
                     info!("gaga: {:?}",aim.vec.normalize() * weapon.speed.0)
                     
