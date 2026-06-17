@@ -2,7 +2,6 @@ pub mod enemy;
 mod enemy_ai;
 pub mod player;
 
-use bevy::ecs::query::QueryData;
 use bevy::prelude::*;
 use godot::classes::CharacterBody2D;
 use godot::prelude::*;

@@ -1,14 +1,10 @@
 // move to player
-
-use std::default;
-
 use bevy::prelude::*;
-use godot::prelude::*;
 use godot_bevy::prelude::*;
 
 use crate::{
     character::{
-        Aim, Movement, MovementSpeed, enemy::Enemy, enemy_ai::EnemyType::Hunter, player::Player,
+        Aim, Movement, enemy::Enemy, enemy_ai::EnemyType::Hunter, player::Player,
     },
     weapon::weapon::ShootMessage,
 };

@@ -1,6 +1,5 @@
 use bevy::{prelude::*, state::app::StatesPlugin};
 use bevy_asset_loader::{
-    asset_collection::AssetCollectionApp,
     loading_state::{LoadingState, LoadingStateAppExt, config::ConfigureLoadingState},
 };
 use godot::prelude::*;

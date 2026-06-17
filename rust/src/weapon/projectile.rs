@@ -1,9 +1,7 @@
 use bevy::prelude::*;
-use bevy_asset_loader::asset_collection::AssetCollection;
 use godot_bevy::prelude::*;
 
 use crate::{
-    character::player::Player,
     weapon::{Damage, weapon::Speed},
 };
 

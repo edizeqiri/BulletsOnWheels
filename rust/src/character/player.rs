@@ -1,4 +1,4 @@
-use crate::character::{self, MovementSpeed};
+use crate::character::MovementSpeed;
 use crate::character::{CharacterCore, Health, ShootingState};
 use bevy::prelude::*;
 use godot_bevy::prelude::*;

@@ -1,6 +1,4 @@
-use std::default;
-
-use bevy::{log::tracing::instrument::WithSubscriber, prelude::*};
+use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 

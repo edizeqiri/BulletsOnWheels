@@ -1,10 +1,9 @@
 use bevy::prelude::*;
-use godot::register::info;
 use godot_bevy::{plugins::input::MouseButton, prelude::*};
 
 use crate::{
     character::{Aim, player::Player},
-    weapon::{projectile::Velocity, weapon::{ShootMessage, Weapon}},
+    weapon::{weapon::{ShootMessage, Weapon}},
 };
 
 pub(crate) fn plugin(app: &mut App) {
