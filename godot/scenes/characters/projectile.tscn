@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bg6yi86krve2g" path="res://assets/spell.png" id="1_lg4n1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jn8kl"]
+radius = 19.729965
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_n2b2k"]
 atlas = ExtResource("1_lg4n1")
@@ -51,7 +52,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 6.0
+"speed": 25.0
 }]
 
 [node name="RProjectile2D" type="Area2D" unique_id=712941796]
@@ -61,7 +62,8 @@ scale = Vector2(0.30410594, 0.29537603)
 shape = SubResource("CircleShape2D_jn8kl")
 
 [node name="Animation" type="AnimatedSprite2D" parent="." unique_id=1641231424]
+rotation = -0.8077807
 sprite_frames = SubResource("SpriteFrames_5c73b")
 autoplay = "default"
-playing = true
-frame_progress = 0.08399611
+frame = 5
+frame_progress = 0.16672409

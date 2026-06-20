@@ -13,7 +13,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_message::<ShootMessage>()
         .add_systems(
             Update,
-            on_shoot_message_system.run_if(in_state(GameState::START)),
+            on_shoot_message_system.run_if(in_state(GameState::START))
         )
         .add_systems(Update, update_projectile_system);
 }
@@ -31,7 +31,7 @@ pub struct Weapon {
     fire_rate: FireRate,
 
     #[export_fields(value(export_type(WeaponKind), default(WeaponKind::GUN)))]
-    weapon_kind: WeaponKindComponent,
+    weapon_kind: WeaponKindComponent
 }
 
 #[derive(GodotConvert, Var, Export, Default, Clone)]
@@ -40,7 +40,7 @@ pub enum WeaponKind {
     #[default]
     GUN,
     BOW,
-    STAFF,
+    STAFF
 }
 #[derive(Component, Debug, Clone, Copy)]
 pub struct Speed(pub f32);
@@ -61,7 +61,7 @@ impl Weapon {
             damage: Damage(damage),
             speed: Speed(speed),
             fire_rate: FireRate(fire_rate),
-            weapon_kind: WeaponKindComponent(weapon_kind),
+            weapon_kind: WeaponKindComponent(weapon_kind)
         }
     }
     pub(crate) fn shoot(&self, direction: Vec2) -> ProjectileBundle {
@@ -72,12 +72,12 @@ impl Weapon {
 #[derive(Message)]
 pub struct ShootMessage {
     pub shooter: Entity,
-    pub aim: Aim,
+    pub aim: Aim
 }
 
 #[derive(Component, Clone)]
 pub struct Weapons {
-    pub list: Vec<Weapon>,
+    pub list: Vec<Weapon>
 }
 #[derive(Component)]
 pub struct Shooter(pub Entity);
@@ -85,14 +85,14 @@ pub struct Shooter(pub Entity);
 #[derive(AssetCollection, Resource)]
 pub(crate) struct ProjectileAssets {
     #[asset(path = "scenes/characters/projectile.tscn")]
-    pub projectile_scene: Handle<GodotResource>,
+    pub projectile_scene: Handle<GodotResource>
 }
 
 pub(crate) fn on_shoot_message_system(
     mut commands: Commands,
     mut shoot_message: MessageReader<ShootMessage>,
-    mut shooter_query: Query<(&Transform, &Weapon)>,
-    assets: Option<Res<ProjectileAssets>>,
+    mut shooter_query: Query<(&Transform, &Weapon, &Aim)>,
+    assets: Option<Res<ProjectileAssets>>
 ) {
     // If the projectile assets are not yet loaded/inserted, consume any queued
     // shoot messages (to avoid a burst once assets arrive) and skip spawning
@@ -102,16 +102,20 @@ pub(crate) fn on_shoot_message_system(
         None => {
             for _ in shoot_message.read() { /* drop events until assets are ready */ }
             return;
-        },
+        }
     };
 
     for message in shoot_message.read() {
-        if let Ok((transform, weapon)) = shooter_query.get_mut(message.shooter) {
+        if let Ok((transform, weapon, aim)) = shooter_query.get_mut(message.shooter) {
             let projectile_bundle = weapon.shoot(message.aim.vec);
+            let mut new_transform = transform.clone();
+            if aim.vec.length_squared() > 0.0 {
+                new_transform.rotation = Quat::from_rotation_z(aim.vec.to_angle());
+            }
             commands
                 .spawn_empty()
                 .insert(projectile_bundle)
-                .insert(transform.clone())
+                .insert(new_transform)
                 .insert(Shooter(message.shooter))
                 .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
         }
@@ -119,7 +123,7 @@ pub(crate) fn on_shoot_message_system(
 }
 
 fn update_projectile_system(
-    projectile_query: Query<(&mut Transform, &Velocity), With<Projectile>>,
+    projectile_query: Query<(&mut Transform, &Velocity), With<Projectile>>
 ) {
     for (mut transform, velocity) in projectile_query {
         transform.translation.x += velocity.0.x;
@@ -133,7 +137,7 @@ impl Default for Weapons {
             list: vec![
                 Weapon::new(1., 1000., 0.5, WeaponKind::BOW),
                 Weapon::new(1., 250., 5., WeaponKind::GUN),
-            ],
+            ]
         }
     }
 }
