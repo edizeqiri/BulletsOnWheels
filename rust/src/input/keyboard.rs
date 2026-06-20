@@ -5,6 +5,7 @@ use godot_bevy::prelude::*;
 
 use crate::character::MovementDirection;
 use crate::character::player::Player;
+use crate::gamestate::ExitGameMessage;
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_systems(Update, handle_keyboard_system);
@@ -12,7 +13,8 @@ pub(crate) fn plugin(app: &mut App) {
 
 fn handle_keyboard_system(
     mut query: Query<&mut MovementDirection, With<Player>>,
-    mut godot: GodotAccess
+    mut godot: GodotAccess,
+    mut exit_game_message_writer: MessageWriter<ExitGameMessage>
 ) {
     let Ok(mut movement) = query.single_mut() else {
         return;
@@ -37,6 +39,10 @@ fn handle_keyboard_system(
     // Right
     if gd_input.is_key_pressed(Key::D) {
         base += Vec2 { x: 1., y: 0. };
+    }
+    // Delete: exit button
+    if gd_input.is_key_pressed(Key::DELETE) {
+        exit_game_message_writer.write(ExitGameMessage);
     }
 
     movement.vec = base.normalize_or_zero();

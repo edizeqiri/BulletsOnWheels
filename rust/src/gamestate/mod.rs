@@ -1,4 +1,4 @@
-use bevy::{app::{App, AppExit, Update}, prelude::{
+use bevy::{app::{App, AppExit, Update}, log::info, prelude::{
     Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States
 }};
 use godot_bevy::prelude::SceneTreeRef;
@@ -120,6 +120,8 @@ fn exit_game(
     mut scene_tree: SceneTreeRef
 ) {
     for _ in exit_game_reader.read() {
+        info!("Exit game.");
+        
         // bevy exit
         exit.write(AppExit::Success);
 

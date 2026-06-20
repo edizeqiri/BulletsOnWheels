@@ -59,7 +59,6 @@ fn gamepad_input(
     };
 
     if gd_input.is_action_just_pressed("exit") {
-        info!("exit pressed");
         exit_game_message_writer.write(ExitGameMessage);
     };
 }
