@@ -19,8 +19,8 @@ texture = ExtResource("1_g2els")
 
 [node name="WeaponTrident" parent="." unique_id=127622143 instance=ExtResource("2_g2els")]
 fire_rate = 1.0
-position = Vector2(19, -4.7683716e-07)
-rotation = 0.7002675
+position = Vector2(22, -6)
+rotation = 0.21544406
 
 [node name="Healthbar" parent="." unique_id=1488220443 instance=ExtResource("3_76oj4")]
 position = Vector2(0, -13)
