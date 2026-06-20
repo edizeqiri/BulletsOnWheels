@@ -4,14 +4,16 @@
 [ext_resource type="PackedScene" uid="uid://cem8xn74owfta" path="res://scenes/weapons/weapon_trident.tscn" id="2_y1qmp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y1qmp"]
-size = Vector2(16, 16)
+size = Vector2(14, 13)
 
 [node name="Enemy" type="REnemy2D" unique_id=1197690428]
+motion_mode = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=772759740]
 texture = ExtResource("1_llyn4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=940602930]
+position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_y1qmp")
 
 [node name="WeaponTrident" parent="." unique_id=127622143 instance=ExtResource("2_y1qmp")]
