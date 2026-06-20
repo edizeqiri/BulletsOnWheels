@@ -1,2 +1,20 @@
 [build]
 target-dir = "rust/target"
+
+# Godot web (GDExtension) build. `panic=abort` is the key flag: rustc >=1.93
+# defaults to native Wasm exception handling, which emits a `__cpp_exception`
+# tag import Godot's web runtime can't satisfy ("tag import requires a
+# WebAssembly.Tag"). `panic=abort` disables `-fwasm-exceptions` entirely, so no
+# tag is imported. (The alternative `-Z emscripten-wasm-eh=false` only exists on
+# older nightlies and is being removed; panic=abort is future-proof.)
+# Requires nightly + `-Zbuild-std=std,panic_abort` so std is rebuilt the same way
+# (see the `wasm` recipe in the justfile). Target-scoped, so desktop unwinding is
+# unaffected. No -pthread/+atomics here: this is a nothreads build.
+[target.wasm32-unknown-emscripten]
+rustflags = [
+    "-C", "link-args=-sSIDE_MODULE=2",
+    "-C", "panic=abort",
+    "-C", "llvm-args=-enable-emscripten-cxx-exceptions=0",
+    "-Z", "default-visibility=hidden",
+    "-Z", "link-native-libraries=no",
+]

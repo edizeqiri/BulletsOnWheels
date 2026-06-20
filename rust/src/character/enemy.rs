@@ -11,8 +11,14 @@ pub(super) fn plugin(app: &mut App) {
     app.add_message::<EnemyDeathMessage>()
         .add_message::<EnemySpawnedMessage>()
         .add_message::<CreateEnemyMessage>()
-        .add_systems(Update, check_enemy_zero_health_system)
-        .add_systems(Update, handle_enemy_zero_health_system)
+        .add_systems(
+            Update,
+            (
+                check_enemy_zero_health_system,
+                handle_enemy_zero_health_system
+            )
+                .chain()
+        )
         .add_systems(Update, spawn_enemy_system);
 }
 

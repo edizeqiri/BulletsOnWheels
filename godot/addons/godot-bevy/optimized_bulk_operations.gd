@@ -84,6 +84,8 @@ func bulk_get_transforms_2d(instance_ids: PackedInt64Array) -> Dictionary:
 
 	for i: int in range(instance_ids.size()):
 		var node: Node2D = instance_from_id(instance_ids[i]) as Node2D
+		if node == null:
+			continue
 		positions[i] = node.position
 		rotations[i] = node.rotation
 		scales[i] = node.scale

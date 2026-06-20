@@ -177,7 +177,9 @@ fn handle_level_scene_change(
     mut loading_state: ResMut<LevelLoadingState>,
     mut pending_level: ResMut<PendingLevel>,
     mut assets: ResMut<Assets<GodotResource>>,
-    mut scene_tree: SceneTreeRef
+    mut scene_tree: SceneTreeRef,
+    mut godot: GodotAccess,
+    godot_nodes: Query<(Entity, &GodotNodeHandle)>
 ) {
     let Some(level_id) = current_level.level_id else {
         return;
@@ -205,6 +207,18 @@ fn handle_level_scene_change(
     // buttons live, re-triggering LoadLevelMessage.
     if !loading_state.menu_cleared {
         if let Some(mut menu) = scene_tree.get().get_current_scene() {
+            let menu_path = menu.get_path().to_string();
+
+            for (entity, handle) in &godot_nodes {
+                let Some(node) = godot.try_get::<Node>(*handle) else {
+                    continue;
+                };
+
+                if node.get_path().to_string().starts_with(&menu_path) {
+                    commands.entity(entity).despawn();
+                }
+            }
+
             menu.queue_free();
         }
         loading_state.menu_cleared = true;

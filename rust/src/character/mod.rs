@@ -24,39 +24,39 @@ pub(super) fn plugin(app: &mut App) {
 #[derive(Component, Reflect)]
 pub struct Health {
     pub current: f32,
-    pub(crate) max: f32,
+    pub(crate) max: f32
 }
 
 impl Default for Health {
     fn default() -> Self {
         Self {
             current: 4.,
-            max: 4.,
+            max: 4.
         }
     }
 }
 
 #[derive(Component, Default)]
 pub struct ShootingState {
-    pub(crate) is_shooting: bool,
+    pub(crate) is_shooting: bool
 }
 
 #[derive(Component, Copy, Clone)]
 pub struct Aim {
-    pub vec: Vec2,
+    pub vec: Vec2
 }
 
 impl Default for Aim {
     fn default() -> Self {
         Self {
-            vec: Vec2::new(0., 0.),
+            vec: Vec2::new(0., 0.)
         }
     }
 }
 
 #[derive(Component, Copy, Clone, Default)]
 pub struct MovementDirection {
-    pub vec: Vec2,
+    pub vec: Vec2
 }
 
 #[derive(Component, Reflect, Copy, Clone)]
@@ -73,7 +73,7 @@ pub struct CharacterCore {
     weapon: Weapon,
     aim: Aim,
     movement: MovementDirection,
-    shooting_state: ShootingState,
+    shooting_state: ShootingState
 }
 
 /// Movement Sink, godot style
@@ -81,7 +81,7 @@ pub struct CharacterCore {
 /// translation in transform
 fn apply_character_movement(
     query: Query<(&GodotNodeHandle, &MovementDirection, &MovementSpeed)>,
-    mut godot: GodotAccess,
+    mut godot: GodotAccess
 ) {
     for (handle, movement, speed) in &query {
         let Some(mut body) = godot.try_get::<CharacterBody2D>(*handle) else {
@@ -97,7 +97,7 @@ fn apply_character_movement(
 struct CharacterHitMessage {
     pub source: Entity,
     pub target: Entity,
-    pub health: f32,
+    pub health: f32
 }
 
 fn character_bullet_collision_system(
@@ -105,7 +105,7 @@ fn character_bullet_collision_system(
     mut health_query: Query<(&mut Health)>,
     projectile_query: Query<&Damage, With<Projectile>>,
     shooter_query: Query<&Shooter>,
-    mut hit_writer: MessageWriter<CharacterHitMessage>,
+    mut hit_writer: MessageWriter<CharacterHitMessage>
 ) {
     let event = collision.event();
 
@@ -141,14 +141,14 @@ fn character_bullet_collision_system(
     hit_writer.write(CharacterHitMessage {
         source: shooter.0,
         target: target_entity,
-        health: health.current,
+        health: health.current
     });
 }
 
 fn update_healthbar_animation_system(
     mut damage_message: MessageReader<CharacterHitMessage>,
     characters: Query<&GodotNodeHandle, With<Health>>,
-    mut godot: GodotAccess,
+    mut godot: GodotAccess
 ) {
     for damage in damage_message.read() {
         if let Ok(handle) = characters.get(damage.target) {

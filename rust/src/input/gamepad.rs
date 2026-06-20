@@ -6,7 +6,7 @@ use godot_bevy::prelude::*;
 use crate::character::player::Player;
 use crate::weapon::weapon::ShootMessage;
 use crate::{
-    character::{Aim, MovementDirection}, // gamestate::start::StartGameMessage
+    character::{Aim, MovementDirection} // gamestate::start::StartGameMessage
 };
 
 const DEADZONE: f32 = 0.05;
@@ -19,7 +19,7 @@ pub(crate) fn plugin(app: &mut App) {
 fn gamepad_input(
     mut query: Query<(&mut Aim, &mut MovementDirection, Entity), With<Player>>,
     mut godot: GodotAccess,
-    mut shoot_message: MessageWriter<ShootMessage>,
+    mut shoot_message: MessageWriter<ShootMessage>
 ) {
     let Ok((mut aim, mut movement, player)) = query.single_mut() else {
         return;
@@ -33,7 +33,7 @@ fn gamepad_input(
 
     let aim_vec = Vec2::new(
         gd_input.get_joy_axis(0, JoyAxis::RIGHT_X),
-        gd_input.get_joy_axis(0, JoyAxis::RIGHT_Y),
+        gd_input.get_joy_axis(0, JoyAxis::RIGHT_Y)
     );
     if aim_vec.length() > DEADZONE {
         aim.vec = aim_vec;
@@ -41,7 +41,7 @@ fn gamepad_input(
 
     let move_vec = Vec2::new(
         gd_input.get_joy_axis(0, JoyAxis::LEFT_X),
-        gd_input.get_joy_axis(0, JoyAxis::LEFT_Y),
+        gd_input.get_joy_axis(0, JoyAxis::LEFT_Y)
     );
     movement.vec = if move_vec.length() < DEADZONE {
         Vec2::ZERO
@@ -52,7 +52,7 @@ fn gamepad_input(
     if gd_input.is_action_just_pressed("shoot") {
         shoot_message.write(ShootMessage {
             shooter: player,
-            aim: Aim { vec: aim.vec },
+            aim: Aim { vec: aim.vec }
         });
     };
 }

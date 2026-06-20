@@ -9,3 +9,19 @@ opt-level = 1
 # Enable a large amount of optimization in the dev profile for dependencies.
 [profile.dev.package."*"]
 opt-level = 3
+
+# Swap `ctrlc` for a no-op stub so `nix` is never compiled. `nix` fails on
+# wasm32-unknown-emscripten (Godot web), and `ctrlc` is pulled in unconditionally
+# by `bevy_app`'s `std` feature with no way to disable it via features.
+# See rust/crates/ctrlc-stub for details.
+[patch.crates-io]
+ctrlc = { path = "rust/crates/ctrlc-stub" }
+
+# Vendored Bevy crates patched to treat wasm32-unknown-emscripten (Godot web) as
+# a native/std target rather than a wasm-bindgen browser target. Bevy gates its
+# web code on bare `target_arch = "wasm32"`, which matches emscripten and routes
+# into wasm-bindgen/js-sys (stubs that panic at runtime under Godot). The patches
+# add `not(target_os = "emscripten")` so emscripten falls into the std branches
+# (std executor, stderr logging) that already exist. No effect on desktop.
+bevy_platform = { path = "rust/vendor/bevy_platform" }
+bevy_log = { path = "rust/vendor/bevy_log" }

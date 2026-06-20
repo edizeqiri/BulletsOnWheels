@@ -1,0 +1,9 @@
+[package]
+name = "ctrlc"
+version = "3.5.2"
+edition = "2021"
+description = "No-op stub of the `ctrlc` crate, used to keep `nix` out of the wasm32-unknown-emscripten (Godot web) build. A terminal Ctrl+C handler is meaningless in a browser, and on desktop Godot owns the process lifecycle."
+
+[lib]
+name = "ctrlc"
+path = "src/lib.rs"

@@ -6,3 +6,4 @@ godot/.godot
 godot/rust/target
 
 rust/target
+godot/exports
