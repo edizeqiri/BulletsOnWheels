@@ -8,5 +8,11 @@ pub(super) fn plugin(app: &mut App) {
     app.add_plugins(weapon::plugin);
 }
 
-#[derive(Component, Debug, Clone, Default, Copy)]
+#[derive(Component, Debug, Clone, Copy)]
 pub struct Damage(pub f32);
+
+impl Default for Damage {
+    fn default() -> Self {
+        Self(1.)
+    }
+}
