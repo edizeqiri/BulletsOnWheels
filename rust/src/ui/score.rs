@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use godot::classes::{CharacterBody2D, Label};
 use godot_bevy::prelude::{GodotAccess, GodotNodeHandle, SceneTreeRef};
 
-use crate::{character::{CharacterDeathMessage, player::{EnemyKillCount, Player}}, world::level_manager::CurrentLevel};
+use crate::{character::{CharacterDeathMessage, player::{EnemyKillCount, Player}}, gamestate::ExitGameMessage, world::level_manager::CurrentLevel};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, (score_tracker, update_score_label));
@@ -47,3 +47,13 @@ fn update_score_label(
 
     score_label.set_text(&format!("Score: {}", enemy_kill_count.count));
 }
+
+/*
+fn track_high_score(
+    mut exit_game_message: MessageReader<ExitGameMessage>
+) {
+    for _ in exit_game_message.read() {
+        
+    }
+}
+*/
