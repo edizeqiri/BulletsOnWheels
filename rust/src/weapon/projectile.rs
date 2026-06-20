@@ -1,9 +1,8 @@
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::{
-    weapon::{Damage, weapon::Speed},
-};
+use crate::weapon::Damage;
+use crate::weapon::weapon::Speed;
 
 // Pure Bevy bundle: the projectile scene is dumb visuals + collider, all
 // gameplay data is owned here. No `GodotNode` derive => no autosync entity that
@@ -12,7 +11,7 @@ use crate::{
 pub struct ProjectileBundle {
     projectile: Projectile,
     damage: Damage,
-    velocity: Velocity,
+    velocity: Velocity
 }
 
 #[derive(Component, Default)]
@@ -25,6 +24,6 @@ pub fn create_projectile(damage: Damage, speed: Speed, direction: Vec2) -> Proje
     ProjectileBundle {
         projectile: Projectile,
         damage: damage,
-        velocity: Velocity(direction.normalize() * speed.0),
+        velocity: Velocity(direction.normalize() * speed.0)
     }
 }

@@ -22,30 +22,30 @@ pub(super) fn plugin(app: &mut App) {
 #[derive(Component, Reflect, Default)]
 pub struct Health {
     pub current: f32,
-    pub(crate) max: f32,
+    pub(crate) max: f32
 }
 
 #[derive(Component, Default)]
 pub struct ShootingState {
-    pub(crate) is_shooting: bool,
+    pub(crate) is_shooting: bool
 }
 
 #[derive(Component, Copy, Clone)]
 pub struct Aim {
-    pub vec: Vec2,
+    pub vec: Vec2
 }
 
 impl Default for Aim {
     fn default() -> Self {
         Self {
-            vec: Vec2::new(0., 0.),
+            vec: Vec2::new(0., 0.)
         }
     }
 }
 
 #[derive(Component, Copy, Clone, Default)]
 pub struct MovementDirection {
-    pub vec: Vec2,
+    pub vec: Vec2
 }
 
 #[derive(Component, Reflect, Copy, Clone)]
@@ -62,14 +62,15 @@ pub struct CharacterCore {
     weapon: Weapon,
     aim: Aim,
     movement: MovementDirection,
-    shooting_state: ShootingState,
+    shooting_state: ShootingState
 }
 
 /// Movement Sink, godot style
-/// move_and_slide is needed so that we do not have teleports by just changing translation in transform
+/// move_and_slide is needed so that we do not have teleports by just changing
+/// translation in transform
 fn apply_character_movement(
     query: Query<(&GodotNodeHandle, &MovementDirection, &MovementSpeed)>,
-    mut godot: GodotAccess,
+    mut godot: GodotAccess
 ) {
     for (handle, movement, speed) in &query {
         let Some(mut body) = godot.try_get::<CharacterBody2D>(*handle) else {
@@ -85,7 +86,7 @@ fn character_bullet_collision_system(
     collision: On<CollisionStarted>,
     mut health_query: Query<(&mut Health)>,
     projectile_query: Query<&Damage, With<Projectile>>,
-    shooter_query: Query<&Shooter>,
+    shooter_query: Query<&Shooter>
 ) {
     let event = collision.event();
 

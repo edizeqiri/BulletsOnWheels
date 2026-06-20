@@ -2,11 +2,9 @@ use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
 use crate::character::{CharacterCore, Health, MovementSpeed};
-/*
-use crate::gamestate::EnemyResource;
-use crate::weapon::Weapons;
-use crate::world::map::map::Level;
-*/
+// use crate::gamestate::EnemyResource;
+// use crate::weapon::Weapons;
+// use crate::world::map::map::Level;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<EnemyDeathMessage>()
@@ -33,19 +31,19 @@ pub struct EnemyBundle {
     #[export_fields(value(export_type(f32), default(100.)))]
     speed: MovementSpeed,
 
-    core: CharacterCore,
+    core: CharacterCore
 }
 
 /// This message will be reused for any enemy entity, even bullets. Don't ask
 /// why.
 #[derive(Message)]
 pub struct EnemyDeathMessage {
-    pub entity: Entity,
+    pub entity: Entity
 }
 
 #[derive(Message)]
 pub struct EnemySpawnedMessage {
-    pub entity: Entity,
+    pub entity: Entity
 }
 
 #[derive(Message)]
@@ -53,7 +51,7 @@ pub struct CreateEnemyMessage;
 
 fn check_enemy_zero_health_system(
     mut death_message: MessageWriter<EnemyDeathMessage>,
-    query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>,
+    query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>
 ) {
     for (health, entity) in &query {
         if health.current <= 0. {
@@ -64,7 +62,7 @@ fn check_enemy_zero_health_system(
 
 fn handle_enemy_zero_health_system(
     mut commands: Commands,
-    mut enemy_death_messages: MessageReader<EnemyDeathMessage>,
+    mut enemy_death_messages: MessageReader<EnemyDeathMessage>
 ) {
     for message in enemy_death_messages.read() {
         commands.entity(message.entity).despawn();

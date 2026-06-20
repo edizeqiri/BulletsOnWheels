@@ -2,10 +2,8 @@ use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::{
-    level_manager::{LevelId, LoadLevelMessage},
-    weapon::projectile::Projectile,
-};
+use crate::level_manager::{LevelId, LoadLevelMessage};
+use crate::weapon::projectile::Projectile;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_observer(handle_button_system);
@@ -24,7 +22,7 @@ struct ShootableButtonBundle {
     button_type: ButtonTypeComponent,
 
     menu_button: MenuButton,
-    shootable: Shootable,
+    shootable: Shootable
 }
 
 #[derive(Component, Default)]
@@ -36,7 +34,7 @@ pub enum ButtonType {
     #[default]
     START,
     SETTINGS,
-    EXIT,
+    EXIT
 }
 
 fn handle_button_system(
@@ -45,7 +43,7 @@ fn handle_button_system(
     button_query: Query<&ButtonTypeComponent, (With<MenuButton>, With<Shootable>)>,
     projectile_query: Query<Entity, With<Projectile>>,
     mut exit: MessageWriter<AppExit>,
-    mut scene_tree: SceneTreeRef,
+    mut scene_tree: SceneTreeRef
 ) {
     let event = collision.event();
 
@@ -65,7 +63,7 @@ fn handle_button_system(
     match &button_type.0 {
         ButtonType::START => {
             commands.trigger(LoadLevelMessage {
-                level_id: LevelId::Level1,
+                level_id: LevelId::Level1
             });
         },
         ButtonType::SETTINGS => {
@@ -77,6 +75,6 @@ fn handle_button_system(
 
             // godot exit
             scene_tree.get().quit();
-        },
+        }
     }
 }

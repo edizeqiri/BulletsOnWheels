@@ -1,14 +1,13 @@
 use bevy::prelude::*;
 use godot::classes::Input;
+use godot::global::JoyAxis;
+use godot_bevy::prelude::*;
 
 use crate::character::player::Player;
 use crate::{
-    character::{Aim, MovementDirection},
-    //gamestate::start::StartGameMessage
+    character::{Aim, MovementDirection}
+    // gamestate::start::StartGameMessage
 };
-
-use godot::global::JoyAxis;
-use godot_bevy::prelude::*;
 
 const DEADZONE: f32 = 0.05;
 
@@ -19,7 +18,7 @@ pub(crate) fn plugin(app: &mut App) {
 
 fn gamepad_input(
     mut query: Query<(&mut Aim, &mut MovementDirection), With<Player>>,
-    mut godot: GodotAccess,
+    mut godot: GodotAccess
 ) {
     let Ok((mut aim, mut movement)) = query.single_mut() else {
         return;
@@ -33,7 +32,7 @@ fn gamepad_input(
 
     let aim_vec = Vec2::new(
         gd_input.get_joy_axis(0, JoyAxis::RIGHT_X),
-        gd_input.get_joy_axis(0, JoyAxis::RIGHT_Y),
+        gd_input.get_joy_axis(0, JoyAxis::RIGHT_Y)
     );
     if aim_vec.length() > DEADZONE {
         aim.vec = aim_vec;
@@ -41,7 +40,7 @@ fn gamepad_input(
 
     let move_vec = Vec2::new(
         gd_input.get_joy_axis(0, JoyAxis::LEFT_X),
-        gd_input.get_joy_axis(0, JoyAxis::LEFT_Y),
+        gd_input.get_joy_axis(0, JoyAxis::LEFT_Y)
     );
     movement.vec = if move_vec.length() < DEADZONE {
         Vec2::ZERO
