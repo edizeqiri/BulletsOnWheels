@@ -14,7 +14,7 @@ use crate::weapon::weapon::ShootMessage;
 // use crate::world::map::map::Level;
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(GodotTransformConfig::two_way())
-        .insert_resource(Time::<Fixed>::from_duration(Duration::from_secs(2)))
+        .insert_resource(Time::<Fixed>::from_seconds(1.5))
         .add_systems(FixedUpdate, shoot_at_player_system)
         .add_systems(Update, enemy_move_system)
         .add_systems(Update, set_all_fugitive_system);
