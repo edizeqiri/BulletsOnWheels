@@ -7,14 +7,14 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
-bevy = { version = "0.18", default-features = false, features = ["bevy_state","bevy_asset","bevy_log"] }
-godot-bevy = { git = "https://github.com/bytemeadow/godot-bevy", rev = "c6caed09cac2ff41dde2264fc0326de37ac8d04d" }
+bevy = { version = "0.19", default-features = false, features = ["bevy_state","bevy_asset","bevy_log"] }
+godot-bevy = { git = "https://github.com/edizeqiri/godot-bevy", rev = "929d252" }
 godot = "0.5"
 rand = "0.9.2"
 glam = "0.30.9"
 test-case = "3.3.1"
 enum_delegate = "0.2.0"
 cargo-godot-lib = "0.2.1"
-godot-bevy-macros = { git = "https://github.com/bytemeadow/godot-bevy", rev = "c6caed09cac2ff41dde2264fc0326de37ac8d04d" }
-bevy_asset_loader = "0.25.0"
+godot-bevy-macros = { git = "https://github.com/edizeqiri/godot-bevy", rev = "929d252" }
+bevy_asset_loader = "0.27.0-rc.1"
 

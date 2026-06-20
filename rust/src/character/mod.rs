@@ -44,7 +44,7 @@ impl Default for Aim {
 }
 
 #[derive(Component, Copy, Clone, Default)]
-pub struct Movement {
+pub struct MovementDirection {
     pub vec: Vec2,
 }
 
@@ -61,14 +61,14 @@ impl Default for MovementSpeed {
 pub struct CharacterCore {
     weapon: Weapon,
     aim: Aim,
-    movement: Movement,
+    movement: MovementDirection,
     shooting_state: ShootingState,
 }
 
 /// Movement Sink, godot style
 /// move_and_slide is needed so that we do not have teleports by just changing translation in transform
 fn apply_character_movement(
-    query: Query<(&GodotNodeHandle, &Movement, &MovementSpeed)>,
+    query: Query<(&GodotNodeHandle, &MovementDirection, &MovementSpeed)>,
     mut godot: GodotAccess,
 ) {
     for (handle, movement, speed) in &query {

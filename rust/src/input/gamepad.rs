@@ -3,7 +3,7 @@ use godot::classes::Input;
 
 use crate::character::player::Player;
 use crate::{
-    character::{Aim, Movement},
+    character::{Aim, MovementDirection},
     //gamestate::start::StartGameMessage
 };
 
@@ -18,7 +18,7 @@ pub(crate) fn plugin(app: &mut App) {
 }
 
 fn gamepad_input(
-    mut query: Query<(&mut Aim, &mut Movement), With<Player>>,
+    mut query: Query<(&mut Aim, &mut MovementDirection), With<Player>>,
     mut godot: GodotAccess,
 ) {
     let Ok((mut aim, mut movement)) = query.single_mut() else {

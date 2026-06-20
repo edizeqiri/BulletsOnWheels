@@ -4,7 +4,7 @@ use godot_bevy::prelude::*;
 
 use crate::{
     character::{
-        Aim, Movement, enemy::Enemy, enemy_ai::EnemyType::Hunter, player::Player,
+        Aim, MovementDirection, enemy::Enemy, enemy_ai::EnemyType::Hunter, player::Player,
     },
     weapon::weapon::ShootMessage,
 };
@@ -84,11 +84,11 @@ fn shoot_at_player_system(
 
 fn enemy_move_system(
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
-    enemy_query: Query<(&mut Movement, &Transform, &EnemyType), With<Enemy>>,
+    enemy_query: Query<(&mut MovementDirection, &Transform, &EnemyType), With<Enemy>>,
 ) {
     if let Ok(player_transform) = player_query.single() {
-        for (mut enemy_velocity, enemy_transform, enemy_type) in enemy_query {
-            enemy_velocity.vec = enemy_type
+        for (mut enemy_direction, enemy_transform, enemy_type) in enemy_query {
+            enemy_direction.vec = enemy_type
                 .moving(player_transform, enemy_transform)
                 .normalize();
         }
