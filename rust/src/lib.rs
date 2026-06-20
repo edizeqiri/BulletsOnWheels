@@ -34,6 +34,6 @@ fn build_app(app: &mut App) {
         .add_loading_state(
             LoadingState::new(GameState::START)
                 .load_collection::<ProjectileAssets>()
-                .load_collection::<EnemyAssets>(),
+                .load_collection::<EnemyAssets>()
         );
 }

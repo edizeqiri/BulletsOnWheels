@@ -8,7 +8,8 @@ pub(crate) fn plugin(app: &mut App) {
 }
 
 fn spawn_enemies_after_time(mut enemy_writer: MessageWriter<CreateEnemyMessage>) {
-
     // todo: make range, maybe random around last enemy death
-    enemy_writer.write(CreateEnemyMessage { position: Vec2 { x: 100., y: 100. }});
+    enemy_writer.write(CreateEnemyMessage {
+        position: Vec2 { x: 100., y: 100. }
+    });
 }

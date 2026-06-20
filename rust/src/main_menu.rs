@@ -2,8 +2,8 @@ use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::world::level_manager::{LevelId, LoadLevelMessage};
 use crate::weapon::projectile::Projectile;
+use crate::world::level_manager::{LevelId, LoadLevelMessage};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_observer(handle_button_system);
