@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://cem8xn74owfta"]
 
-[ext_resource type="Texture2D" uid="uid://3gnjb16cre2d" path="res://assets/kenney_tiny-dungeon/Tiles/tile_0125.png" id="1_bcdgi"]
+[ext_resource type="Texture2D" uid="uid://bv7sv6y6dr581" path="res://assets/staff/trident_staff.png" id="1_4qak2"]
 
 [node name="WeaponTrident" type="RWeapon2D" unique_id=127622143]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=125212372]
 position = Vector2(-7, 7)
 scale = Vector2(0.75, 0.75)
-texture = ExtResource("1_bcdgi")
+texture = ExtResource("1_4qak2")

@@ -21,8 +21,8 @@ shape = SubResource("RectangleShape2D_y1qmp")
 
 [node name="WeaponTrident" parent="." unique_id=127622143 instance=ExtResource("2_y1qmp")]
 fire_rate = 1.0
-position = Vector2(18.999998, 1)
-rotation = 0.78100085
+position = Vector2(21, -6.9999995)
+rotation = 0.11034292
 
 [node name="Healthbar" parent="." unique_id=1488220443 instance=ExtResource("3_f2e6v")]
 position = Vector2(0, -13.999999)
