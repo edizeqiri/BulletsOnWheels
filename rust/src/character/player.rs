@@ -1,18 +1,18 @@
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::character::{CharacterCore, Health, MovementSpeed, ShootingState};
+use crate::character::{CharacterCore, CharacterDeathMessage, Health, MovementSpeed, ShootingState};
 
 // TODO: gamestate
 // use crate::gamestate::GameState;
 // use crate::weapon::{ShootEvent, Weapons};
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_message::<PlayerDeathMessage>().add_systems(
+    app.add_systems(
         Update,
         (
             player_shoot_system,
-            check_player_zero_health_system,
+            //check_player_zero_health_system,
             handle_player_zero_health_system
         ) //.run_if(in_state(GameState::RUNNING))
     );
@@ -38,10 +38,6 @@ pub struct PlayerBundle {
     core: CharacterCore
 }
 
-#[derive(Message)]
-pub struct PlayerDeathMessage {
-    pub entity: Entity
-}
 
 fn player_shoot_system(
     player_query: Query<(Entity, &ShootingState), With<Player>>,
@@ -49,7 +45,7 @@ fn player_shoot_system(
     time: Res<Time>
 ) {
 }
-
+/*
 fn check_player_zero_health_system(
     mut death_message: MessageWriter<PlayerDeathMessage>,
     query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>
@@ -60,13 +56,14 @@ fn check_player_zero_health_system(
         }
     }
 }
+*/
 
 fn handle_player_zero_health_system(
     mut commands: Commands,
-    mut player_death_messages: MessageReader<PlayerDeathMessage>
+    mut player_death_messages: MessageReader<CharacterDeathMessage>
 ) {
     for message in player_death_messages.read() {
         info!("Player dead");
-        commands.entity(message.entity).despawn();
+        commands.entity(message.target).despawn();
     }
-}
+} 

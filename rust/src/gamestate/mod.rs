@@ -2,7 +2,6 @@ use bevy::prelude::{
     Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States
 };
 
-use crate::character::player::PlayerDeathMessage;
 use crate::gamestate::start::StartGameMessage;
 
 pub(crate) mod start;
@@ -42,11 +41,13 @@ pub enum GameStateEnum {
     StartGame
 }
 
+/*
 impl From<&PlayerDeathMessage> for GameStateEnum {
     fn from(_message: &PlayerDeathMessage) -> Self {
         GameStateEnum::PlayerDeath
     }
 }
+*/
 
 impl From<&StartGameMessage> for GameStateEnum {
     fn from(_message: &StartGameMessage) -> Self {
