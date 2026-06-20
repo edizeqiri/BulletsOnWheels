@@ -145,6 +145,8 @@ sources/0 = SubResource("TileSetAtlasSource_bwv4p")
 
 [node name="Level0" type="Node2D" unique_id=1164780848]
 
+[node name="HUD" parent="." unique_id=403740618 instance=ExtResource("3_0l7rd")]
+
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=870836250]
 
 [node name="Layer1" type="TileMapLayer" parent="TileMapLayer" unique_id=543900789]
@@ -154,5 +156,3 @@ tile_set = SubResource("TileSet_odhdn")
 
 [node name="Player" parent="." unique_id=113791534 instance=ExtResource("2_0l7rd")]
 position = Vector2(70, 60)
-
-[node name="HUD" parent="." unique_id=403740618 instance=ExtResource("3_0l7rd")]

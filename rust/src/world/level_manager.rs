@@ -18,7 +18,7 @@ struct SceneChanged;
 pub enum LevelId {
     Level0,
     #[default]
-    Level1
+    Level1,
 }
 
 impl LevelId {
@@ -26,7 +26,7 @@ impl LevelId {
     pub fn scene_path(&self) -> &'static str {
         match self {
             LevelId::Level0 => "scenes/levels/Level0.tscn",
-            LevelId::Level1 => "scenes/levels/Level1.tscn"
+            LevelId::Level1 => "scenes/levels/Level1.tscn",
         }
     }
 
@@ -34,7 +34,7 @@ impl LevelId {
     pub fn root_node_path(&self) -> &'static str {
         match self {
             LevelId::Level0 => "/root/Level0",
-            LevelId::Level1 => "/root/Level1"
+            LevelId::Level1 => "/root/Level1",
         }
     }
 
@@ -42,7 +42,7 @@ impl LevelId {
     pub fn display_name(&self) -> &'static str {
         match self {
             LevelId::Level0 => "Level 0",
-            LevelId::Level1 => "Level 1"
+            LevelId::Level1 => "Level 1",
         }
     }
 }
@@ -50,21 +50,21 @@ impl LevelId {
 /// Resource that tracks the current active level (read-mostly for game state)
 #[derive(Resource, Default)]
 pub struct CurrentLevel {
-    pub level_id: Option<LevelId>,
+    pub level_id: LevelId,
     /// Entity holding the spawned `GodotScene`/`GodotNodeHandle` for the
     /// current level
-    entity: Option<Entity>
+    entity: Option<Entity>,
 }
 
 impl CurrentLevel {
     /// Set the current level
     pub fn set(&mut self, level_id: LevelId) {
-        self.level_id = Some(level_id);
+        self.level_id = level_id;
     }
 
     /// Clear the current level state
     pub fn clear(&mut self) {
-        self.level_id = None;
+        self.level_id = LevelId::Level0;
         self.entity = None;
     }
 }
@@ -75,25 +75,25 @@ struct LevelLoadingState {
     pub loading_handle: Option<Handle<GodotResource>>,
     /// Whether the initial menu scene (Godot's main scene) has been torn down.
     /// It isn't tracked as a Bevy entity, so we free it once on the first load.
-    pub menu_cleared: bool
+    pub menu_cleared: bool,
 }
 
 /// Resource that tracks the pending level
 #[derive(Resource, Default)]
 pub struct PendingLevel {
-    pub level_id: Option<LevelId>
+    pub level_id: Option<LevelId>,
 }
 
 /// Event fired when a level load is requested
 #[derive(Event, Debug, Clone)]
 pub struct LoadLevelMessage {
-    pub level_id: LevelId
+    pub level_id: LevelId,
 }
 
 /// Event fired when level loading is complete
 #[derive(Event, Debug, Clone)]
 pub struct LevelLoadedMessage {
-    pub level_id: LevelId
+    pub level_id: LevelId,
 }
 
 pub struct LevelManagerPlugin;
@@ -113,8 +113,8 @@ impl Plugin for LevelManagerPlugin {
                 Update,
                 (
                     (handle_level_scene_change, ApplyDeferred).chain(),
-                    emit_level_loaded_event_when_scene_ready
-                )
+                    emit_level_loaded_event_when_scene_ready,
+                ),
             );
     }
 }
@@ -128,7 +128,7 @@ struct SceneTreeSignalConnected(bool);
 fn connect_scene_tree_signal(
     mut connected: ResMut<SceneTreeSignalConnected>,
     signals: GodotSignals<SceneChanged>,
-    mut scene_tree: SceneTreeRef
+    mut scene_tree: SceneTreeRef,
 ) {
     if connected.0 {
         return;
@@ -153,7 +153,7 @@ fn on_load_level_request(
     trigger: On<LoadLevelMessage>,
     mut loading_state: ResMut<LevelLoadingState>,
     mut current_level: ResMut<CurrentLevel>,
-    asset_server: Res<AssetServer>
+    asset_server: Res<AssetServer>,
 ) {
     let event = trigger.event();
     info!("Loading level asset: {:?}", event.level_id);
@@ -179,11 +179,9 @@ fn handle_level_scene_change(
     mut assets: ResMut<Assets<GodotResource>>,
     mut scene_tree: SceneTreeRef,
     mut godot: GodotAccess,
-    godot_nodes: Query<(Entity, &GodotNodeHandle)>
+    godot_nodes: Query<(Entity, &GodotNodeHandle)>,
 ) {
-    let Some(level_id) = current_level.level_id else {
-        return;
-    };
+    let level_id = current_level.level_id;
     let Some(handle) = loading_state.loading_handle.clone() else {
         return;
     };
@@ -241,7 +239,7 @@ fn emit_level_loaded_event_when_scene_ready(
     mut pending_level: ResMut<PendingLevel>,
     mut scene_tree_events: MessageReader<SceneTreeMessage>,
     mut commands: Commands,
-    mut godot: GodotAccess
+    mut godot: GodotAccess,
 ) {
     let Some(level_id) = pending_level.level_id else {
         return;

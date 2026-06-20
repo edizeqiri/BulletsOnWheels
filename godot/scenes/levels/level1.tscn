@@ -1,8 +1,9 @@
-[gd_scene format=4 uid="uid://ektiwlynxcra"]
+[gd_scene format=4 uid="uid://dm8ggnx7qjx0w"]
 
 [ext_resource type="Texture2D" uid="uid://r4hlroxtgq1t" path="res://assets/kenney_tiny-dungeon/Tilemap/tilemap.png" id="1_x6ivy"]
 [ext_resource type="PackedScene" uid="uid://dkfbqgsl3ty8c" path="res://scenes/characters/player.tscn" id="2_4tcl0"]
 [ext_resource type="PackedScene" uid="uid://ccsypye2gp2j0" path="res://scenes/characters/enemy.tscn" id="3_dd0lh"]
+[ext_resource type="PackedScene" uid="uid://dmcj7qe3s67gh" path="res://scenes/levels/hud.tscn" id="4_bfxgj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4tcl0"]
 texture = ExtResource("1_x6ivy")
@@ -145,6 +146,8 @@ sources/0 = SubResource("TileSetAtlasSource_4tcl0")
 
 [node name="Level1" type="Node2D" unique_id=1196009209]
 
+[node name="HUD" parent="." unique_id=403740618 instance=ExtResource("4_bfxgj")]
+
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1858012008]
 
 [node name="Layer1" type="TileMapLayer" parent="TileMapLayer" unique_id=2092410132]
@@ -159,11 +162,3 @@ position = Vector2(67, 91)
 [node name="Enemy1" parent="." unique_id=1197690428 instance=ExtResource("3_dd0lh")]
 speed = 10.0
 position = Vector2(213, 92)
-
-[node name="HUD" type="CanvasLayer" parent="." unique_id=119847401]
-
-[node name="ScoreLabel" type="Label" parent="HUD" unique_id=1239895254]
-offset_left = 18.0
-offset_top = 136.0
-offset_right = 58.0
-offset_bottom = 159.0
