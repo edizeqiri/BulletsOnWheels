@@ -25,7 +25,6 @@ pub struct EnemyBundle {
     enemy: Enemy,
 
     #[export_fields(
-        current(export_type(f32), default(10.)),
         max(export_type(f32), default(10.))
     )]
     health: Health,
@@ -93,10 +92,6 @@ fn spawn_enemy_system(
         commands.spawn((
             GodotScene::from_handle(assets.enemy_scene.clone()),
             Transform::from_xyz(message.position.x, message.position.y, 0.),
-            Health {
-                current: 3.,
-                max: 3.,
-            },
         ));
     }
 }
