@@ -1,6 +1,9 @@
 use bevy::prelude::*;
-use godot::classes::{CharacterBody2D, Label};
+use godot::classes::{
+    CharacterBody2D, Label, class_macros::private::virtuals::VideoStreamPlayback::play,
+};
 use godot_bevy::prelude::{GodotAccess, GodotNodeHandle, SceneTreeRef};
+use std::fs;
 
 use crate::{
     character::{
@@ -12,7 +15,8 @@ use crate::{
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, (score_tracker, update_score_label));
+    app.add_systems(Update, (score_tracker, update_score_label))
+        .add_systems(Update, track_high_score);
 }
 
 fn score_tracker(
@@ -54,12 +58,36 @@ fn update_score_label(
     score_label.set_text(&format!("Score: {}", enemy_kill_count.count));
 }
 
-/*
 fn track_high_score(
-    mut exit_game_message: MessageReader<ExitGameMessage>
+    exit_game_message: MessageReader<ExitGameMessage>,
+    mut player_death_message: MessageReader<CharacterDeathMessage>,
+    enemy_kill_count_query: Query<(Entity, &EnemyKillCount), With<Player>>,
 ) {
-    for _ in exit_game_message.read() {
+    let Ok((player_entity, score)) = enemy_kill_count_query.single() else {
+        return;
+    };
 
+    let player_died = player_death_message
+        .read()
+        .any(|death_message| death_message.target == player_entity);
+
+    if exit_game_message.is_empty() && !player_died {
+        return;
+    }
+
+    let high_score_path = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/highscore.txt");
+
+    let current_high_score = fs::read_to_string(high_score_path)
+        .ok()
+        .and_then(|value| value.trim().parse::<u32>().ok())
+        .unwrap_or(0);
+
+    if score.count > current_high_score {
+        if let Err(error) = fs::write(high_score_path, score.count.to_string()) {
+            warn!(
+                "Could not write high score: {} to file {:?}",
+                error, high_score_path
+            );
+        }
     }
 }
-*/

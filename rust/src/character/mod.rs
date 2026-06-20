@@ -74,8 +74,12 @@ pub struct CharacterCore {
     weapon: Weapon,
     aim: Aim,
     movement: MovementDirection,
-    shooting_state: ShootingState
+    shooting_state: ShootingState,
+    player_name: PlayerName
 }
+
+#[derive(Component, Default)]
+pub struct PlayerName(String);
 
 /// Movement Sink, godot style
 /// move_and_slide is needed so that we do not have teleports by just changing
