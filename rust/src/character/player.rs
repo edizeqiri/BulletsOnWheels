@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
 use crate::character::{
-    CharacterCore, CharacterDeathMessage, Health, MovementSpeed, ShootingState,
+    CharacterCore, CharacterDeathMessage, Health, MovementSpeed, ShootingState
 };
 
 // TODO: gamestate
@@ -14,9 +14,9 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         (
             player_shoot_system,
-            //check_player_zero_health_system,
-            handle_player_zero_health_system,
-        ), //.run_if(in_state(GameState::RUNNING))
+            // check_player_zero_health_system,
+            handle_player_zero_health_system
+        ) //.run_if(in_state(GameState::RUNNING))
     );
 }
 
@@ -39,45 +39,42 @@ pub struct PlayerBundle {
 
     core: CharacterCore,
 
-    enemy_kill_count: EnemyKillCount,
+    enemy_kill_count: EnemyKillCount
 }
 
 #[derive(Component, Default)]
 pub struct EnemyKillCount {
-    pub count: u32,
+    pub count: u32
 }
 
 #[derive(Message)]
 pub struct PlayerDeathMessage {
-    pub entity: Entity,
+    pub entity: Entity
 }
 
 fn player_shoot_system(
     player_query: Query<(Entity, &ShootingState), With<Player>>,
     mut shoot_timer: Local<f32>,
-    time: Res<Time>,
+    time: Res<Time>
 ) {
 }
-/*
-fn check_player_zero_health_system(
-    mut death_message: MessageWriter<PlayerDeathMessage>,
-    query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>
-) {
-    for (health, entity) in &query {
-        if health.current <= 0. {
-            death_message.write(PlayerDeathMessage { entity });
-        }
-    }
-}
-*/
+// fn check_player_zero_health_system(
+// mut death_message: MessageWriter<PlayerDeathMessage>,
+// query: Query<(&Health, Entity), (With<Player>, Changed<Health>)>
+// ) {
+// for (health, entity) in &query {
+// if health.current <= 0. {
+// death_message.write(PlayerDeathMessage { entity });
+// }
+// }
+// }
 
 fn handle_player_zero_health_system(
     mut commands: Commands,
-    mut player_death_messages: MessageReader<CharacterDeathMessage>,
+    mut player_death_messages: MessageReader<CharacterDeathMessage>
 ) {
     for message in player_death_messages.read() {
         info!("Player dead");
         commands.entity(message.target).despawn();
-        
     }
 }
