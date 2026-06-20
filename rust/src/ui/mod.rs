@@ -1,4 +1,12 @@
-mod healthbar;
+use bevy::app::App;
+
+mod score;
+
+pub(super) fn plugin(app: &mut App) {
+    app.add_plugins(score::plugin);
+}
+/*
+ mod healthbar;
 
 use std::ops::Deref;
 
@@ -136,3 +144,4 @@ fn dev_ui(
         ui.add(DragValue::new(&mut enemy_health_res.max_health).speed(0.1));
     });
 }
+*/
