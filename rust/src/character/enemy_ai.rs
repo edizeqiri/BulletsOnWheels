@@ -2,15 +2,14 @@
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::{
-    character::{
-        Aim, MovementDirection, enemy::Enemy, enemy_ai::EnemyType::Hunter, player::Player,
-    },
-    weapon::weapon::ShootMessage,
-};
-//use crate::weapon::ShootEvent;
-//use crate::world::LevelState;
-//use crate::world::map::map::Level;
+use crate::character::enemy::Enemy;
+use crate::character::enemy_ai::EnemyType::Hunter;
+use crate::character::player::Player;
+use crate::character::{Aim, MovementDirection};
+use crate::weapon::weapon::ShootMessage;
+// use crate::weapon::ShootEvent;
+// use crate::world::LevelState;
+// use crate::world::map::map::Level;
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(GodotTransformConfig::two_way())
         .add_systems(Update, shoot_at_player_system)
@@ -34,7 +33,7 @@ pub enum EnemyType {
     // Wants to run away from player
     Fugitive(EnemyFugitive),
     // Wants to go to the exit as soon as possible
-    Seeker(EnemySeeker),
+    Seeker(EnemySeeker)
 }
 impl Default for EnemyType {
     fn default() -> Self {
@@ -70,7 +69,7 @@ impl EnemyAI for EnemyHunter {
 fn shoot_at_player_system(
     mut shoot_event: MessageWriter<ShootMessage>,
     enemy_query: Query<(Entity, &mut Aim, &Transform, &EnemyType), With<Enemy>>,
-    player_query: Query<&Transform, With<Player>>,
+    player_query: Query<&Transform, With<Player>>
 ) {
     let Ok(player) = player_query.single() else {
         return;
@@ -78,13 +77,13 @@ fn shoot_at_player_system(
     for (enemy, mut aim, enemy_transform, enemy_type) in enemy_query {
         aim.vec = enemy_type.shooting(player, enemy_transform);
 
-        //shoot_event.write(ShootMessage { shooter: enemy });
+        // shoot_event.write(ShootMessage { shooter: enemy });
     }
 }
 
 fn enemy_move_system(
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
-    enemy_query: Query<(&mut MovementDirection, &Transform, &EnemyType), With<Enemy>>,
+    enemy_query: Query<(&mut MovementDirection, &Transform, &EnemyType), With<Enemy>>
 ) {
     if let Ok(player_transform) = player_query.single() {
         for (mut enemy_direction, enemy_transform, enemy_type) in enemy_query {
@@ -95,7 +94,8 @@ fn enemy_move_system(
     }
 }
 
-// TODO: refactor this into its correct enemy type setter which tracks enemies spawned
+// TODO: refactor this into its correct enemy type setter which tracks enemies
+// spawned
 fn set_all_fugitive_system(mut commands: Commands, enemy_query: Query<Entity, Added<Enemy>>) {
     for enemy in enemy_query {
         commands

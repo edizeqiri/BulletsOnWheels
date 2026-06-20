@@ -1,10 +1,10 @@
 use bevy::prelude::*;
-use godot_bevy::{plugins::input::MouseButton, prelude::*};
+use godot_bevy::plugins::input::MouseButton;
+use godot_bevy::prelude::*;
 
-use crate::{
-    character::{Aim, player::Player},
-    weapon::{weapon::{ShootMessage, Weapon}},
-};
+use crate::character::Aim;
+use crate::character::player::Player;
+use crate::weapon::weapon::{ShootMessage, Weapon};
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_systems(Update, handle_mouse_motion_system)
@@ -13,7 +13,7 @@ pub(crate) fn plugin(app: &mut App) {
 
 fn handle_mouse_motion_system(
     mut query: Query<(&mut Aim, &Transform), With<Player>>,
-    mut events: MessageReader<MouseMotion>,
+    mut events: MessageReader<MouseMotion>
 ) {
     let Ok((mut aim, transform)) = query.single_mut() else {
         return;
@@ -28,7 +28,7 @@ fn handle_mouse_motion_system(
 fn handle_mouse_system(
     mut events: MessageReader<MouseButtonInput>,
     mut shoot_message: MessageWriter<ShootMessage>,
-    player_query: Query<(Entity, &Aim), With<Player>>, // todo: which player?
+    player_query: Query<(Entity, &Aim), With<Player>> // todo: which player?
 ) {
     for event in events.read() {
         if event.pressed {
@@ -40,11 +40,11 @@ fn handle_mouse_system(
                     shoot_message.write(ShootMessage {
                         shooter: player_entity,
                         aim: Aim {
-                            vec: aim.vec.normalize(),
-                        },
+                            vec: aim.vec.normalize()
+                        }
                     });
                 },
-                _ => {},
+                _ => {}
             }
         }
     }

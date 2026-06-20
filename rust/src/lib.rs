@@ -1,7 +1,7 @@
-use bevy::{prelude::*, state::app::StatesPlugin};
-use bevy_asset_loader::{
-    loading_state::{LoadingState, LoadingStateAppExt, config::ConfigureLoadingState},
-};
+use bevy::prelude::*;
+use bevy::state::app::StatesPlugin;
+use bevy_asset_loader::loading_state::config::ConfigureLoadingState;
+use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
@@ -31,6 +31,6 @@ fn build_app(app: &mut App) {
         .add_plugins(StatesPlugin)
         .init_state::<GameState>()
         .add_loading_state(
-            LoadingState::new(GameState::START).load_collection::<ProjectileAssets>(),
+            LoadingState::new(GameState::START).load_collection::<ProjectileAssets>()
         );
 }
