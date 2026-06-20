@@ -13,6 +13,7 @@ use crate::weapon::weapon::{Shooter, Weapon};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<CharacterHitMessage>()
+        .add_message::<CharacterDeathMessage>()
         .add_plugins(enemy_ai::plugin)
         .add_plugins(enemy::plugin)
         .add_plugins(player::plugin)
@@ -95,9 +96,14 @@ fn apply_character_movement(
 
 #[derive(Message)]
 struct CharacterHitMessage {
-    pub source: Entity,
     pub target: Entity,
     pub health: f32
+}
+
+#[derive(Message)]
+pub struct CharacterDeathMessage {
+    pub source: Entity,
+    pub target: Entity,
 }
 
 fn character_bullet_collision_system(
@@ -105,7 +111,8 @@ fn character_bullet_collision_system(
     mut health_query: Query<(&mut Health)>,
     projectile_query: Query<&Damage, With<Projectile>>,
     shooter_query: Query<&Shooter>,
-    mut hit_writer: MessageWriter<CharacterHitMessage>
+    mut hit_writer: MessageWriter<CharacterHitMessage>,
+    mut death_message_writer: MessageWriter<CharacterDeathMessage>,
 ) {
     let event = collision.event();
 
@@ -139,10 +146,17 @@ fn character_bullet_collision_system(
     );
     health.current -= damage.0;
     hit_writer.write(CharacterHitMessage {
-        source: shooter.0,
         target: target_entity,
         health: health.current
     });
+
+    let character_is_dead = health.current <= 0.;
+    if character_is_dead {
+        death_message_writer.write(CharacterDeathMessage {
+            source: shooter.0,
+            target: target_entity,
+        });
+    }
 }
 
 fn update_healthbar_animation_system(

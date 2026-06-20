@@ -15,6 +15,7 @@ mod input;
 mod main_menu;
 mod weapon;
 mod world;
+mod ui;
 
 #[bevy_app]
 fn build_app(app: &mut App) {
@@ -29,6 +30,7 @@ fn build_app(app: &mut App) {
         .add_plugins(input::plugin)
         .add_plugins(main_menu::plugin)
         .add_plugins(world::plugin)
+        .add_plugins(ui::plugin)
         .add_plugins(StatesPlugin)
         .init_state::<GameState>()
         .add_loading_state(
