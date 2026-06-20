@@ -31,6 +31,7 @@ fn build_app(app: &mut App) {
         .add_plugins(main_menu::plugin)
         .add_plugins(world::plugin)
         .add_plugins(ui::plugin)
+        .add_plugins(gamestate::plugin)
         .add_plugins(StatesPlugin)
         .init_state::<GameState>()
         .add_loading_state(

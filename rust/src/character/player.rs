@@ -78,5 +78,6 @@ fn handle_player_zero_health_system(
     for message in player_death_messages.read() {
         info!("Player dead");
         commands.entity(message.target).despawn();
+        
     }
 }

@@ -1,10 +1,16 @@
-use bevy::prelude::{
+use bevy::{app::{App, AppExit}, prelude::{
     Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States
-};
+}};
+use godot_bevy::prelude::SceneTreeRef;
 
 use crate::gamestate::start::StartGameMessage;
 
 pub(crate) mod start;
+
+pub(super) fn plugin(app: &mut App) {
+    app.add_message::<ExitGameMessage>();
+}
+
 // pub(super) fn plugin(app: &mut App) {
 // app.add_message::<GameStateMessage>()
 // .add_systems(Update, state_machine_system)
@@ -102,4 +108,21 @@ pub struct EnemyResource {
     // y_range: Range<i32>,
     // pub weapons: Weapons,
     pub max_health: u32
+}
+
+#[derive(Message)]
+pub struct ExitGameMessage;
+
+fn exit_game(
+    mut exit_game_reader: MessageReader<ExitGameMessage>,
+    mut exit: MessageWriter<AppExit>,
+    mut scene_tree: SceneTreeRef
+) {
+    for _ in exit_game_reader.read() {
+        // bevy exit
+        exit.write(AppExit::Success);
+
+        // godot exit
+        scene_tree.get().quit();
+    }
 }

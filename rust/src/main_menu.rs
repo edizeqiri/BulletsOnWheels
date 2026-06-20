@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
+use crate::gamestate::ExitGameMessage;
 use crate::weapon::projectile::Projectile;
 use crate::world::level_manager::{LevelId, LoadLevelMessage};
 
@@ -42,8 +43,7 @@ fn handle_button_system(
     mut commands: Commands,
     button_query: Query<&ButtonTypeComponent, (With<MenuButton>, With<Shootable>)>,
     projectile_query: Query<Entity, With<Projectile>>,
-    mut exit: MessageWriter<AppExit>,
-    mut scene_tree: SceneTreeRef
+    mut exit_game_writer: MessageWriter<ExitGameMessage>,
 ) {
     let event = collision.event();
 
@@ -70,11 +70,7 @@ fn handle_button_system(
             // TODO: open settings
         },
         ButtonType::EXIT => {
-            // bevy exit
-            exit.write(AppExit::Success);
-
-            // godot exit
-            scene_tree.get().quit();
+            exit_game_writer.write(ExitGameMessage);
         }
     }
 }
