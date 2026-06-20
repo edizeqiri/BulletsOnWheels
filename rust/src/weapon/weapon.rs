@@ -84,7 +84,7 @@ pub struct Shooter(pub Entity);
 
 #[derive(AssetCollection, Resource)]
 pub(crate) struct ProjectileAssets {
-    #[asset(path = "scenes/projectile.tscn")]
+    #[asset(path = "scenes/characters/projectile.tscn")]
     pub projectile_scene: Handle<GodotResource>
 }
 

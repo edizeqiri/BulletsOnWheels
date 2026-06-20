@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::level_manager::{LevelId, LoadLevelMessage};
+use crate::world::level_manager::{LevelId, LoadLevelMessage};
 use crate::weapon::projectile::Projectile;
 
 pub(super) fn plugin(app: &mut App) {

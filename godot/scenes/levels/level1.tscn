@@ -1,8 +1,8 @@
 [gd_scene format=4 uid="uid://dm8ggnx7qjx0w"]
 
 [ext_resource type="Texture2D" uid="uid://r4hlroxtgq1t" path="res://assets/kenney_tiny-dungeon/Tilemap/tilemap.png" id="1_x6ivy"]
-[ext_resource type="PackedScene" uid="uid://dkfbqgsl3ty8c" path="res://scenes/player.tscn" id="2_4tcl0"]
-[ext_resource type="PackedScene" uid="uid://ccsypye2gp2j0" path="res://scenes/levels/enemy.tscn" id="3_dd0lh"]
+[ext_resource type="PackedScene" uid="uid://dkfbqgsl3ty8c" path="res://scenes/characters/player.tscn" id="2_4tcl0"]
+[ext_resource type="PackedScene" uid="uid://ccsypye2gp2j0" path="res://scenes/characters/enemy.tscn" id="3_dd0lh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4tcl0"]
 texture = ExtResource("1_x6ivy")

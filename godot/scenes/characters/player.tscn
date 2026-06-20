@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dkfbqgsl3ty8c"]
 
 [ext_resource type="Texture2D" uid="uid://j24o1cefeagl" path="res://assets/kenney_tiny-dungeon/Tiles/tile_0084.png" id="1_g2els"]
-[ext_resource type="PackedScene" uid="uid://cem8xn74owfta" path="res://scenes/weapons/weapon_trident.tscn" id="2_g2els"]
+[ext_resource type="PackedScene" uid="uid://cem8xn74owfta" path="res://scenes/characters/weapons/weapon_trident.tscn" id="2_g2els"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sdi4c"]
 size = Vector2(14, 15)

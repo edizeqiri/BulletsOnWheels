@@ -5,8 +5,7 @@ use godot_bevy::prelude::*;
 
 use crate::character::player::Player;
 use crate::{
-    character::{Aim, MovementDirection}
-    // gamestate::start::StartGameMessage
+    character::{Aim, MovementDirection} // gamestate::start::StartGameMessage
 };
 
 const DEADZONE: f32 = 0.05;
