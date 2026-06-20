@@ -121,7 +121,7 @@ fn exit_game(
 ) {
     for _ in exit_game_reader.read() {
         info!("Exit game.");
-        
+    
         // bevy exit
         exit.write(AppExit::Success);
 
