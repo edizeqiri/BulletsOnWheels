@@ -2,18 +2,16 @@ use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use godot_bevy::prelude::*;
 
-use crate::character::{CharacterCore, Health, MovementSpeed};
+use crate::character::{CharacterCore, CharacterDeathMessage, Health, MovementSpeed};
 // use crate::gamestate::EnemyResource;
 // use crate::weapon::Weapons;
 // use crate::world::map::map::Level;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_message::<EnemyDeathMessage>()
-        .add_message::<EnemySpawnedMessage>()
+    app.add_message::<EnemySpawnedMessage>()
         .add_message::<CreateEnemyMessage>()
-        .add_systems(Update, check_enemy_zero_health_system)
-        .add_systems(Update, handle_enemy_zero_health_system)
-        .add_systems(Update, spawn_enemy_system);
+        .add_systems(Update, spawn_enemy_system)
+        .add_systems(Update, handle_enemy_zero_health_system);
 }
 
 #[derive(Component, Default)]
@@ -39,13 +37,6 @@ pub struct EnemyAssets {
     pub enemy_scene: Handle<GodotResource>
 }
 
-/// This message will be reused for any enemy entity, even bullets. Don't ask
-/// why.
-#[derive(Message)]
-pub struct EnemyDeathMessage {
-    pub entity: Entity
-}
-
 #[derive(Message)]
 pub struct EnemySpawnedMessage {
     pub entity: Entity
@@ -56,6 +47,7 @@ pub struct CreateEnemyMessage {
     pub position: Vec2
 }
 
+/*
 fn check_enemy_zero_health_system(
     mut death_message: MessageWriter<EnemyDeathMessage>,
     query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>
@@ -66,15 +58,17 @@ fn check_enemy_zero_health_system(
         }
     }
 }
+*/
 
 fn handle_enemy_zero_health_system(
     mut commands: Commands,
-    mut enemy_death_messages: MessageReader<EnemyDeathMessage>
+    mut enemy_death_messages: MessageReader<CharacterDeathMessage>
 ) {
     for message in enemy_death_messages.read() {
-        commands.entity(message.entity).despawn();
+        commands.entity(message.target).despawn();
     }
 }
+
 
 fn spawn_enemy_system(
     mut enemy_spawn_mesage: MessageReader<CreateEnemyMessage>,
