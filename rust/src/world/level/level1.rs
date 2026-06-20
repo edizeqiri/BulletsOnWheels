@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::character::enemy::CreateEnemyMessage;
 
 pub(crate) fn plugin(app: &mut App) {
-    app.insert_resource(Time::<Fixed>::from_seconds(3.))
+    app.insert_resource(Time::<Fixed>::from_seconds(1.5))
         .add_systems(FixedUpdate, spawn_enemies_after_time);
 }
 
