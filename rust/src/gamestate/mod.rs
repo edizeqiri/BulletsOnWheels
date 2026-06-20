@@ -1,4 +1,4 @@
-use bevy::{app::{App, AppExit}, prelude::{
+use bevy::{app::{App, AppExit, Update}, prelude::{
     Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States
 }};
 use godot_bevy::prelude::SceneTreeRef;
@@ -8,7 +8,8 @@ use crate::gamestate::start::StartGameMessage;
 pub(crate) mod start;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_message::<ExitGameMessage>();
+    app.add_message::<ExitGameMessage>()
+        .add_systems(Update, exit_game);
 }
 
 // pub(super) fn plugin(app: &mut App) {
