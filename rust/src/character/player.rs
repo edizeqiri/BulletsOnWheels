@@ -1,9 +1,10 @@
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::{character::{
+use crate::character::{
     CharacterCore, CharacterDeathMessage, Health, MovementSpeed, ShootingState
-}, gamestate::{AppState, InGameState}};
+};
+use crate::gamestate::{AppState, InGameState};
 
 // TODO: gamestate
 // use crate::gamestate::GameState;

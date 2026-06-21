@@ -1,13 +1,12 @@
+use std::fs;
+
 use bevy::prelude::*;
 use godot::classes::Label;
 use godot_bevy::prelude::SceneTreeRef;
-use std::fs;
 
-use crate::{
-    character::player::{EnemyKillCount, Player},
-    gamestate::{ExitGameMessage, CharacterDeathMessage},
-    world::level_manager::CurrentLevel,
-};
+use crate::character::player::{EnemyKillCount, Player};
+use crate::gamestate::{CharacterDeathMessage, ExitGameMessage};
+use crate::world::level_manager::CurrentLevel;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(load_high_score())
@@ -21,13 +20,13 @@ const HIGH_SCORE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/hi
 
 #[derive(Resource, Default)]
 struct HighScore {
-    count: u32,
+    count: u32
 }
 
 fn score_tracker(
     mut death_message_reader: MessageReader<CharacterDeathMessage>,
     mut enemy_kill_count_query: Query<&mut EnemyKillCount>,
-    mut high_score: ResMut<HighScore>,
+    mut high_score: ResMut<HighScore>
 ) {
     for message in death_message_reader.read() {
         let Ok(mut enemy_kill_count) = enemy_kill_count_query.get_mut(message.source) else {
@@ -43,7 +42,7 @@ fn update_score_label(
     player_query: Query<&EnemyKillCount, (With<Player>, Changed<EnemyKillCount>)>,
     current_level: Res<CurrentLevel>,
     mut scene_tree: SceneTreeRef,
-    high_score: Res<HighScore>,
+    high_score: Res<HighScore>
 ) {
     let level_id = current_level.level_id;
 
@@ -73,7 +72,7 @@ fn save_high_score(
     exit_game_message: MessageReader<ExitGameMessage>,
     mut player_death_message: MessageReader<CharacterDeathMessage>,
     enemy_kill_count_query: Query<(Entity, &EnemyKillCount), With<Player>>,
-    high_score: Res<HighScore>,
+    high_score: Res<HighScore>
 ) {
     let Ok((player_entity, score)) = enemy_kill_count_query.single() else {
         return;
@@ -119,4 +118,3 @@ fn load_high_score() -> HighScore {
 
     HighScore { count }
 }
-

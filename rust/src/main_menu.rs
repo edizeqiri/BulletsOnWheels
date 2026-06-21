@@ -43,7 +43,7 @@ fn handle_button_system(
     mut commands: Commands,
     button_query: Query<&ButtonTypeComponent, (With<MenuButton>, With<Shootable>)>,
     projectile_query: Query<Entity, With<Projectile>>,
-    mut exit_game_writer: MessageWriter<ExitGameMessage>,
+    mut exit_game_writer: MessageWriter<ExitGameMessage>
 ) {
     let event = collision.event();
 

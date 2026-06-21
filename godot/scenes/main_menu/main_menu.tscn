@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://r4hlroxtgq1t" path="res://assets/kenney_tiny-dungeon/Tilemap/tilemap.png" id="1_0ebjn"]
 [ext_resource type="PackedScene" uid="uid://p01ccnvlydbl" path="res://scenes/main_menu/main_menu_button.tscn" id="2_ob46e"]
 [ext_resource type="PackedScene" uid="uid://dkfbqgsl3ty8c" path="res://scenes/characters/player.tscn" id="3_ob46e"]
-[ext_resource type="Texture2D" uid="uid://dd7yfym1xo6w5" path="res://assets/title.png" id="4_uqeha"]
+[ext_resource type="PackedScene" uid="uid://xhwge1jhmdv1" path="res://scenes/main_menu/title.tscn" id="4_uqeha"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_leamy"]
 texture = ExtResource("1_0ebjn")
@@ -181,7 +181,4 @@ autowrap_mode = 2
 [node name="Player" parent="." unique_id=113791534 instance=ExtResource("3_ob46e")]
 position = Vector2(180, 276)
 
-[node name="TitleSprite" type="Sprite2D" parent="." unique_id=1896204138]
-position = Vector2(292, 99)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("4_uqeha")
+[node name="Title" parent="." unique_id=1751772652 instance=ExtResource("4_uqeha")]
