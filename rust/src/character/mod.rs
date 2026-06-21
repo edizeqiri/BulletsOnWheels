@@ -148,6 +148,12 @@ fn character_bullet_collision_system(
         "Health at {} and receiving damage {}",
         health.current, damage.0
     );
+
+    if health.current <= 0. {
+        debug!("Enemy already dead");
+        return;
+    }
+    
     health.current -= damage.0;
     hit_writer.write(CharacterHitMessage {
         target: target_entity,

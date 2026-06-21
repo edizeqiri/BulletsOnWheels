@@ -36,7 +36,7 @@ fn score_tracker(
 ) {
     for message in death_message_reader.read() {
         let Ok(mut enemy_kill_count) = enemy_kill_count_query.get_mut(message.source) else {
-            return;
+            continue;
         };
         enemy_kill_count.count += 1;
         high_score.count = high_score.count.max(enemy_kill_count.count);
@@ -89,7 +89,6 @@ fn save_high_score(
         .any(|death_message| death_message.target == player_entity);
 
     if exit_game_message.is_empty() && !player_died {
-        warn!("player still alive");
         return;
     }
 
