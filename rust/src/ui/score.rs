@@ -81,7 +81,6 @@ fn save_high_score(
     high_score: Res<HighScore>,
 ) {
     let Ok((player_entity, score)) = enemy_kill_count_query.single() else {
-        warn!("no score");
         return;
     };
 
