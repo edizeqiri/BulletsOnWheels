@@ -3,6 +3,7 @@ use bevy_asset_loader::asset_collection::AssetCollection;
 use godot_bevy::prelude::*;
 
 use crate::character::{CharacterCore, CharacterDeathMessage, Health, MovementSpeed};
+use crate::world::level_manager::LevelId;
 // use crate::gamestate::EnemyResource;
 // use crate::weapon::Weapons;
 // use crate::world::map::map::Level;
@@ -11,7 +12,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_message::<EnemySpawnedMessage>()
         .add_message::<CreateEnemyMessage>()
         .add_systems(Update, (handle_enemy_zero_health_system).chain())
-        .add_systems(Update, spawn_enemy_system);
+        .add_systems(Update, spawn_enemy_system.run_if(in_state(LevelId::Level1)));
 }
 
 #[derive(Component, Default)]
@@ -46,17 +47,6 @@ pub struct EnemySpawnedMessage {
 pub struct CreateEnemyMessage {
     pub position: Vec2
 }
-
-// fn check_enemy_zero_health_system(
-// mut death_message: MessageWriter<EnemyDeathMessage>,
-// query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>
-// ) {
-// for (health, entity) in &query {
-// if health.current <= 0. {
-// death_message.write(EnemyDeathMessage { entity });
-// }
-// }
-// }
 
 fn handle_enemy_zero_health_system(
     mut commands: Commands,
