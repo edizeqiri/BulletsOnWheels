@@ -16,8 +16,9 @@ struct SceneChanged;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, GodotConvert, Var, Export)]
 #[godot(via = GString)]
 pub enum LevelId {
-    Level0,
     #[default]
+    MainMenu,
+    Level0,
     Level1
 }
 
@@ -26,7 +27,8 @@ impl LevelId {
     pub fn scene_path(&self) -> &'static str {
         match self {
             LevelId::Level0 => "scenes/levels/level0.tscn",
-            LevelId::Level1 => "scenes/levels/level1.tscn"
+            LevelId::Level1 => "scenes/levels/level1.tscn",
+            LevelId::MainMenu => "scenes/main_menu/main_menu.tscn"
         }
     }
 
@@ -34,7 +36,8 @@ impl LevelId {
     pub fn root_node_path(&self) -> &'static str {
         match self {
             LevelId::Level0 => "/root/Level0",
-            LevelId::Level1 => "/root/Level1"
+            LevelId::Level1 => "/root/Level1",
+            LevelId::MainMenu => "/root/MainMenu"
         }
     }
 
@@ -42,7 +45,8 @@ impl LevelId {
     pub fn display_name(&self) -> &'static str {
         match self {
             LevelId::Level0 => "Level 0",
-            LevelId::Level1 => "Level 1"
+            LevelId::Level1 => "Level 1",
+            LevelId::MainMenu => "Main Menu"
         }
     }
 }

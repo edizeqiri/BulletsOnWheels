@@ -105,15 +105,13 @@ struct CharacterHitMessage {
     pub health: f32
 }
 
-
-
 fn character_bullet_collision_system(
     collision: On<CollisionStarted>,
     mut health_query: Query<&mut Health>,
     projectile_query: Query<&Damage, With<Projectile>>,
     shooter_query: Query<&Shooter>,
     mut hit_writer: MessageWriter<CharacterHitMessage>,
-    mut death_message_writer: MessageWriter<CharacterDeathMessage>,
+    mut death_message_writer: MessageWriter<CharacterDeathMessage>
 ) {
     let event = collision.event();
 
@@ -150,7 +148,7 @@ fn character_bullet_collision_system(
         debug!("Enemy already dead");
         return;
     }
-    
+
     health.current -= damage.0;
     hit_writer.write(CharacterHitMessage {
         target: target_entity,
@@ -161,7 +159,7 @@ fn character_bullet_collision_system(
     if character_is_dead {
         death_message_writer.write(CharacterDeathMessage {
             source: shooter.0,
-            target: target_entity,
+            target: target_entity
         });
     }
 }

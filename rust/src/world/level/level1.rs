@@ -13,4 +13,3 @@ fn spawn_enemies_after_time(mut enemy_writer: MessageWriter<CreateEnemyMessage>)
         position: Vec2 { x: 100., y: 100. }
     });
 }
-

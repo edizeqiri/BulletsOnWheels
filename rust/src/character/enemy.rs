@@ -28,41 +28,39 @@ pub struct EnemyBundle {
     #[export_fields(value(export_type(f32), default(100.)))]
     speed: MovementSpeed,
 
-    core: CharacterCore,
+    core: CharacterCore
 }
 
 #[derive(AssetCollection, Resource)]
 pub struct EnemyAssets {
     #[asset(path = "scenes/characters/enemy.tscn")]
-    pub enemy_scene: Handle<GodotResource>,
+    pub enemy_scene: Handle<GodotResource>
 }
 
 #[derive(Message)]
 pub struct EnemySpawnedMessage {
-    pub entity: Entity,
+    pub entity: Entity
 }
 
 #[derive(Message)]
 pub struct CreateEnemyMessage {
-    pub position: Vec2,
+    pub position: Vec2
 }
 
-/*
-fn check_enemy_zero_health_system(
-    mut death_message: MessageWriter<EnemyDeathMessage>,
-    query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>
-) {
-    for (health, entity) in &query {
-        if health.current <= 0. {
-            death_message.write(EnemyDeathMessage { entity });
-        }
-    }
-}
-*/
+// fn check_enemy_zero_health_system(
+// mut death_message: MessageWriter<EnemyDeathMessage>,
+// query: Query<(&Health, Entity), (With<Enemy>, Changed<Health>)>
+// ) {
+// for (health, entity) in &query {
+// if health.current <= 0. {
+// death_message.write(EnemyDeathMessage { entity });
+// }
+// }
+// }
 
 fn handle_enemy_zero_health_system(
     mut commands: Commands,
-    mut enemy_death_messages: MessageReader<CharacterDeathMessage>,
+    mut enemy_death_messages: MessageReader<CharacterDeathMessage>
 ) {
     for message in enemy_death_messages.read() {
         commands.entity(message.target).despawn();
@@ -71,9 +69,9 @@ fn handle_enemy_zero_health_system(
 
 fn spawn_enemy_system(
     mut enemy_spawn_mesage: MessageReader<CreateEnemyMessage>,
-    //mut godot: GodotAccess,
+    // mut godot: GodotAccess,
     mut commands: Commands,
-    assets: Option<Res<EnemyAssets>>,
+    assets: Option<Res<EnemyAssets>>
 ) {
     let Some(assets) = assets else {
         return;
@@ -82,7 +80,7 @@ fn spawn_enemy_system(
     for message in enemy_spawn_mesage.read() {
         commands.spawn((
             GodotScene::from_handle(assets.enemy_scene.clone()),
-            Transform::from_xyz(message.position.x, message.position.y, 0.),
+            Transform::from_xyz(message.position.x, message.position.y, 0.)
         ));
     }
 }
