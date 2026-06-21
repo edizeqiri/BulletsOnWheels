@@ -1,33 +1,40 @@
 use bevy::prelude::*;
-use godot::classes::{
-    CharacterBody2D, Label, class_macros::private::virtuals::VideoStreamPlayback::play,
-};
-use godot_bevy::prelude::{GodotAccess, GodotNodeHandle, SceneTreeRef};
+use godot::classes::Label;
+use godot_bevy::prelude::SceneTreeRef;
 use std::fs;
 
 use crate::{
-    character::{
-        CharacterDeathMessage,
-        player::{EnemyKillCount, Player},
-    },
-    gamestate::ExitGameMessage,
+    character::player::{EnemyKillCount, Player},
+    gamestate::{ExitGameMessage, CharacterDeathMessage},
     world::level_manager::CurrentLevel,
 };
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(Update, (score_tracker, update_score_label))
-        .add_systems(Update, track_high_score);
+    app.insert_resource(load_high_score())
+        .add_systems(Update, (score_tracker, update_score_label))
+        .add_systems(Update, save_high_score);
+}
+
+use std::path::Path;
+
+const HIGH_SCORE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/highscore.txt");
+
+#[derive(Resource, Default)]
+struct HighScore {
+    count: u32,
 }
 
 fn score_tracker(
     mut death_message_reader: MessageReader<CharacterDeathMessage>,
     mut enemy_kill_count_query: Query<&mut EnemyKillCount>,
+    mut high_score: ResMut<HighScore>,
 ) {
     for message in death_message_reader.read() {
         let Ok(mut enemy_kill_count) = enemy_kill_count_query.get_mut(message.source) else {
-            return;
+            continue;
         };
         enemy_kill_count.count += 1;
+        high_score.count = high_score.count.max(enemy_kill_count.count);
     }
 }
 
@@ -36,6 +43,7 @@ fn update_score_label(
     player_query: Query<&EnemyKillCount, (With<Player>, Changed<EnemyKillCount>)>,
     current_level: Res<CurrentLevel>,
     mut scene_tree: SceneTreeRef,
+    high_score: Res<HighScore>,
 ) {
     let level_id = current_level.level_id;
 
@@ -55,13 +63,17 @@ fn update_score_label(
         return;
     };
 
-    score_label.set_text(&format!("Score: {}", enemy_kill_count.count));
+    score_label.set_text(&format!(
+        "Score: {}  High Score: {}",
+        enemy_kill_count.count, high_score.count
+    ));
 }
 
-fn track_high_score(
+fn save_high_score(
     exit_game_message: MessageReader<ExitGameMessage>,
     mut player_death_message: MessageReader<CharacterDeathMessage>,
     enemy_kill_count_query: Query<(Entity, &EnemyKillCount), With<Player>>,
+    high_score: Res<HighScore>,
 ) {
     let Ok((player_entity, score)) = enemy_kill_count_query.single() else {
         return;
@@ -75,14 +87,12 @@ fn track_high_score(
         return;
     }
 
-    let high_score_path = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/highscore.txt");
+    let high_score_path = Path::new(HIGH_SCORE_PATH);
+    let current_high_score = high_score.count;
 
-    let current_high_score = fs::read_to_string(high_score_path)
-        .ok()
-        .and_then(|value| value.trim().parse::<u32>().ok())
-        .unwrap_or(0);
-
-    if score.count > current_high_score {
+    // the check is technically redundant, but avoids constant writing to file
+    if score.count >= current_high_score {
+        info!("New High Score!!!");
         if let Err(error) = fs::write(high_score_path, score.count.to_string()) {
             warn!(
                 "Could not write high score: {} to file {:?}",
@@ -91,3 +101,22 @@ fn track_high_score(
         }
     }
 }
+
+fn load_high_score() -> HighScore {
+    let Ok(value) = fs::read_to_string(HIGH_SCORE_PATH) else {
+        warn!("Could not read high score from file: {}", HIGH_SCORE_PATH);
+        return HighScore { count: 0 };
+    };
+
+    let Ok(count) = value.trim().parse::<u32>() else {
+        warn!(
+            "Could not parse high score from file: {}. Value was: {:?}",
+            HIGH_SCORE_PATH,
+            value.trim()
+        );
+        return HighScore { count: 0 };
+    };
+
+    HighScore { count }
+}
+

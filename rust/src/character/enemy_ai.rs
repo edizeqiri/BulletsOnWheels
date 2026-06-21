@@ -1,4 +1,3 @@
-use std::time::Duration;
 
 // move to player
 use bevy::prelude::*;

@@ -7,6 +7,7 @@ use godot::classes::{AnimatedSprite2D, CharacterBody2D};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
+use crate::gamestate::CharacterDeathMessage;
 use crate::weapon::Damage;
 use crate::weapon::projectile::Projectile;
 use crate::weapon::weapon::{Shooter, Weapon};
@@ -104,15 +105,11 @@ struct CharacterHitMessage {
     pub health: f32
 }
 
-#[derive(Message)]
-pub struct CharacterDeathMessage {
-    pub source: Entity,
-    pub target: Entity,
-}
+
 
 fn character_bullet_collision_system(
     collision: On<CollisionStarted>,
-    mut health_query: Query<(&mut Health)>,
+    mut health_query: Query<&mut Health>,
     projectile_query: Query<&Damage, With<Projectile>>,
     shooter_query: Query<&Shooter>,
     mut hit_writer: MessageWriter<CharacterHitMessage>,
@@ -148,6 +145,12 @@ fn character_bullet_collision_system(
         "Health at {} and receiving damage {}",
         health.current, damage.0
     );
+
+    if health.current <= 0. {
+        debug!("Enemy already dead");
+        return;
+    }
+    
     health.current -= damage.0;
     hit_writer.write(CharacterHitMessage {
         target: target_entity,

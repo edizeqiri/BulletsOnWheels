@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use godot_bevy::prelude::*;
 
 use crate::weapon::Damage;
 use crate::weapon::weapon::Speed;
