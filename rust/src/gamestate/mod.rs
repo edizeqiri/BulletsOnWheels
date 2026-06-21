@@ -31,8 +31,8 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(States, Debug, Clone, Eq, PartialEq, Hash, Default)]
 pub(crate) enum AppState {
-    #[default]
     LOADING, // asset loading & level transition
+    #[default]
     RUNNING, // character movement
     PAUSE,   // menu
     EXIT     // exit
