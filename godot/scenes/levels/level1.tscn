@@ -156,7 +156,6 @@ tile_map_data = PackedByteArray("AAAAAAAAAAABAAAAAAAAAAEAAAABAAEAAAAAAAIAAAABAAE
 tile_set = SubResource("TileSet_dd0lh")
 
 [node name="Player" parent="." unique_id=113791534 instance=ExtResource("2_4tcl0")]
-speed = 100.0
 position = Vector2(67, 91)
 
 [node name="Enemy1" parent="." unique_id=1197690428 instance=ExtResource("3_dd0lh")]

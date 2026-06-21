@@ -3,7 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://qwih6rth7ukr" path="res://assets/whoareyoue.png" id="1_rsy45"]
 [ext_resource type="PackedScene" uid="uid://cqjdyoa5jtaaj" path="res://scenes/defeat/input_field.tscn" id="2_tjogw"]
 
-[node name="EnterName" type="Node2D" unique_id=1194080905]
+[node name="CanvasLayer" type="CanvasLayer" unique_id=796039189]
+layer = 10
 
 [node name="Whoareyoue" type="Sprite2D" parent="." unique_id=1596031957]
 position = Vector2(164, 43)
