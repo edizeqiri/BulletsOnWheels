@@ -17,7 +17,7 @@ editor: build
     {{ godot }} --path {{ godot_project }} --editor
 
 watch:
-    cargo watch -x "build
+    cargo watch -x "build"
 
 reload-godot: build
     pkill godot || true
@@ -28,10 +28,12 @@ reload-godot: build
 # Requires the emscripten SDK (emcc on PATH) and `rust-src` on the toolchain below
 # (rustup component add rust-src --toolchain nightly). Nightly is needed for
 # -Zbuild-std; panic=abort (in .cargo/config.toml) avoids the Wasm-EH tag import.
+
 wasm_toolchain := "nightly"
 
 # `-Zbuild-std=std,panic_abort` (nightly) rebuilds std with panic=abort too;
 # otherwise std's prebuilt objects still import the `__cpp_exception` Wasm-EH tag
+
 # and Godot fails to link it ("tag import requires a WebAssembly.Tag").
 wasm:
     cargo +{{ wasm_toolchain }} build -Zbuild-std=std,panic_abort --target wasm32-unknown-emscripten
@@ -44,8 +46,41 @@ export-web: wasm
     mkdir -p {{ godot_project }}/exports
     {{ godot }} --headless --path {{ godot_project }} --export-debug "Web" exports/BulletsOnWheels.html
 
-# Serve the exported game. The "Web" preset injects a service worker that sets
-# the COOP/COEP headers needed for threads, so a plain HTTP server works after
-# the first load. Then open http://localhost:8060/BulletsOnWheels.html
+# Serve the exported game locally. Browsers treat localhost as a secure context,
+# so plain HTTP works here. Public http:// URLs do not: Godot Web requires a
+
+# secure context, so outside-network demos need HTTPS.
 serve-web:
-    python3 -m http.server 8060 --directory {{ godot_project }}/exports
+    lsof -ti:8060 | xargs kill 2>/dev/null || true
+    python3 -m http.server 8060 --directory {{ godot_project }}/exports &
+    sleep 1
+    @echo "Server URL: http://localhost:8060/BulletsOnWheels.html"
+
+# IPv6 localhost variant. This is still local-only; public IPv6 over HTTP will
+
+# fail Godot's Secure Context check in browsers.
+serve-web-6:
+    lsof -ti:8060 | xargs kill 2>/dev/null || true
+    python3 -m http.server 8060 --bind ::1 --directory "{{ godot_project }}/exports" &
+    sleep 1
+    @echo "Server URL: http://[::1]:8060/BulletsOnWheels.html"
+
+# Public outside-network demo URL via Cloudflare Tunnel.
+# Install once with: brew install cloudflared
+
+# Cloudflare provides a trusted https:// URL for your local HTTP server.
+serve-web-public:
+    command -v cloudflared >/dev/null || (echo "cloudflared not found. Install with: brew install cloudflared" && exit 1)
+    lsof -ti:8060 | xargs kill 2>/dev/null || true
+    python3 -m http.server 8060 --directory {{ godot_project }}/exports &
+    sleep 1
+    cloudflared tunnel --url http://localhost:8060
+
+# Backwards-compatible alias.
+serve-web-demo: serve-web-public
+
+# Stop all web serving started by the recipes above.
+stop-web:
+    lsof -ti:8060 | xargs kill 2>/dev/null || true
+    pkill -f "cloudflared tunnel --url http://localhost:8060" || true
+    lsof -ti:20241 | xargs kill 2>/dev/null || true
