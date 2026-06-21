@@ -1,9 +1,9 @@
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::character::{
+use crate::{character::{
     CharacterCore, CharacterDeathMessage, Health, MovementSpeed, ShootingState
-};
+}, gamestate::{AppState, InGameState}};
 
 // TODO: gamestate
 // use crate::gamestate::GameState;
@@ -77,4 +77,5 @@ fn handle_player_zero_health_system(
         info!("Player dead");
         commands.entity(message.target).despawn();
     }
+    commands.set_state(InGameState::DEFEAT);
 }

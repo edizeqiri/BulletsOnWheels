@@ -1,9 +1,12 @@
-use bevy::{app::{App, AppExit, Update}, ecs::entity::Entity, log::info, prelude::{
+use bevy::app::{App, AppExit, Update};
+use bevy::ecs::entity::Entity;
+use bevy::log::info;
+use bevy::prelude::{
     Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States
-}};
+};
 use godot_bevy::prelude::SceneTreeRef;
 
-use crate::{gamestate::start::StartGameMessage};
+use crate::gamestate::start::StartGameMessage;
 
 pub(crate) mod start;
 
@@ -27,17 +30,25 @@ pub(super) fn plugin(app: &mut App) {
 // ---------- GAME STATE ---------- //
 
 #[derive(States, Debug, Clone, Eq, PartialEq, Hash, Default)]
-pub(crate) enum GameState {
+pub(crate) enum AppState {
     #[default]
-    START,
+    LOADING, // asset loading & level transition
+    RUNNING, // character movement
+    PAUSE,   // menu
+    EXIT     // exit
+}
+
+#[derive(States, Debug, Default, Clone, Eq, PartialEq, Hash)]
+pub(crate) enum InGameState {
+    #[default]
+    PAUSED,
     RUNNING,
-    PAUSE,
-    STOP,
+    DEFEAT
 }
 
 pub trait GameStateTransition {
-    fn current_state(&self) -> GameState;
-    fn next_state(&self) -> GameState;
+    fn current_state(&self) -> AppState;
+    fn next_state(&self) -> AppState;
 }
 
 // ---------- MESSAGES CHANGING GAMESTATE --------- //
@@ -45,7 +56,7 @@ pub trait GameStateTransition {
 #[derive(Message)]
 pub struct CharacterDeathMessage {
     pub source: Entity,
-    pub target: Entity,
+    pub target: Entity
 }
 
 // ---------- STATE MACHINE ---------- //
@@ -61,13 +72,11 @@ pub enum GameStateEnum {
     StartGame
 }
 
-
 impl From<&CharacterDeathMessage> for GameStateEnum {
     fn from(_message: &CharacterDeathMessage) -> Self {
         GameStateEnum::PlayerDeath
     }
 }
-
 
 impl From<&StartGameMessage> for GameStateEnum {
     fn from(_message: &StartGameMessage) -> Self {
@@ -92,16 +101,16 @@ pub fn aggregate_message_system<M>(
 // TODO: Refactor with enum delegate
 fn state_machine_system(
     mut messages: MessageReader<GameStateMessage>,
-    current_state: Res<State<GameState>>,
-    mut next_state: ResMut<NextState<GameState>>
+    current_state: Res<State<AppState>>,
+    mut next_state: ResMut<NextState<AppState>>
 ) {
     for message in messages.read() {
         match (message.kind, current_state.get()) {
-            (GameStateEnum::PlayerDeath, GameState::RUNNING) => {
-                next_state.set(GameState::STOP);
+            (GameStateEnum::PlayerDeath, AppState::RUNNING) => {
+                next_state.set(AppState::EXIT);
             },
-            (GameStateEnum::StartGame, GameState::START) => {
-                next_state.set(GameState::RUNNING);
+            (GameStateEnum::StartGame, AppState::LOADING) => {
+                next_state.set(AppState::RUNNING);
             },
             _ => {}
         }
@@ -134,7 +143,7 @@ fn exit_game(
 ) {
     for _ in exit_game_reader.read() {
         info!("Exit game.");
-    
+
         // bevy exit
         exit.write(AppExit::Success);
 
