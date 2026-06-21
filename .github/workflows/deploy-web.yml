@@ -1,0 +1,89 @@
+name: Deploy Web Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: 4.6.2
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rust-src
+          targets: wasm32-unknown-emscripten
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      # Pin emscripten to match the local toolchain that produces a working build.
+      # The Rust side module must be ABI-compatible with Godot's web template.
+      - name: Install Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 5.0.7
+
+      - name: Install Just
+        uses: extractions/setup-just@v3
+
+      - name: Install Godot + export templates
+        run: |
+          wget -O godot.zip \
+            https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          unzip godot.zip
+          chmod +x Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          sudo mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 /usr/local/bin/godot
+
+          wget -O templates.tpz \
+            https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          unzip templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+
+      # Fresh checkout has no .godot import cache; import assets before exporting.
+      - name: Import Godot assets
+        run: godot --headless --path godot --import || true
+
+      - name: Build release web export
+        env:
+          GODOT: godot
+        run: just export-web-release
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: godot/exports
+
+  deploy:
+    needs: build
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
