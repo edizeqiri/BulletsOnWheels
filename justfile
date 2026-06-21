@@ -46,6 +46,13 @@ export-web: wasm
     mkdir -p {{ godot_project }}/exports
     {{ godot }} --headless --path {{ godot_project }} --export-debug "Web" exports/BulletsOnWheels.html
 
+# Build the release wasm and export the "Web" preset to godot/exports/.
+# Copies to index.html so GitHub Pages serves the game at the site root.
+export-web-release: wasm-release
+    mkdir -p {{ godot_project }}/exports
+    {{ godot }} --headless --path {{ godot_project }} --export-release "Web" exports/BulletsOnWheels.html
+    cp {{ godot_project }}/exports/BulletsOnWheels.html {{ godot_project }}/exports/index.html
+
 # Serve the exported game locally. Browsers treat localhost as a secure context,
 # so plain HTTP works here. Public http:// URLs do not: Godot Web requires a
 
