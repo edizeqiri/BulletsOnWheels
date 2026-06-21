@@ -71,7 +71,7 @@ fn handle_enemy_zero_health_system(
 
 fn spawn_enemy_system(
     mut enemy_spawn_mesage: MessageReader<CreateEnemyMessage>,
-    mut godot: GodotAccess,
+    //mut godot: GodotAccess,
     mut commands: Commands,
     assets: Option<Res<EnemyAssets>>,
 ) {

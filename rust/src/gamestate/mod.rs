@@ -1,9 +1,9 @@
-use bevy::{app::{App, AppExit, Update}, log::info, prelude::{
+use bevy::{app::{App, AppExit, Update}, ecs::entity::Entity, log::info, prelude::{
     Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States
 }};
 use godot_bevy::prelude::SceneTreeRef;
 
-use crate::gamestate::start::StartGameMessage;
+use crate::{gamestate::start::StartGameMessage};
 
 pub(crate) mod start;
 
@@ -32,7 +32,20 @@ pub(crate) enum GameState {
     START,
     RUNNING,
     PAUSE,
-    STOP
+    STOP,
+}
+
+pub trait GameStateTransition {
+    fn current_state(&self) -> GameState;
+    fn next_state(&self) -> GameState;
+}
+
+// ---------- MESSAGES CHANGING GAMESTATE --------- //
+
+#[derive(Message)]
+pub struct CharacterDeathMessage {
+    pub source: Entity,
+    pub target: Entity,
 }
 
 // ---------- STATE MACHINE ---------- //
@@ -48,13 +61,13 @@ pub enum GameStateEnum {
     StartGame
 }
 
-/*
-impl From<&PlayerDeathMessage> for GameStateEnum {
-    fn from(_message: &PlayerDeathMessage) -> Self {
+
+impl From<&CharacterDeathMessage> for GameStateEnum {
+    fn from(_message: &CharacterDeathMessage) -> Self {
         GameStateEnum::PlayerDeath
     }
 }
-*/
+
 
 impl From<&StartGameMessage> for GameStateEnum {
     fn from(_message: &StartGameMessage) -> Self {

@@ -1,16 +1,11 @@
 use bevy::prelude::*;
-use godot::classes::{
-    CharacterBody2D, Label, class_macros::private::virtuals::VideoStreamPlayback::play,
-};
-use godot_bevy::prelude::{GodotAccess, GodotNodeHandle, SceneTreeRef};
+use godot::classes::Label;
+use godot_bevy::prelude::SceneTreeRef;
 use std::fs;
 
 use crate::{
-    character::{
-        CharacterDeathMessage,
-        player::{EnemyKillCount, Player},
-    },
-    gamestate::ExitGameMessage,
+    character::player::{EnemyKillCount, Player},
+    gamestate::{ExitGameMessage, CharacterDeathMessage},
     world::level_manager::CurrentLevel,
 };
 
