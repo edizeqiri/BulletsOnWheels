@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cm3mjcc4l6y3w"]
+
+[ext_resource type="Texture2D" uid="uid://qwih6rth7ukr" path="res://assets/whoareyoue.png" id="1_rsy45"]
+[ext_resource type="PackedScene" uid="uid://cqjdyoa5jtaaj" path="res://scenes/defeat/input_field.tscn" id="2_tjogw"]
+
+[node name="EnterName" type="Node2D" unique_id=1194080905]
+
+[node name="Whoareyoue" type="Sprite2D" parent="." unique_id=1596031957]
+position = Vector2(164, 43)
+scale = Vector2(0.21066812, 0.2106681)
+texture = ExtResource("1_rsy45")
+
+[node name="InputField" parent="." unique_id=1464166659 instance=ExtResource("2_tjogw")]
