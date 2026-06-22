@@ -56,6 +56,12 @@ jobs:
           mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
 
+      - name: Build native Linux release (required for GDExtension to load during headless export)
+        run: cargo build --release
+
+      - name: Import Godot project
+        run: godot --headless --path godot --import || true
+
       - name: Build release web export
         env:
           GODOT: godot
