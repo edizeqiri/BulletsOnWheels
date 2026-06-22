@@ -56,6 +56,9 @@ jobs:
           mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
 
+      - name: Install Linux system dependencies
+        run: sudo apt-get install -y libudev-dev
+
       - name: Build native Linux release (required for GDExtension to load during headless export)
         run: cargo build --release
 
