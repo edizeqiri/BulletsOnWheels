@@ -59,8 +59,12 @@ jobs:
       - name: Install Linux system dependencies
         run: sudo apt-get install -y libudev-dev
 
-      - name: Build native Linux release (required for GDExtension to load during headless export)
-        run: cargo build --release
+      # Headless Godot is a tools/debug build, so it loads the `linux.debug.x86_64`
+      # GDExtension variant when introspecting Rust classes during import/export.
+      # Must build the debug native lib (not release) or classes fail to register
+      # and scene nodes fall back to base types, losing their transforms.
+      - name: Build native Linux debug (required for GDExtension to load during headless export)
+        run: cargo build
 
       - name: Import Godot project
         run: godot --headless --path godot --import || true
