@@ -13,7 +13,7 @@ use godot_bevy::prelude::*;
 struct SceneChanged;
 
 /// Simple level identifier
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, GodotConvert, Var, Export)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, GodotConvert, Var, Export, States)]
 #[godot(via = GString)]
 pub enum LevelId {
     #[default]
@@ -111,6 +111,7 @@ impl Plugin for LevelManagerPlugin {
             // Enable signal routing for SceneTree.scene_changed
             .add_plugins(GodotSignalsPlugin::<SceneChanged>::default())
             .add_observer(on_load_level_request)
+            .add_observer(level_state_change_system)
             .add_observer(on_scene_changed)
             .add_systems(Startup, connect_scene_tree_signal)
             .add_systems(
@@ -150,6 +151,10 @@ fn connect_scene_tree_signal(
 /// Observer that logs when a scene change occurs
 fn on_scene_changed(_trigger: On<SceneChanged>) {
     // info!("Scene changed!");
+}
+
+fn level_state_change_system(trigger: On<LoadLevelMessage>, mut commands: Commands) {
+    commands.set_state(trigger.event().level_id);
 }
 
 /// Observer that handles level loading requests - loads the asset

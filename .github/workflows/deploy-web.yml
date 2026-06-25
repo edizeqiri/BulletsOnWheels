@@ -56,8 +56,17 @@ jobs:
           mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
           mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
 
-      # Fresh checkout has no .godot import cache; import assets before exporting.
-      - name: Import Godot assets
+      - name: Install Linux system dependencies
+        run: sudo apt-get install -y libudev-dev
+
+      # Headless Godot is a tools/debug build, so it loads the `linux.debug.x86_64`
+      # GDExtension variant when introspecting Rust classes during import/export.
+      # Must build the debug native lib (not release) or classes fail to register
+      # and scene nodes fall back to base types, losing their transforms.
+      - name: Build native Linux debug (required for GDExtension to load during headless export)
+        run: cargo build
+
+      - name: Import Godot project
         run: godot --headless --path godot --import || true
 
       - name: Build release web export

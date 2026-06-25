@@ -9,6 +9,7 @@ use crate::character::enemy::EnemyAssets;
 use crate::gamestate::{AppState, InGameState};
 use crate::weapon::weapon::ProjectileAssets;
 use crate::ui::defeat::DefeatAssets;
+use crate::world::level_manager::LevelId;
 
 mod character;
 
@@ -37,6 +38,7 @@ fn build_app(app: &mut App) {
         .add_plugins(StatesPlugin)
         .init_state::<AppState>()
         .init_state::<InGameState>()
+        .init_state::<LevelId>()
         .add_loading_state(
             LoadingState::new(AppState::RUNNING)
                 .load_collection::<ProjectileAssets>()

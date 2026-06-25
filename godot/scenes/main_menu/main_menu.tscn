@@ -179,6 +179,6 @@ text = "Do not hit mee!!!"
 autowrap_mode = 2
 
 [node name="Player" parent="." unique_id=113791534 instance=ExtResource("3_ob46e")]
-position = Vector2(180, 276)
+position = Vector2(131, 185)
 
 [node name="Title" parent="." unique_id=1751772652 instance=ExtResource("4_uqeha")]
