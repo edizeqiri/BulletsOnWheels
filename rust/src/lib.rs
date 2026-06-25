@@ -8,6 +8,8 @@ use godot_bevy::prelude::*;
 use crate::character::enemy::EnemyAssets;
 use crate::gamestate::{AppState, InGameState};
 use crate::weapon::weapon::ProjectileAssets;
+use crate::ui::defeat::DefeatAssets;
+
 mod character;
 
 mod gamestate;
@@ -39,5 +41,6 @@ fn build_app(app: &mut App) {
             LoadingState::new(AppState::RUNNING)
                 .load_collection::<ProjectileAssets>()
                 .load_collection::<EnemyAssets>()
+                .load_collection::<DefeatAssets>()
         );
 }
