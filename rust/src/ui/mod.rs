@@ -1,7 +1,7 @@
 use bevy::app::App;
 
 mod score;
-//mod defeat;
+// mod defeat;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(score::plugin);
