@@ -1,4 +1,6 @@
-use bevy::math::Vec2;
+use std::time::{Duration, Instant};
+
+use bevy::math::{FloatPow, Vec2};
 use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use godot::prelude::*;
@@ -24,7 +26,7 @@ pub struct Weapon {
     #[export_fields(value(export_type(f32), default(1.)))]
     damage: Damage,
 
-    #[export_fields(value(export_type(f32), default(1.)))]
+    // TODO(bug): this export is somehow not working
     pub speed: Speed,
 
     #[export_fields(value(export_type(f32), default(0.)))]
@@ -42,12 +44,19 @@ pub enum WeaponKind {
     BOW,
     STAFF
 }
+
 #[derive(Component, Debug, Clone, Copy)]
-pub struct Speed(pub f32);
+pub struct Speed {
+    pub current: f32,
+    pub max: f32
+}
 
 impl Default for Speed {
     fn default() -> Self {
-        Self(2.)
+        Self {
+            current: 0.,
+            max: 150.
+        }
     }
 }
 #[derive(Component, Debug, Clone, Default)]
@@ -59,9 +68,9 @@ impl Weapon {
     pub fn new(damage: f32, speed: f32, fire_rate: f32, weapon_kind: WeaponKind) -> Self {
         Self {
             damage: Damage(damage),
-            speed: Speed(speed),
             fire_rate: FireRate(fire_rate),
-            weapon_kind: WeaponKindComponent(weapon_kind)
+            weapon_kind: WeaponKindComponent(weapon_kind),
+            ..default()
         }
     }
     pub(crate) fn shoot(&self, direction: Vec2) -> ProjectileBundle {
@@ -92,7 +101,8 @@ pub(crate) fn on_shoot_message_system(
     mut commands: Commands,
     mut shoot_message: MessageReader<ShootMessage>,
     mut shooter_query: Query<(&Transform, &Weapon, &Aim)>,
-    assets: Option<Res<ProjectileAssets>>
+    assets: Option<Res<ProjectileAssets>>,
+    time: Res<Time>
 ) {
     // If the projectile assets are not yet loaded/inserted, consume any queued
     // shoot messages (to avoid a burst once assets arrive) and skip spawning
@@ -109,25 +119,43 @@ pub(crate) fn on_shoot_message_system(
         if let Ok((transform, weapon, aim)) = shooter_query.get_mut(message.shooter) {
             let projectile_bundle = weapon.shoot(message.aim.vec);
             let mut new_transform = transform.clone();
+
+            // rotate sprite to aim direction
             if aim.vec.length_squared() > 0.0 {
                 new_transform.rotation = Quat::from_rotation_z(aim.vec.to_angle());
             }
+
             commands
                 .spawn_empty()
                 .insert(projectile_bundle)
                 .insert(new_transform)
+                .insert(SpawnedTime(time.elapsed()))
                 .insert(Shooter(message.shooter))
                 .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
         }
     }
 }
+#[derive(Component)]
+pub struct SpawnedTime(Duration);
 
 fn update_projectile_system(
-    projectile_query: Query<(&mut Transform, &Velocity), With<Projectile>>
+    time: Res<Time>,
+    projectile_query: Query<
+        (&mut Transform, &Velocity, &SpawnedTime, &mut Speed),
+        With<Projectile>
+    >
 ) {
-    for (mut transform, velocity) in projectile_query {
-        transform.translation.x += velocity.0.x;
-        transform.translation.y += velocity.0.y;
+    for (mut transform, velocity, spawned_time, mut speed) in projectile_query {
+        /*/
+        if speed.current <= speed.max {
+            //info!("current {}, max {}", speed.current, speed.max);
+            speed.current =
+                (time.elapsed_secs() * 5000. - spawned_time.0.as_secs_f32() * 10.).sqrt();
+            speed.current = speed.current.clamp(0., speed.max);
+        }*/
+
+        transform.translation.x += velocity.0.x * speed.max * time.delta_secs();
+        transform.translation.y += velocity.0.y * speed.max * time.delta_secs();
     }
 }
 

@@ -39,7 +39,7 @@ fn handle_mouse_system(
                     shoot_message.write(ShootMessage {
                         shooter: player_entity,
                         aim: Aim {
-                            vec: aim.vec.normalize()
+                            vec: aim.vec.normalize_or_zero()
                         }
                     });
                 },
