@@ -22,6 +22,18 @@ texture = ExtResource("2_4b0e1")
 
 [node name="Top5" type="Label" parent="." unique_id=584783892]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = 172.0
+offset_top = 80.0
+offset_right = 212.0
+offset_bottom = 103.0
+scale = Vector2(3.1139262, 4.2542295)
 theme_override_fonts/font = ExtResource("3_4b0e1")
+
+[node name="GridContainer" type="GridContainer" parent="." unique_id=362183758]
+layout_mode = 0
+offset_left = 171.0
+offset_top = 80.0
+offset_right = 211.0
+offset_bottom = 120.0
+scale = Vector2(3.1423266, 2.556435)
+columns = 3

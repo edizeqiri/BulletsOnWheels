@@ -1,5 +1,5 @@
+use ::std::io::Write;
 use std::fs::{self, File};
-use::std::io::Write;
 
 use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
@@ -9,17 +9,20 @@ use godot::classes::Label;
 use godot_bevy::prelude::*;
 
 use crate::character::player::{self, Player};
-use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameMessage};
+use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameMessage, InGameState};
 use crate::world::NameEnteredEvent;
 use crate::world::level_manager::{CurrentLevel, Score};
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(load_score_board())
         .add_loading_state(
-            LoadingState::new(AppState::RUNNING)
-                .load_collection::<ScoreBoardAssets>(),
+            LoadingState::new(AppState::RUNNING).load_collection::<ScoreBoardAssets>(),
         )
         .add_systems(Update, (score_tracker, update_score_label))
+        .add_systems(
+            Update,
+            update_score_board.run_if(in_state(InGameState::DEFEAT)),
+        )
         .add_observer(save_high_score)
         .add_observer(spawn_score_board);
 }
@@ -32,24 +35,24 @@ const SCORE_BOARD_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/s
 pub struct ScoreBoardAssets {
     #[asset(path = "scenes/defeat/score_board.tscn")]
     pub score_board_scene: Handle<GodotResource>,
+
+    score_board_is_loaded: bool,
 }
 
 #[derive(Resource)]
 struct ScoreBoard {
     entry: Vec<ScoreBoardEntry>,
-    high_score: u32 // technically seen could be taken from entry directly -> but this avoids all the overhead to get it
+    high_score: u32, // technically seen could be taken from entry directly -> but this avoids all the overhead to get it
 }
 
 impl Default for ScoreBoard {
     fn default() -> Self {
         Self {
-            entry: vec![
-                ScoreBoardEntry {
-                    name: "test".to_string(),
-                    score: 0,
-                },
-            ],
-            high_score: 0
+            entry: vec![ScoreBoardEntry {
+                name: "test".to_string(),
+                score: 0,
+            }],
+            high_score: 0,
         }
     }
 }
@@ -59,14 +62,14 @@ pub struct SpawnLeaderBoardEvent;
 
 struct ScoreBoardEntry {
     name: String,
-    score: u32
+    score: u32,
 }
 
 fn score_tracker(
     mut death_message_reader: MessageReader<CharacterDeathMessage>,
     player_query: Query<Entity, With<Player>>,
     mut score_query: Query<&mut Score>,
-    mut score_board: ResMut<ScoreBoard>
+    mut score_board: ResMut<ScoreBoard>,
 ) {
     for message in death_message_reader.read() {
         let Ok(player) = player_query.single() else {
@@ -80,7 +83,7 @@ fn score_tracker(
             error!("component score not existent.");
             return;
         };
-        
+
         score.count += 1;
         score_board.high_score = update_high_score(score.count, score_board.high_score);
     }
@@ -91,14 +94,14 @@ fn update_score_label(
     score_query: Query<&Score, Changed<Score>>,
     current_level: Res<CurrentLevel>,
     mut scene_tree: SceneTreeRef,
-    score_board: Res<ScoreBoard>
+    score_board: Res<ScoreBoard>,
 ) {
     let level_id = current_level.level_id;
 
     let Ok(score) = score_query.single() else {
         return;
     };
-    
+
     let score_label_path = format!("{}/ScoreLabel", level_id.root_node_path());
 
     let Some(root) = scene_tree.get().get_root() else {
@@ -113,8 +116,7 @@ fn update_score_label(
 
     score_label.set_text(&format!(
         "Score: {}\nHigh Score: {}",
-        score.count,
-        score_board.high_score,
+        score.count, score_board.high_score,
     ));
 }
 
@@ -132,10 +134,10 @@ fn save_high_score(
 
     // no need for high score update, as it is constantly updated
     score_board.entry.push(ScoreBoardEntry {
-       name: entered_name.clone(),
-       score: score.count
+        name: entered_name.clone(),
+        score: score.count,
     });
-    
+
     save_score_board(entered_name, score.count);
 
     commands.trigger(SpawnLeaderBoardEvent);
@@ -149,10 +151,7 @@ fn update_high_score(score: u32, current_high_score: u32) -> u32 {
     return current_high_score;
 }
 
-fn save_score_board(
-    name: &str,
-    score: u32,
-) {
+fn save_score_board(name: &str, score: u32) {
     let score_board_path = Path::new(SCORE_BOARD_PATH);
 
     let Ok(mut file) = File::options()
@@ -160,7 +159,10 @@ fn save_score_board(
         .create(true)
         .open(score_board_path)
     else {
-        error!("No Score Board File could be opened at: {:?}", SCORE_BOARD_PATH);
+        error!(
+            "No Score Board File could be opened at: {:?}",
+            SCORE_BOARD_PATH
+        );
         return;
     };
 
@@ -174,7 +176,8 @@ fn load_score_board() -> ScoreBoard {
         warn!("Could not read high score from file: {}", SCORE_BOARD_PATH);
         return ScoreBoard {
             high_score: 0,
-            entry: Vec::default() };
+            entry: Vec::default(),
+        };
     };
 
     let mut score_board: Vec<ScoreBoardEntry> = score_board_file
@@ -184,26 +187,23 @@ fn load_score_board() -> ScoreBoard {
                 error!("Cannot read score board at: {}", SCORE_BOARD_PATH);
                 return None;
             };
-    
+
             let Ok(score) = score_as_string.trim().parse::<u32>() else {
                 error!("Cannot parse score in {}", SCORE_BOARD_PATH);
                 return None;
             };
-    
+
             Some(ScoreBoardEntry {
                 name: name.trim().to_string(),
                 score,
             })
         })
         .collect();
-    
+
     score_board.sort_by(|a, b| b.score.cmp(&a.score));
-    
-    let high_score = score_board
-        .first()
-        .map(|entry| entry.score)
-        .unwrap_or(0);
-    
+
+    let high_score = score_board.first().map(|entry| entry.score).unwrap_or(0);
+
     ScoreBoard {
         entry: score_board,
         high_score: high_score,
@@ -212,42 +212,54 @@ fn load_score_board() -> ScoreBoard {
 
 fn spawn_score_board(
     _trigger: On<SpawnLeaderBoardEvent>,
-    score_board: Res<ScoreBoard>,
-    mut scene_tree: SceneTreeRef,
     mut commands: Commands,
-    assets: Res<ScoreBoardAssets>,
+    mut assets: ResMut<ScoreBoardAssets>,
 ) {
     commands
         .spawn_empty()
         .insert(GodotScene::from_handle(assets.score_board_scene.clone()));
-    let Some(root) = scene_tree.get().get_root() else {
-        return;
-    };
+    assets.score_board_is_loaded = false;
+}
 
-    let score_board_label_path = "/root/ScoreBoard/Top5";
-    
-    let Some(mut top5_label) =
-        root.try_get_node_as::<Label>(score_board_label_path)
-    else {
-        warn!("Could not find {}", score_board_label_path);
+fn update_score_board(
+    score_board: Res<ScoreBoard>,
+    mut scene_tree: SceneTreeRef,
+    mut assets: ResMut<ScoreBoardAssets>,
+) {
+    if assets.score_board_is_loaded {
         return;
-    };
+    }
 
     let content = prepare_leader_board_content(score_board);
-    
-    top5_label.set_text(&content);
+
+    assets.score_board_is_loaded = update_label(&mut scene_tree, "/root/ScoreBoard/Top5", content);
 }
 
-fn prepare_leader_board_content(score_board: Res<ScoreBoard>,) -> String {
-    return score_board
-        .entry
-        .iter()
-        .take(5)
-        .enumerate()
-        .map(|(i, entry)| {
-            format!("{}. {} {}", i + 1, entry.name, entry.score)
-        })
-        .collect::<Vec<_>>()
-        .join("\n");
+fn update_label(scene_tree: &mut SceneTreeRef, label_path: &str, content: String) -> bool {
+    let Some(root) = scene_tree.get().get_root() else {
+        return false;
+    };
+
+    let Some(mut label) = root.try_get_node_as::<Label>(label_path) else {
+        warn!("Could not find {}", label_path);
+        return false;
+    };
+
+    label.set_text(&content);
+    return true;
 }
 
+fn prepare_leader_board_content(score_board: Res<ScoreBoard>) -> String {
+    let mut lines = vec![format!("{:<5} {:<16} {:<8}", "Rank", "Name", "Score")];
+
+    for (i, entry) in score_board.entry.iter().take(5).enumerate() {
+        lines.push(format!(
+            "{:<5} {:<16} {:<8}",
+            format!("{}.", i + 1),
+            entry.name,
+            entry.score
+        ));
+    }
+
+    lines.join("\n")
+}
