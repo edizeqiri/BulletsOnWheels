@@ -161,4 +161,8 @@ max = 4.0
 speed = 10.0
 position = Vector2(213, 92)
 
-[node name="HUD" parent="." unique_id=403740618 instance=ExtResource("4_bfxgj")]
+[node name="Score" parent="." unique_id=403740618 instance=ExtResource("4_bfxgj")]
+offset_left = 21.0
+offset_top = 125.0
+offset_right = 186.0
+offset_bottom = 156.0

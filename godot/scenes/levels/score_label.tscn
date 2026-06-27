@@ -2,9 +2,7 @@
 
 [ext_resource type="FontFile" uid="uid://b05j2x3qypkff" path="res://assets/kenney_fonts/Fonts/Kenney High.ttf" id="1_h1s5m"]
 
-[node name="HUD" type="CanvasLayer" unique_id=157549206]
-
-[node name="ScoreLabel" type="Label" parent="." unique_id=1225436633]
+[node name="ScoreLabel" type="Label" unique_id=1225436633]
 offset_left = 28.0
 offset_top = 119.0
 offset_right = 193.0
