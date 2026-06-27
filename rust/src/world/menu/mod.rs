@@ -14,7 +14,8 @@ pub(super) fn plugin(app: &mut App) {
         .init_resource::<MenuHandles>()
         .add_plugins(GodotSignalsPlugin::<RestartGameEvent>::default())
         .add_plugins(GodotSignalsPlugin::<ExitGameEvent>::default())
-        .add_observer(pause_game_on_event)
+        .add_observer(pause_game_on_event.run_if(in_state(InGameState::RUNNING)))
+        .add_observer(exit_pause.run_if(in_state(InGameState::PAUSED)))
         .add_systems(
             Update,
             (
@@ -56,6 +57,24 @@ pub struct MenuUi {
     pub exit_button: GodotNodeHandle
 }
 
+#[derive(Debug, Component)]
+struct PauseMenu;
+
+fn exit_pause(
+    event: On<PauseGameEvent>,
+    mut commands: Commands,
+    current_state: Res<State<InGameState>>,
+    menu_query: Query<Entity, With<PauseMenu>>
+) {
+    if *current_state.get() == InGameState::PAUSED {
+        let Ok(entity) = menu_query.single() else {
+            return;
+        };
+        commands.entity(entity).despawn();
+        commands.set_state(InGameState::RUNNING);
+    }
+}
+
 fn pause_game_on_event(
     event: On<PauseGameEvent>,
     assets: Option<Res<MenuAssets>>,
@@ -76,7 +95,10 @@ fn pause_game_on_event(
     commands.set_state(InGameState::PAUSED);
 
     let menu = commands
-        .spawn(GodotScene::from_handle(assets.menu_scene.clone()))
+        .spawn((
+            GodotScene::from_handle(assets.menu_scene.clone()),
+            PauseMenu
+        ))
         .id();
     commands.entity(level).add_child(menu);
 }
@@ -102,7 +124,7 @@ fn connect_menu_buttons(
     signals_restart: GodotSignals<RestartGameEvent>,
     signals_exit: GodotSignals<ExitGameEvent>
 ) {
-    if !menu_handles.initialized && !menu_handles.signals_connected {
+    if menu_handles.initialized && !menu_handles.signals_connected {
         return;
     };
 

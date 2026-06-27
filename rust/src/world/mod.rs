@@ -24,9 +24,7 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(
             Update,
             (spawn_death_scene_on_player_death, track_death_scene)
-        )
-        .insert_resource(Time::<Fixed>::from_seconds(1.5))
-        .add_systems(FixedUpdate, log_system);
+        );
 }
 
 fn log_system(appstate: Res<State<AppState>>, ingamesteate: Res<State<InGameState>>) {
