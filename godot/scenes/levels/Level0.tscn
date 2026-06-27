@@ -2,7 +2,6 @@
 
 [ext_resource type="Texture2D" uid="uid://r4hlroxtgq1t" path="res://assets/kenney_tiny-dungeon/Tilemap/tilemap.png" id="1_wnydg"]
 [ext_resource type="PackedScene" uid="uid://dkfbqgsl3ty8c" path="res://scenes/characters/player.tscn" id="2_0l7rd"]
-[ext_resource type="PackedScene" uid="uid://dmcj7qe3s67gh" path="res://scenes/levels/score_label.tscn" id="3_0l7rd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bwv4p"]
 texture = ExtResource("1_wnydg")
@@ -144,8 +143,6 @@ separation = Vector2i(1, 1)
 sources/0 = SubResource("TileSetAtlasSource_bwv4p")
 
 [node name="Level0" type="Node2D" unique_id=1164780848]
-
-[node name="HUD" parent="." unique_id=403740618 instance=ExtResource("3_0l7rd")]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=870836250]
 
