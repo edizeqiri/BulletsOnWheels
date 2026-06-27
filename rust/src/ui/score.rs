@@ -18,6 +18,7 @@ pub(super) fn plugin(app: &mut App) {
 use std::path::Path;
 
 const HIGH_SCORE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/highscore.txt");
+const SCORE_BOARD_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/score_board.csv");
 
 #[derive(Resource, Default)]
 struct HighScore {
@@ -103,6 +104,18 @@ fn save_high_score(
                 error, high_score_path
             );
         }
+    }
+
+    save_to_score_board(entered_name, score.count);
+}
+
+fn save_to_score_board(name: &String, score: u32) {
+    let score_board_path = Path::new(SCORE_BOARD_PATH);
+    if let Err(error) = fs::write(score_board_path, format!("{},{}", name, score)) {
+        warn!(
+            "Could not write score to scoreboard: {} to file {:?}",
+            error, score_board_path
+        );
     }
 }
 
