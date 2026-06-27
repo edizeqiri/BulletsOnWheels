@@ -1,0 +1,32 @@
+direction: right
+
+"CollisionStarted": { shape: parallelogram }
+"ExitPauseGameEvent": { shape: parallelogram }
+"LevelLoadedMessage": { shape: parallelogram }
+"LoadLevelMessage": { shape: parallelogram }
+"NameEnteredEvent": { shape: parallelogram }
+"PauseGameEvent": { shape: parallelogram }
+"RestartGameEvent": { shape: parallelogram }
+"SceneChanged": { shape: parallelogram }
+
+"change_state_system_on_loaded_level": { shape: rectangle }
+"character_bullet_collision_system": { shape: rectangle }
+"exit_pause": { shape: rectangle }
+"handle_button_system": { shape: rectangle }
+"level_state_change_system": { shape: rectangle }
+"name_submitted": { shape: rectangle }
+"on_load_level_request": { shape: rectangle }
+"on_scene_changed": { shape: rectangle }
+"pause_game_on_event": { shape: rectangle }
+"reset_game": { shape: rectangle }
+
+"LevelLoadedMessage" -> "change_state_system_on_loaded_level": reads
+"CollisionStarted" -> "character_bullet_collision_system": reads
+"ExitPauseGameEvent" -> "exit_pause": reads
+"CollisionStarted" -> "handle_button_system": reads
+"LoadLevelMessage" -> "level_state_change_system": reads
+"NameEnteredEvent" -> "name_submitted": reads
+"LoadLevelMessage" -> "on_load_level_request": reads
+"SceneChanged" -> "on_scene_changed": reads
+"PauseGameEvent" -> "pause_game_on_event": reads
+"RestartGameEvent" -> "reset_game": reads

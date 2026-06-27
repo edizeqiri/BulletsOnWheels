@@ -1,0 +1,102 @@
+direction: right
+
+classes: {
+  system: { shape: rectangle }
+  event: { shape: parallelogram }
+  message: { shape: page }
+  state: { shape: hexagon }
+  trigger: { shape: diamond }
+}
+
+Events: {
+  class: event
+}
+
+Messages: {
+  class: message
+  "AppExit"
+  "CharacterDeathMessage"
+  "CharacterHitMessage"
+  "CollisionEvent"
+  "CreateEnemyMessage"
+  "EnemySpawnedMessage"
+  "ExitGameMessage"
+  "GameStateMessage"
+  "M"
+  "MouseButtonInput"
+  "MouseMotion"
+  "SceneTreeMessage"
+  "ShootMessage"
+}
+
+States: {
+  class: state
+  "LevelLoadingState"
+  "State<AppState>"
+  "State<InGameState>"
+}
+
+Triggers: {
+  class: trigger
+}
+
+Systems: {
+  class: system
+  "aggregate_message_system"
+  "character_bullet_collision_system"
+  "emit_level_loaded_event_when_scene_ready"
+  "exit_game"
+  "exit_pause"
+  "gamepad_input"
+  "handle_button_system"
+  "handle_character_zero_health_system"
+  "handle_keyboard_system"
+  "handle_level_scene_change"
+  "handle_mouse_motion_system"
+  "handle_mouse_system"
+  "handle_sensor_collision"
+  "log_state"
+  "on_load_level_request"
+  "on_shoot_message_system"
+  "save_high_score"
+  "score_tracker"
+  "shoot_at_player_system"
+  "spawn_death_scene_on_player_death"
+  "spawn_enemies_after_time"
+  "spawn_enemy_health_bar"
+  "spawn_enemy_system"
+  "update_healthbar_animation_system"
+}
+
+Messages."M" -> Systems."aggregate_message_system": reads
+Systems."aggregate_message_system" -> Messages."GameStateMessage": writes
+Systems."character_bullet_collision_system" -> Messages."CharacterDeathMessage": writes
+Systems."character_bullet_collision_system" -> Messages."CharacterHitMessage": writes
+Messages."SceneTreeMessage" -> Systems."emit_level_loaded_event_when_scene_ready": reads
+Messages."ExitGameMessage" -> Systems."exit_game": reads
+Systems."exit_game" -> Messages."AppExit": writes
+States."State<InGameState>" -> Systems."exit_pause": reads
+Systems."gamepad_input" -> Messages."ExitGameMessage": writes
+Systems."gamepad_input" -> Messages."ShootMessage": writes
+Systems."handle_button_system" -> Messages."ExitGameMessage": writes
+Messages."CharacterDeathMessage" -> Systems."handle_character_zero_health_system": reads
+Systems."handle_keyboard_system" -> Messages."ExitGameMessage": writes
+States."State<InGameState>" -> Systems."handle_keyboard_system": reads
+Systems."handle_level_scene_change" -> States."LevelLoadingState": mutates
+Messages."MouseMotion" -> Systems."handle_mouse_motion_system": reads
+Messages."MouseButtonInput" -> Systems."handle_mouse_system": reads
+Systems."handle_mouse_system" -> Messages."ShootMessage": writes
+Messages."CollisionEvent" -> Systems."handle_sensor_collision": reads
+States."State<AppState>" -> Systems."log_state": reads
+States."State<InGameState>" -> Systems."log_state": reads
+Systems."on_load_level_request" -> States."LevelLoadingState": mutates
+Messages."ShootMessage" -> Systems."on_shoot_message_system": reads
+Messages."CharacterDeathMessage" -> Systems."save_high_score": reads
+Messages."ExitGameMessage" -> Systems."save_high_score": reads
+Messages."CharacterDeathMessage" -> Systems."score_tracker": reads
+Systems."shoot_at_player_system" -> Messages."ShootMessage": writes
+Messages."CharacterDeathMessage" -> Systems."spawn_death_scene_on_player_death": reads
+Systems."spawn_enemies_after_time" -> Messages."CreateEnemyMessage": writes
+Messages."EnemySpawnedMessage" -> Systems."spawn_enemy_health_bar": reads
+Messages."CreateEnemyMessage" -> Systems."spawn_enemy_system": reads
+Messages."CharacterHitMessage" -> Systems."update_healthbar_animation_system": reads

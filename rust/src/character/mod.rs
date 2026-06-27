@@ -18,7 +18,10 @@ pub(super) fn plugin(app: &mut App) {
         .add_message::<CharacterDeathMessage>()
         .add_plugins(enemy_ai::plugin)
         .add_plugins(enemy::plugin)
-        .add_systems(PhysicsUpdate, apply_character_movement)
+        .add_systems(
+            PhysicsUpdate,
+            apply_character_movement.run_if(in_state(InGameState::RUNNING))
+        )
         .add_observer(character_bullet_collision_system.run_if(in_state(InGameState::RUNNING)))
         .add_systems(
             Update,
