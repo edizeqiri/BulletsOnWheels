@@ -1,7 +1,7 @@
 use bevy::app::{App, AppExit, FixedUpdate, Update};
 use bevy::ecs::entity::Entity;
 use bevy::ecs::schedule::IntoScheduleConfigs;
-use bevy::log::info;
+use bevy::log::{debug, info};
 use bevy::prelude::{
     Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States
 };
@@ -96,6 +96,6 @@ fn exit_game(
 }
 
 fn log_state(appstate: Res<State<AppState>>, ingamestate: Res<State<InGameState>>) {
-    info!("appstate is: {:?}", appstate.get());
-    info!("ingamestate is: {:?}", ingamestate.get());
+    debug!("appstate is: {:?}", appstate.get());
+    debug!("ingamestate is: {:?}", ingamestate.get());
 }

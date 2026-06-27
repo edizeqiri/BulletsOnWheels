@@ -3,16 +3,50 @@ direction: right
 "LevelLoadingState": { shape: hexagon }
 "State<AppState>": { shape: hexagon }
 "State<InGameState>": { shape: hexagon }
+"InGameState::DEFEAT": { shape: hexagon }
+"InGameState::PAUSED": { shape: hexagon }
+"InGameState::RUNNING": { shape: hexagon }
+"LevelId::Level1": { shape: hexagon }
 
+"apply_character_movement": { shape: rectangle }
+"character_bullet_collision_system": { shape: rectangle }
+"connect_menu_buttons": { shape: rectangle }
 "exit_pause": { shape: rectangle }
+"handle_character_zero_health_system": { shape: rectangle }
 "handle_keyboard_system": { shape: rectangle }
 "handle_level_scene_change": { shape: rectangle }
+"init_menu_assets": { shape: rectangle }
 "log_state": { shape: rectangle }
 "on_load_level_request": { shape: rectangle }
+"on_shoot_message_system": { shape: rectangle }
+"pause_game_on_event": { shape: rectangle }
+"reset_game": { shape: rectangle }
+"spawn_enemies_after_time": { shape: rectangle }
+"spawn_enemy_system": { shape: rectangle }
+"update_healthbar_animation_system": { shape: rectangle }
+"update_projectile_system": { shape: rectangle }
 
+"InGameState::RUNNING" -> "apply_character_movement": runs_in
+"InGameState::RUNNING" -> "character_bullet_collision_system": runs_in
+"InGameState::PAUSED" -> "connect_menu_buttons": runs_in
 "State<InGameState>" -> "exit_pause": reads
+"exit_pause" -> "InGameState::RUNNING": set_state
+"InGameState::PAUSED" -> "exit_pause": runs_in
+"handle_character_zero_health_system" -> "InGameState::DEFEAT": set_state
+"InGameState::RUNNING" -> "handle_character_zero_health_system": runs_in
 "State<InGameState>" -> "handle_keyboard_system": reads
 "handle_level_scene_change" -> "LevelLoadingState": mutates
+"InGameState::PAUSED" -> "init_menu_assets": runs_in
 "State<AppState>" -> "log_state": reads
 "State<InGameState>" -> "log_state": reads
 "on_load_level_request" -> "LevelLoadingState": mutates
+"InGameState::RUNNING" -> "on_shoot_message_system": runs_in
+"pause_game_on_event" -> "InGameState::PAUSED": set_state
+"InGameState::RUNNING" -> "pause_game_on_event": runs_in
+"reset_game" -> "InGameState::RUNNING": set_state
+"InGameState::RUNNING" -> "spawn_enemies_after_time": runs_in
+"LevelId::Level1" -> "spawn_enemies_after_time": runs_in
+"InGameState::RUNNING" -> "spawn_enemy_system": runs_in
+"LevelId::Level1" -> "spawn_enemy_system": runs_in
+"InGameState::RUNNING" -> "update_healthbar_animation_system": runs_in
+"InGameState::RUNNING" -> "update_projectile_system": runs_in

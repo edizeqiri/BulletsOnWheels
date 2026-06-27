@@ -20,6 +20,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(AppState::RUNNING).load_collection::<WorldAssets>())
         .add_observer(reset_game)
         .add_plugins(level1::plugin)
+        .add_plugins(menu::plugin)
         .add_plugins(level_manager::LevelManagerPlugin)
         //.add_systems(Update, (spawn_death_scene_on_player_death, track_death_scene))
         .add_plugins(GodotSignalsPlugin::<NameEnteredEvent>::default())

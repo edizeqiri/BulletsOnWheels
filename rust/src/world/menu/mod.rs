@@ -139,10 +139,11 @@ fn connect_menu_buttons(
     signals_restart: GodotSignals<RestartGameEvent>,
     signals_exit: GodotSignals<ExitGameEvent>
 ) {
-    if menu_handles.initialized && !menu_handles.signals_connected {
+    if menu_handles.signals_connected {
         return;
     };
 
+    info!("Connecting buttons");
     if let Some(restart_handle) = menu_handles.restart_button {
         signals_restart.connect(
             restart_handle,
@@ -162,4 +163,6 @@ fn connect_menu_buttons(
     }
 
     menu_handles.signals_connected = true;
+    info!("Buttons Connectecd");
+
 }
