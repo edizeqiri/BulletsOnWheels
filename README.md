@@ -19,23 +19,19 @@ rustup override set nightly
 ## Architecture
 
 <!-- ARCH:events -->
-## Events
+### Events
 
 ![Event Flow](docs/events.svg)
 <!-- /ARCH:events -->
 
-## Architecture
-
 <!-- ARCH:messages -->
-## Messages
+### Messages
 
 ![Message Flow](docs/messages.svg)
 <!-- /ARCH:messages -->
 
-## Architecture
-
 <!-- ARCH:states -->
-## States
+### States
 
 ![State Flow](docs/states.svg)
 <!-- /ARCH:states -->

@@ -6,5 +6,5 @@ edition = "2024"
 [dependencies]
 anyhow = "1"
 quote = "1"
-syn = { version = "2", features = ["full"] }
+syn = { version = "2", features = ["full", "visit"] }
 walkdir = "2"

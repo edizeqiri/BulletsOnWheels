@@ -5,7 +5,10 @@ use std::{
     env, fs,
     path::Path,
 };
-use syn::{FnArg, GenericArgument, Item, PathArguments, Type};
+use syn::{
+    visit::{self, Visit},
+    Expr, FnArg, GenericArgument, Item, PathArguments, Type,
+};
 use walkdir::WalkDir;
 
 #[derive(Debug, Default)]
@@ -13,6 +16,7 @@ struct SystemInfo {
     name: String,
     reads_events: BTreeSet<String>,
     writes_events: BTreeSet<String>,
+    triggers_events: BTreeSet<String>,
     reads_messages: BTreeSet<String>,
     writes_messages: BTreeSet<String>,
     reads_state: BTreeSet<String>,
@@ -56,11 +60,16 @@ fn scan_project(root: &Path) -> Result<BTreeMap<String, SystemInfo>> {
                     ..Default::default()
                 };
 
-                for input in func.sig.inputs {
+                for input in &func.sig.inputs {
                     if let FnArg::Typed(arg) = input {
                         analyze_type(&arg.ty, &mut info);
                     }
                 }
+
+                let mut visitor = TriggerVisitor {
+                    triggers: &mut info.triggers_events,
+                };
+                visitor.visit_block(&func.block);
 
                 if is_interesting(&info) {
                     systems.insert(info.name.clone(), info);
@@ -70,6 +79,38 @@ fn scan_project(root: &Path) -> Result<BTreeMap<String, SystemInfo>> {
     }
 
     Ok(systems)
+}
+
+struct TriggerVisitor<'a> {
+    triggers: &'a mut BTreeSet<String>,
+}
+
+impl<'ast> Visit<'ast> for TriggerVisitor<'_> {
+    fn visit_expr_method_call(&mut self, node: &'ast syn::ExprMethodCall) {
+        if node.method == "trigger" {
+            if let Some(first_arg) = node.args.first() {
+                if let Some(name) = extract_event_name_from_expr(first_arg) {
+                    self.triggers.insert(name);
+                }
+            }
+        }
+        visit::visit_expr_method_call(self, node);
+    }
+}
+
+fn extract_event_name_from_expr(expr: &Expr) -> Option<String> {
+    match expr {
+        Expr::Path(p) => p.path.segments.last().map(|s| s.ident.to_string()),
+        Expr::Struct(s) => s.path.segments.last().map(|s| s.ident.to_string()),
+        Expr::Call(c) => {
+            if let Expr::Path(p) = c.func.as_ref() {
+                p.path.segments.last().map(|s| s.ident.to_string())
+            } else {
+                None
+            }
+        }
+        _ => None,
+    }
 }
 
 fn analyze_type(ty: &Type, info: &mut SystemInfo) {
@@ -184,6 +225,7 @@ fn looks_like_state(name: &str) -> bool {
 fn is_interesting(info: &SystemInfo) -> bool {
     !info.reads_events.is_empty()
         || !info.writes_events.is_empty()
+        || !info.triggers_events.is_empty()
         || !info.reads_messages.is_empty()
         || !info.writes_messages.is_empty()
         || !info.reads_state.is_empty()
@@ -196,12 +238,21 @@ fn build_events_d2(systems: &BTreeMap<String, SystemInfo>) -> String {
 
     let relevant: Vec<&SystemInfo> = systems
         .values()
-        .filter(|s| !s.reads_events.is_empty() || !s.writes_events.is_empty())
+        .filter(|s| {
+            !s.reads_events.is_empty()
+                || !s.writes_events.is_empty()
+                || !s.triggers_events.is_empty()
+        })
         .collect();
 
     let events: BTreeSet<String> = relevant
         .iter()
-        .flat_map(|s| s.reads_events.iter().chain(s.writes_events.iter()))
+        .flat_map(|s| {
+            s.reads_events
+                .iter()
+                .chain(s.writes_events.iter())
+                .chain(s.triggers_events.iter())
+        })
         .cloned()
         .collect();
 
@@ -221,6 +272,9 @@ fn build_events_d2(systems: &BTreeMap<String, SystemInfo>) -> String {
         }
         for e in &info.writes_events {
             out.push_str(&format!("{sys} -> {}: writes\n", d2_id(e)));
+        }
+        for e in &info.triggers_events {
+            out.push_str(&format!("{sys} -> {}: triggers\n", d2_id(e)));
         }
     }
     out
