@@ -2,7 +2,7 @@ use std::fs;
 
 use bevy::prelude::*;
 use godot::classes::Label;
-use godot_bevy::prelude::SceneTreeRef;
+use godot_bevy::prelude::{GodotNodeHandle, SceneTreeRef};
 
 use crate::character::player::{EnemyKillCount, Player};
 use crate::gamestate::{CharacterDeathMessage, ExitGameMessage};
@@ -37,7 +37,7 @@ fn score_tracker(
     }
 }
 
-// todo: this function shall be "level state" de
+// todo: this function shall be "level state" dependent
 fn update_score_label(
     player_query: Query<&EnemyKillCount, (With<Player>, Changed<EnemyKillCount>)>,
     current_level: Res<CurrentLevel>,
@@ -50,7 +50,7 @@ fn update_score_label(
         return;
     };
 
-    let score_label_path = format!("{}/ScoreLabel", level_id.root_node_path());
+    let score_label_path = format!("{}/Score", level_id.root_node_path());
 
     let Some(root) = scene_tree.get().get_root() else {
         warn!("no root");
@@ -63,9 +63,9 @@ fn update_score_label(
     };
 
     score_label.set_text(&format!(
-        "Score: {}
-        High Score: {}",
-        enemy_kill_count.count, high_score.count
+        "Score: {}\nHigh Score: {}",
+        enemy_kill_count.count,
+        high_score.count,
     ));
 }
 

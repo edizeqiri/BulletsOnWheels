@@ -5,6 +5,7 @@ use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use bevy_asset_loader::loading_state::config::ConfigureLoadingState;
 use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
+use godot::register::info;
 use godot_bevy::prelude::*;
 
 use crate::character::player::Player;
@@ -19,15 +20,15 @@ pub(super) fn plugin(app: &mut App) {
         .add_plugins(level_manager::LevelManagerPlugin)
         //.add_systems(Update, (spawn_death_scene_on_player_death, track_death_scene))
         .add_plugins(GodotSignalsPlugin::<NameEnteredEvent>::default())
-        .add_systems(OnEnter(InGameState::DEFEAT), (spawn_ask_for_player_name_system, connect_enter_name_system))
+        .add_systems(OnEnter(InGameState::DEFEAT), spawn_ask_for_player_name_system)
+        .add_systems(Update, connect_enter_name_system)
         .add_observer(name_submitted);
 }
 
-#[derive(Event, Clone)]
+#[derive(Event, Clone, Default)]
 struct NameEnteredEvent {
     name: String
 }
-
 
 #[derive(AssetCollection, Resource)]
 pub struct WorldAssets {
@@ -38,7 +39,6 @@ pub struct WorldAssets {
     pub player_death_highscore_scene: Handle<GodotResource>,
 }
 
-
 fn spawn_ask_for_player_name_system(
     mut commands: Commands,
     assets: Res<WorldAssets>,
@@ -46,21 +46,23 @@ fn spawn_ask_for_player_name_system(
     commands
         .spawn_empty()
         .insert(GodotScene::from_handle(assets.player_death_highscore_scene.clone()));
-    
-
 }
 
 fn connect_enter_name_system(
-    text_field_object: Query<&GodotNodeHandle, With<LineEditMarker>>,
-    entered_name_signal: GodotSignals<NameEnteredEvent>,
+    mut connected: Local<bool>,
+    enter_name_field: Query<&GodotNodeHandle, With<LineEditMarker>>,
+    entered_name_signal: GodotSignals<NameEnteredEvent>
 ) {
-    let Ok(handler) = text_field_object.single() else {
-        info!("handler of line edit not found");
+    if *connected {
+        return;
+    }
+
+    let Ok(enter_name_handler) = enter_name_field.single() else {
         return;
     };
     
-    entered_name_signal.connect(
-        *handler, 
+     entered_name_signal.connect(
+        *enter_name_handler, 
         LineEditSignals::TEXT_SUBMITTED, 
         None, 
         |args, _node_handle, _ent| {
@@ -72,6 +74,8 @@ fn connect_enter_name_system(
             Some(NameEnteredEvent { name })
         }
     );
+    info!("enter name signal connected");
+    *connected = true;
 }
 
 // todo(sascha): not triggered anymore. weiiiird

@@ -162,7 +162,7 @@ speed = 10.0
 position = Vector2(213, 92)
 
 [node name="Score" parent="." unique_id=403740618 instance=ExtResource("4_bfxgj")]
-offset_left = 19.0
-offset_top = 127.0
-offset_right = 184.0
-offset_bottom = 158.0
+offset_left = 21.0
+offset_top = 125.0
+offset_right = 186.0
+offset_bottom = 156.0
