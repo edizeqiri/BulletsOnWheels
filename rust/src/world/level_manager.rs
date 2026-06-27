@@ -104,7 +104,7 @@ pub struct LoadLevelMessage {
 
 /// Event fired when level loading is complete
 #[derive(Event, Debug, Clone)]
-pub struct LevelLoadedMessage {
+pub struct LevelLoadedEvent {
     pub level_id: LevelId
 }
 
@@ -191,7 +191,11 @@ fn handle_level_scene_change(
 
     // Despawn the previously active level's scene root, if any
     if let Some(old_entity) = current_level.entity.take() {
-        commands.entity(old_entity).despawn();
+        commands
+            .entity(old_entity)
+            .queue_silenced(|mut e: EntityWorldMut| {
+                e.despawn();
+            });
     }
 
     // Tear down the initial menu scene the first time we load a level.
@@ -209,7 +213,11 @@ fn handle_level_scene_change(
                 };
 
                 if node.get_path().to_string().starts_with(&menu_path) {
-                    commands.entity(entity).despawn();
+                    commands
+                        .entity(entity)
+                        .queue_silenced(|mut e: EntityWorldMut| {
+                            e.despawn();
+                        });
                 }
             }
 
@@ -249,7 +257,7 @@ fn emit_level_loaded_event_when_scene_ready(
         {
             let node_path = node.get_path().to_string();
             if node_path == expected_path {
-                commands.trigger(LevelLoadedMessage { level_id });
+                commands.trigger(LevelLoadedEvent { level_id });
                 pending_level.level_id = None;
                 break;
             }
@@ -257,7 +265,7 @@ fn emit_level_loaded_event_when_scene_ready(
     }
 }
 
-fn change_state_system_on_loaded_level(event: On<LevelLoadedMessage>, mut commands: Commands) {
+fn change_state_system_on_loaded_level(event: On<LevelLoadedEvent>, mut commands: Commands) {
     let trigger = event.event();
     commands.set_state(trigger.level_id);
     info!("current level state: {:?}", trigger.level_id);

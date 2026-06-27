@@ -7,7 +7,7 @@ use godot::prelude::*;
 use godot_bevy::prelude::*;
 
 use crate::character::Aim;
-use crate::gamestate::AppState;
+use crate::gamestate::{AppState, InGameState};
 use crate::weapon::Damage;
 use crate::weapon::projectile::{Projectile, ProjectileBundle, Velocity, create_projectile};
 
@@ -15,9 +15,12 @@ pub(super) fn plugin(app: &mut App) {
     app.add_message::<ShootMessage>()
         .add_systems(
             Update,
-            on_shoot_message_system.run_if(in_state(AppState::RUNNING))
+            on_shoot_message_system.run_if(in_state(InGameState::RUNNING))
         )
-        .add_systems(Update, update_projectile_system);
+        .add_systems(
+            Update,
+            update_projectile_system.run_if(in_state(InGameState::RUNNING))
+        );
 }
 
 #[derive(Component, GodotNode, Default, Clone)]

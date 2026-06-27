@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["rust"]
+members = ["rust", "tools"]
 
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
