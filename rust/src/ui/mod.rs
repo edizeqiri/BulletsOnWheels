@@ -1,12 +1,10 @@
 use bevy::app::App;
 
-pub(crate) mod defeat;
 mod score;
 
 pub(super) fn plugin(app: &mut App) {
     app
-        .add_plugins(score::plugin)
-        .add_plugins(defeat::plugin);
+        .add_plugins(score::plugin);
 }
 // mod healthbar;
 //

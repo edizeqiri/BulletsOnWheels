@@ -7,7 +7,8 @@ use godot::classes::{AnimatedSprite2D, CharacterBody2D};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::gamestate::CharacterDeathMessage;
+use crate::character::player::Player;
+use crate::gamestate::{CharacterDeathMessage, InGameState};
 use crate::weapon::Damage;
 use crate::weapon::projectile::Projectile;
 use crate::weapon::weapon::{Shooter, Weapon};
@@ -20,7 +21,8 @@ pub(super) fn plugin(app: &mut App) {
         .add_plugins(player::plugin)
         .add_systems(PhysicsUpdate, apply_character_movement)
         .add_observer(character_bullet_collision_system)
-        .add_systems(Update, update_healthbar_animation_system);
+        .add_systems(Update, update_healthbar_animation_system)
+        .add_systems(Update, handle_character_zero_health_system);
 }
 
 #[derive(Component, Reflect)]
@@ -180,6 +182,25 @@ fn update_healthbar_animation_system(
                 let number: u32 = damage.health as u32;
                 sprite.play_ex().name(&number.to_string()).done();
             }
+        }
+    }
+}
+
+fn handle_character_zero_health_system(
+    mut commands: Commands,
+    mut character_death_messages: MessageReader<CharacterDeathMessage>,
+    player_query: Query<Entity, With<Player>>
+) {
+    for message in character_death_messages.read() {
+        commands.entity(message.target).despawn();
+        
+        let Ok(player) = player_query.single() else {
+            return;
+        };
+        if message.target == player {
+            info!("Player dead");
+            commands.entity(message.target).despawn();
+            commands.set_state(InGameState::DEFEAT);
         }
     }
 }

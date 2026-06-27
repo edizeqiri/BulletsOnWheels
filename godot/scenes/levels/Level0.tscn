@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://r4hlroxtgq1t" path="res://assets/kenney_tiny-dungeon/Tilemap/tilemap.png" id="1_wnydg"]
 [ext_resource type="PackedScene" uid="uid://dkfbqgsl3ty8c" path="res://scenes/characters/player.tscn" id="2_0l7rd"]
-[ext_resource type="PackedScene" uid="uid://dmcj7qe3s67gh" path="res://scenes/levels/hud.tscn" id="3_0l7rd"]
+[ext_resource type="PackedScene" uid="uid://dmcj7qe3s67gh" path="res://scenes/levels/score_label.tscn" id="3_0l7rd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bwv4p"]
 texture = ExtResource("1_wnydg")

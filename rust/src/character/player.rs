@@ -16,7 +16,6 @@ pub(super) fn plugin(app: &mut App) {
         (
             player_shoot_system,
             // check_player_zero_health_system,
-            handle_player_zero_health_system,
         ), //.run_if(in_state(GameState::RUNNING))
     );
 }
@@ -70,21 +69,3 @@ fn player_shoot_system(
 // }
 // }
 
-fn handle_player_zero_health_system(
-    mut commands: Commands,
-    mut player_death_messages: MessageReader<CharacterDeathMessage>,
-    player_query: Query<Entity, With<Player>>
-) {
-    let Ok(player) = player_query.single() else {
-        info!("no player existent");
-        return;
-    };
-    
-    for message in player_death_messages.read() {
-        if message.target == player {
-            info!("Player dead");
-            commands.entity(message.target).despawn();
-            commands.set_state(InGameState::DEFEAT);
-        }
-    }
-}

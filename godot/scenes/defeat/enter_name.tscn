@@ -1,14 +1,26 @@
-[gd_scene format=3 uid="uid://cm3mjcc4l6y3w"]
+[gd_scene format=3 uid="uid://cqjdyoa5jtaaj"]
 
-[ext_resource type="Texture2D" uid="uid://qwih6rth7ukr" path="res://assets/whoareyoue.png" id="1_rsy45"]
-[ext_resource type="PackedScene" uid="uid://cqjdyoa5jtaaj" path="res://scenes/defeat/input_field.tscn" id="2_tjogw"]
+[ext_resource type="Texture2D" uid="uid://c4daeno31gi61" path="res://assets/entersign.png" id="1_t7ixs"]
+[ext_resource type="FontFile" uid="uid://b05j2x3qypkff" path="res://assets/kenney_fonts/Fonts/Kenney High.ttf" id="1_tjogw"]
 
-[node name="CanvasLayer" type="CanvasLayer" unique_id=796039189]
-layer = 10
+[node name="InputField" type="Node2D" unique_id=1464166659]
 
-[node name="Whoareyoue" type="Sprite2D" parent="." unique_id=1596031957]
-position = Vector2(164, 43)
-scale = Vector2(0.21066812, 0.2106681)
-texture = ExtResource("1_rsy45")
+[node name="NameInput" type="LineEdit" parent="." unique_id=936618699]
+offset_left = 79.0
+offset_top = 62.0
+offset_right = 220.0
+offset_bottom = 93.0
+theme_override_colors/font_color = Color(0.7372549, 0.27058825, 0.23529412, 1)
+theme_override_colors/font_selected_color = Color(0.7372549, 0.27058825, 0.23529412, 1)
+theme_override_colors/font_placeholder_color = Color(1, 1, 1, 0.15686275)
+theme_override_fonts/font = ExtResource("1_tjogw")
+placeholder_text = "enter your name"
+alignment = 1
 
-[node name="InputField" parent="." unique_id=1464166659 instance=ExtResource("2_tjogw")]
+[node name="Button" type="Button" parent="." unique_id=1406597236]
+offset_left = 220.0
+offset_top = 63.0
+offset_right = 438.0
+offset_bottom = 311.0
+scale = Vector2(0.117174424, 0.117174424)
+icon = ExtResource("1_t7ixs")

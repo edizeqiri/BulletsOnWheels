@@ -8,7 +8,6 @@ use godot_bevy::prelude::*;
 use crate::character::enemy::EnemyAssets;
 use crate::gamestate::{AppState, InGameState};
 use crate::weapon::weapon::ProjectileAssets;
-use crate::ui::defeat::DefeatAssets;
 use crate::world::level_manager::LevelId;
 
 mod character;
@@ -43,6 +42,5 @@ fn build_app(app: &mut App) {
             LoadingState::new(AppState::RUNNING)
                 .load_collection::<ProjectileAssets>()
                 .load_collection::<EnemyAssets>()
-                .load_collection::<DefeatAssets>()
         );
 }

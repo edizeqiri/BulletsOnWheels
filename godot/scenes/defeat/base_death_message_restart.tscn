@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://b6p23w4psfjgg"]
+
+[ext_resource type="FontFile" uid="uid://cq7eug8jyxw4i" path="res://assets/kenney_fonts/Fonts/Kenney Pixel.ttf" id="1_hv5cg"]
+
+[node name="ActionAfterDeath" type="Label" unique_id=740189908]
+z_index = 2
+offset_left = 41.0
+offset_top = 56.0
+offset_right = 205.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0.73563325, 0.27011943, 0.23371321, 1)
+theme_override_fonts/font = ExtResource("1_hv5cg")
+theme_override_font_sizes/font_size = 16
+text = "Game will be restarted shortly..."
