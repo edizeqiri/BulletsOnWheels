@@ -2,7 +2,7 @@ direction: right
 
 "CollisionStarted": { shape: parallelogram }
 "ExitPauseGameEvent": { shape: parallelogram }
-"LevelLoadedMessage": { shape: parallelogram }
+"LevelLoadedEvent": { shape: parallelogram }
 "LoadLevelMessage": { shape: parallelogram }
 "NameEnteredEvent": { shape: parallelogram }
 "PauseGameEvent": { shape: parallelogram }
@@ -20,7 +20,7 @@ direction: right
 "pause_game_on_event": { shape: rectangle }
 "reset_game": { shape: rectangle }
 
-"LevelLoadedMessage" -> "change_state_system_on_loaded_level": reads
+"LevelLoadedEvent" -> "change_state_system_on_loaded_level": reads
 "CollisionStarted" -> "character_bullet_collision_system": reads
 "ExitPauseGameEvent" -> "exit_pause": reads
 "CollisionStarted" -> "handle_button_system": reads
