@@ -262,3 +262,9 @@ fn change_state_system_on_loaded_level(event: On<LevelLoadedMessage>, mut comman
     commands.set_state(trigger.level_id);
     info!("current level state: {:?}", trigger.level_id);
 }
+
+#[derive(Component, Default, GodotNode)]
+#[godot_node(base(Node2D), class_name(RScore))]
+pub struct Score {
+    pub count: u32,
+}

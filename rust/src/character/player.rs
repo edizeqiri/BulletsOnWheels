@@ -40,12 +40,6 @@ pub struct PlayerBundle {
     core: CharacterCore,
 }
 
-#[derive(Component, Default, GodotNode)]
-#[godot_node(base(Node2D), class_name(RScore))]
-pub struct Score {
-    pub count: u32,
-}
-
 #[derive(Message)]
 pub struct PlayerDeathMessage {
     pub entity: Entity,
