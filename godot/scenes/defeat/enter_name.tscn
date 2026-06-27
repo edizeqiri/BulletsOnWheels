@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://cqjdyoa5jtaaj"]
 
-[ext_resource type="Texture2D" uid="uid://c4daeno31gi61" path="res://assets/entersign.png" id="1_t7ixs"]
 [ext_resource type="FontFile" uid="uid://b05j2x3qypkff" path="res://assets/kenney_fonts/Fonts/Kenney High.ttf" id="1_tjogw"]
 
 [node name="InputField" type="Node2D" unique_id=1464166659]
@@ -16,11 +15,3 @@ theme_override_colors/font_placeholder_color = Color(1, 1, 1, 0.15686275)
 theme_override_fonts/font = ExtResource("1_tjogw")
 placeholder_text = "enter your name"
 alignment = 1
-
-[node name="Button" type="Button" parent="." unique_id=1406597236]
-offset_left = 220.0
-offset_top = 63.0
-offset_right = 438.0
-offset_bottom = 311.0
-scale = Vector2(0.117174424, 0.117174424)
-icon = ExtResource("1_t7ixs")

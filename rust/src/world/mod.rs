@@ -20,55 +20,62 @@ pub(super) fn plugin(app: &mut App) {
         .add_plugins(level_manager::LevelManagerPlugin)
         //.add_systems(Update, (spawn_death_scene_on_player_death, track_death_scene))
         .add_plugins(GodotSignalsPlugin::<NameEnteredEvent>::default())
-        .add_systems(
-            OnEnter(InGameState::DEFEAT),
-            (spawn_ask_for_player_name_system, connect_enter_name_system),
-        )
+        .add_systems(OnEnter(InGameState::DEFEAT), spawn_ask_for_player_name_system)
+        .add_systems(Update, connect_enter_name_system)
         .add_observer(name_submitted);
 }
 
-#[derive(Event, Clone)]
+#[derive(Event, Clone, Default)]
 struct NameEnteredEvent {
-    name: String,
+    name: String
 }
 
 #[derive(AssetCollection, Resource)]
 pub struct WorldAssets {
     #[asset(path = "scenes/defeat/player_death_restart.tscn")]
     pub death_scene_restart: Handle<GodotResource>,
-
+    
     #[asset(path = "scenes/defeat/player_death_highscore.tscn")]
     pub player_death_highscore_scene: Handle<GodotResource>,
 }
 
-fn spawn_ask_for_player_name_system(mut commands: Commands, assets: Res<WorldAssets>) {
-    commands.spawn_empty().insert(GodotScene::from_handle(
-        assets.player_death_highscore_scene.clone(),
-    ));
+fn spawn_ask_for_player_name_system(
+    mut commands: Commands,
+    assets: Res<WorldAssets>,
+) {
+    commands
+        .spawn_empty()
+        .insert(GodotScene::from_handle(assets.player_death_highscore_scene.clone()));
 }
 
 fn connect_enter_name_system(
-    text_field_object: Query<&GodotNodeHandle, With<LineEditMarker>>,
-    entered_name_signal: GodotSignals<NameEnteredEvent>,
+    mut connected: Local<bool>,
+    enter_name_field: Query<&GodotNodeHandle, With<LineEditMarker>>,
+    entered_name_signal: GodotSignals<NameEnteredEvent>
 ) {
-    let Ok(handler) = text_field_object.single() else {
-        info!("handler of line edit not found");
+    if *connected {
+        return;
+    }
+
+    let Ok(enter_name_handler) = enter_name_field.single() else {
         return;
     };
-
-    entered_name_signal.connect(
-        *handler,
-        LineEditSignals::TEXT_SUBMITTED,
-        None,
+    
+     entered_name_signal.connect(
+        *enter_name_handler, 
+        LineEditSignals::TEXT_SUBMITTED, 
+        None, 
         |args, _node_handle, _ent| {
             let Some(name) = args.get(0)?.try_to::<String>().ok() else {
                 error!("Name could not be found or parsed");
                 return None;
             };
-
+        
             Some(NameEnteredEvent { name })
-        },
+        }
     );
+    info!("enter name signal connected");
+    *connected = true;
 }
 
 // todo(sascha): not triggered anymore. weiiiird
@@ -76,6 +83,8 @@ fn name_submitted(trigger: On<NameEnteredEvent>) {
     let entered_name = &trigger.event().name;
     info!("entered name {}", entered_name)
 }
+
+
 
 #[derive(Component)]
 struct DeathTimer(Timer);
@@ -85,7 +94,7 @@ fn spawn_death_scene_on_player_death(
     current_level: Res<CurrentLevel>,
     assets: Option<Res<WorldAssets>>,
     mut player_death_message: MessageReader<CharacterDeathMessage>,
-    player_query: Query<(), With<Player>>,
+    player_query: Query<(), With<Player>>
 ) {
     for message in player_death_message.read() {
         if player_query.get(message.target).is_ok() {
@@ -102,11 +111,12 @@ fn spawn_death_scene_on_player_death(
             let scene = commands
                 .spawn((
                     GodotScene::from_handle(assets.death_scene_restart.clone()),
-                    DeathTimer(Timer::from_seconds(3., TimerMode::Once)),
+                    DeathTimer(Timer::from_seconds(3., TimerMode::Once))
                 ))
                 .id();
 
             commands.entity(level).add_child(scene);
+
         }
     }
 }
@@ -114,13 +124,13 @@ fn spawn_death_scene_on_player_death(
 fn track_death_scene(
     mut commands: Commands,
     time_query: Query<(&mut DeathTimer, Entity)>,
-    time: Res<Time>,
+    time: Res<Time>
 ) {
     for (mut times, entity) in time_query {
         if times.0.is_finished() {
             commands.entity(entity).despawn();
             commands.trigger(LoadLevelMessage {
-                level_id: level_manager::LevelId::MainMenu,
+                level_id: level_manager::LevelId::MainMenu
             });
         } else {
             times.0.tick(time.delta());
