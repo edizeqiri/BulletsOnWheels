@@ -192,15 +192,14 @@ fn handle_character_zero_health_system(
     player_query: Query<Entity, With<Player>>
 ) {
     for message in character_death_messages.read() {
-        commands.entity(message.target).despawn();
-        
         let Ok(player) = player_query.single() else {
             return;
         };
         if message.target == player {
             info!("Player dead");
-            commands.entity(message.target).despawn();
             commands.set_state(InGameState::DEFEAT);
         }
+        
+        commands.entity(message.target).despawn();
     }
 }
