@@ -40,8 +40,8 @@ pub(crate) enum AppState {
 
 #[derive(States, Debug, Default, Clone, Eq, PartialEq, Hash)]
 pub(crate) enum InGameState {
-    #[default]
     PAUSED,
+    #[default]
     RUNNING,
     DEFEAT
 }

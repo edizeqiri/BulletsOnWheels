@@ -17,7 +17,8 @@ pub(super) fn plugin(app: &mut App) {
             player_shoot_system,
             // check_player_zero_health_system,
             handle_player_zero_health_system
-        ) //.run_if(in_state(GameState::RUNNING))
+        )
+            .run_if(in_state(InGameState::RUNNING))
     );
 }
 
@@ -77,6 +78,6 @@ fn handle_player_zero_health_system(
     for message in player_death_messages.read() {
         info!("Player dead");
         commands.entity(message.target).despawn();
+        commands.set_state(InGameState::DEFEAT);
     }
-    commands.set_state(InGameState::DEFEAT);
 }

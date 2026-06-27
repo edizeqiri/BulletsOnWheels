@@ -1,10 +1,17 @@
 use bevy::prelude::*;
 
-use crate::{character::enemy::CreateEnemyMessage, world::level_manager::LevelId};
+use crate::character::enemy::CreateEnemyMessage;
+use crate::gamestate::InGameState;
+use crate::world::level_manager::LevelId;
 
 pub(crate) fn plugin(app: &mut App) {
     app.insert_resource(Time::<Fixed>::from_seconds(1.5))
-        .add_systems(FixedUpdate, spawn_enemies_after_time.run_if(in_state(LevelId::Level1)));
+        .add_systems(
+            FixedUpdate,
+            spawn_enemies_after_time
+                .run_if(in_state(LevelId::Level1))
+                .run_if(in_state(InGameState::RUNNING))
+        );
 }
 
 fn spawn_enemies_after_time(mut enemy_writer: MessageWriter<CreateEnemyMessage>) {

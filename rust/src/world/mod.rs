@@ -8,16 +8,30 @@ use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use godot_bevy::prelude::*;
 
 use crate::character::player::Player;
-use crate::gamestate::{AppState, CharacterDeathMessage};
+use crate::gamestate::{AppState, CharacterDeathMessage, InGameState};
 use crate::world::level::level1;
 use crate::world::level_manager::{CurrentLevel, LoadLevelMessage};
 mod level;
 pub(crate) mod level_manager;
+mod menu;
+
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(AppState::RUNNING).load_collection::<WorldAssets>())
+        .add_observer(reset_game)
         .add_plugins(level1::plugin)
         .add_plugins(level_manager::LevelManagerPlugin)
-        .add_systems(Update, (spawn_death_scene_on_player_death, track_death_scene));
+        .add_plugins(menu::plugin)
+        .add_systems(
+            Update,
+            (spawn_death_scene_on_player_death, track_death_scene)
+        )
+        .insert_resource(Time::<Fixed>::from_seconds(1.5))
+        .add_systems(FixedUpdate, log_system);
+}
+
+fn log_system(appstate: Res<State<AppState>>, ingamesteate: Res<State<InGameState>>) {
+    info!("Current appstate: {:?}", appstate.get());
+    info!("Current game: {:?}", ingamesteate.get());
 }
 
 #[derive(AssetCollection, Resource)]
@@ -28,6 +42,22 @@ pub struct WorldAssets {
 
 #[derive(Component)]
 struct DeathTimer(Timer);
+
+#[derive(Event, Debug, Clone)]
+pub struct PauseGameEvent;
+
+#[derive(Event, Debug, Clone)]
+pub struct RestartGameEvent;
+
+#[derive(Event, Debug, Clone)]
+pub struct ExitGameEvent;
+
+fn reset_game(_: On<RestartGameEvent>, mut commands: Commands) {
+    commands.trigger(LoadLevelMessage {
+        level_id: level_manager::LevelId::MainMenu
+    });
+    commands.set_state(InGameState::RUNNING);
+}
 
 fn spawn_death_scene_on_player_death(
     mut commands: Commands,
@@ -56,7 +86,6 @@ fn spawn_death_scene_on_player_death(
                 .id();
 
             commands.entity(level).add_child(scene);
-
         }
     }
 }

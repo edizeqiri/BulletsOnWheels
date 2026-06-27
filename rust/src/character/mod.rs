@@ -7,7 +7,7 @@ use godot::classes::{AnimatedSprite2D, CharacterBody2D};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::gamestate::CharacterDeathMessage;
+use crate::gamestate::{CharacterDeathMessage, InGameState};
 use crate::weapon::Damage;
 use crate::weapon::projectile::Projectile;
 use crate::weapon::weapon::{Shooter, Weapon};
@@ -19,8 +19,11 @@ pub(super) fn plugin(app: &mut App) {
         .add_plugins(enemy::plugin)
         .add_plugins(player::plugin)
         .add_systems(PhysicsUpdate, apply_character_movement)
-        .add_observer(character_bullet_collision_system)
-        .add_systems(Update, update_healthbar_animation_system);
+        .add_observer(character_bullet_collision_system.run_if(in_state(InGameState::RUNNING)))
+        .add_systems(
+            Update,
+            update_healthbar_animation_system.run_if(in_state(InGameState::RUNNING))
+        );
 }
 
 #[derive(Component, Reflect)]

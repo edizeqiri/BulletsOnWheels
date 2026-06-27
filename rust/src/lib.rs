@@ -26,11 +26,11 @@ fn build_app(app: &mut App) {
     //     .add_plugins(GodotAudioPlugin)
     //     .add_plugins(BevyInputBridgePlugin);
     app.add_plugins(GodotDefaultPlugins)
+        .add_plugins(world::plugin)
         .add_plugins(weapon::plugin)
         .add_plugins(character::plugin)
         .add_plugins(input::plugin)
         .add_plugins(main_menu::plugin)
-        .add_plugins(world::plugin)
         .add_plugins(ui::plugin)
         .add_plugins(gamestate::plugin)
         .add_plugins(StatesPlugin)

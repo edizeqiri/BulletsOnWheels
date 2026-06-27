@@ -1,10 +1,15 @@
 [gd_scene format=3 uid="uid://dmcj7qe3s67gh"]
 
+[ext_resource type="FontFile" uid="uid://cq7eug8jyxw4i" path="res://assets/kenney_fonts/Fonts/Kenney Pixel.ttf" id="1_h1s5m"]
+
 [node name="HUD" type="CanvasLayer" unique_id=403740618]
 
 [node name="ScoreLabel" type="Label" parent="." unique_id=1225436633]
-offset_left = 18.0
-offset_top = 136.0
-offset_right = 58.0
-offset_bottom = 159.0
+offset_left = 21.0
+offset_top = 237.0
+offset_right = 229.0
+offset_bottom = 261.0
+scale = Vector2(0.5, 0.5)
+theme_override_fonts/font = ExtResource("1_h1s5m")
+theme_override_font_sizes/font_size = 32
 text = "Score: 0 High Score: 0"
