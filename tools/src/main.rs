@@ -6,8 +6,8 @@ use std::{
     path::Path,
 };
 use syn::{
-    visit::{self, Visit},
     Expr, FnArg, GenericArgument, Item, PathArguments, Type,
+    visit::{self, Visit},
 };
 use walkdir::WalkDir;
 
@@ -33,7 +33,10 @@ fn main() -> Result<()> {
 
     fs::create_dir_all(&out_dir)?;
     fs::write(format!("{out_dir}/events.d2"), build_events_d2(&systems))?;
-    fs::write(format!("{out_dir}/messages.d2"), build_messages_d2(&systems))?;
+    fs::write(
+        format!("{out_dir}/messages.d2"),
+        build_messages_d2(&systems),
+    )?;
     fs::write(format!("{out_dir}/states.d2"), build_states_d2(&systems))?;
 
     eprintln!("wrote {out_dir}/events.d2, messages.d2, states.d2");
@@ -96,7 +99,10 @@ fn scan_project(root: &Path) -> Result<BTreeMap<String, SystemInfo>> {
     for (name, states) in run_in_states {
         all_systems
             .entry(name.clone())
-            .or_insert_with(|| SystemInfo { name: name.clone(), ..Default::default() })
+            .or_insert_with(|| SystemInfo {
+                name: name.clone(),
+                ..Default::default()
+            })
             .runs_in_states
             .extend(states);
     }
@@ -152,7 +158,10 @@ impl<'ast> Visit<'ast> for RunIfStateVisitor {
         if node.method == "run_if" {
             if let Some(state) = extract_in_state_from_args(&node.args) {
                 for sys_name in extract_system_names_from_expr(&node.receiver) {
-                    self.result.entry(sys_name).or_default().insert(state.clone());
+                    self.result
+                        .entry(sys_name)
+                        .or_default()
+                        .insert(state.clone());
                 }
             }
         }
@@ -181,7 +190,12 @@ fn extract_event_name_from_expr(expr: &Expr) -> Option<String> {
 /// Returns None for dynamic/complex expressions like `trigger.event().level_id`.
 fn expr_to_state_variant(expr: &Expr) -> Option<String> {
     if let Expr::Path(p) = expr {
-        let segs: Vec<_> = p.path.segments.iter().map(|s| s.ident.to_string()).collect();
+        let segs: Vec<_> = p
+            .path
+            .segments
+            .iter()
+            .map(|s| s.ident.to_string())
+            .collect();
         if segs.len() >= 2 {
             return Some(segs.join("::"));
         }
@@ -191,7 +205,7 @@ fn expr_to_state_variant(expr: &Expr) -> Option<String> {
 
 /// Extracts the state variant from `run_if(in_state(State::VARIANT))` args.
 fn extract_in_state_from_args(
-    args: &syn::punctuated::Punctuated<Expr, syn::token::Comma>
+    args: &syn::punctuated::Punctuated<Expr, syn::token::Comma>,
 ) -> Option<String> {
     let first = args.first()?;
     if let Expr::Call(c) = first {
@@ -214,7 +228,11 @@ fn extract_system_names_from_expr(expr: &Expr) -> Vec<String> {
             .last()
             .map(|s| vec![s.ident.to_string()])
             .unwrap_or_default(),
-        Expr::Tuple(t) => t.elems.iter().flat_map(extract_system_names_from_expr).collect(),
+        Expr::Tuple(t) => t
+            .elems
+            .iter()
+            .flat_map(extract_system_names_from_expr)
+            .collect(),
         Expr::MethodCall(mc) => extract_system_names_from_expr(&mc.receiver),
         Expr::Paren(p) => extract_system_names_from_expr(&p.expr),
         _ => vec![],
@@ -446,7 +464,12 @@ fn build_states_d2(systems: &BTreeMap<String, SystemInfo>) -> String {
     // State types from parameter analysis (e.g. State<InGameState>).
     let state_types: BTreeSet<String> = relevant
         .iter()
-        .flat_map(|s| s.reads_state.iter().chain(s.writes_state.iter()).chain(s.next_state.iter()))
+        .flat_map(|s| {
+            s.reads_state
+                .iter()
+                .chain(s.writes_state.iter())
+                .chain(s.next_state.iter())
+        })
         .cloned()
         .collect();
 

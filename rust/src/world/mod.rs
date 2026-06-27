@@ -11,6 +11,7 @@ use godot_bevy::prelude::*;
 use crate::character::player::Player;
 use crate::gamestate::{AppState, CharacterDeathMessage, InGameState};
 use crate::world::level::level1;
+use crate::world::level_manager::LevelId::{self, Level1, MainMenu};
 use crate::world::level_manager::{CurrentLevel, LoadLevelMessage};
 mod level;
 pub(crate) mod level_manager;
@@ -22,14 +23,28 @@ pub(super) fn plugin(app: &mut App) {
         .add_plugins(level1::plugin)
         .add_plugins(menu::plugin)
         .add_plugins(level_manager::LevelManagerPlugin)
-        //.add_systems(Update, (spawn_death_scene_on_player_death, track_death_scene))
+        .add_systems(Startup, init_world)
+        .add_systems(
+            OnEnter(InGameState::DEFEAT),
+            spawn_death_scene_on_player_death.run_if(in_state(LevelId::MainMenu))
+        )
+        .add_systems(
+            Update,
+            track_death_scene
+                .run_if(in_state(InGameState::DEFEAT))
+                .run_if(in_state(LevelId::MainMenu))
+        )
         .add_plugins(GodotSignalsPlugin::<NameEnteredEvent>::default())
         .add_systems(
             OnEnter(InGameState::DEFEAT),
-            spawn_ask_for_player_name_system
+            spawn_ask_for_player_name_system.run_if(in_state(Level1))
         )
         .add_systems(Update, connect_enter_name_system)
         .add_observer(name_submitted);
+}
+
+fn init_world(mut commands: Commands) {
+    commands.trigger(LoadLevelMessage { level_id: MainMenu });
 }
 
 #[derive(Event, Clone, Default)]
@@ -47,9 +62,12 @@ pub struct WorldAssets {
 }
 
 fn spawn_ask_for_player_name_system(mut commands: Commands, assets: Res<WorldAssets>) {
-    commands.spawn_empty().insert(GodotScene::from_handle(
-        assets.player_death_highscore_scene.clone()
-    ));
+    commands
+        .spawn_empty()
+        .insert(GodotScene::from_handle(
+            assets.player_death_highscore_scene.clone()
+        ))
+        .insert(DespawnOnEnter(InGameState::RUNNING));
 }
 
 fn connect_enter_name_system(
@@ -111,35 +129,32 @@ fn reset_game(_: On<RestartGameEvent>, mut commands: Commands) {
     commands.set_state(InGameState::RUNNING);
 }
 
+#[derive(Debug, Event)]
+pub struct ResetSceneEvent(pub Entity);
+
 fn spawn_death_scene_on_player_death(
     mut commands: Commands,
     current_level: Res<CurrentLevel>,
-    assets: Option<Res<WorldAssets>>,
-    mut player_death_message: MessageReader<CharacterDeathMessage>,
-    player_query: Query<(), With<Player>>
+    assets: Option<Res<WorldAssets>>
 ) {
-    for message in player_death_message.read() {
-        if player_query.get(message.target).is_ok() {
-            let Some(ref assets) = assets else {
-                info!("player death asset not loaded yet");
-                return;
-            };
+    let Some(ref assets) = assets else {
+        info!("player death asset not loaded yet");
+        return;
+    };
 
-            let Some(level) = current_level.entity else {
-                info!("No level id");
-                return;
-            };
+    let Some(level) = current_level.entity else {
+        info!("No level id");
+        return;
+    };
 
-            let scene = commands
-                .spawn((
-                    GodotScene::from_handle(assets.death_scene_restart.clone()),
-                    DeathTimer(Timer::from_seconds(3., TimerMode::Once))
-                ))
-                .id();
+    let scene = commands
+        .spawn((
+            GodotScene::from_handle(assets.death_scene_restart.clone()),
+            DeathTimer(Timer::from_seconds(3., TimerMode::Once))
+        ))
+        .id();
 
-            commands.entity(level).add_child(scene);
-        }
-    }
+    commands.entity(level).add_child(scene);
 }
 
 fn track_death_scene(
