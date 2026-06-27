@@ -4,9 +4,9 @@ use bevy::prelude::*;
 use godot::classes::Label;
 use godot_bevy::prelude::{GodotNodeHandle, SceneTreeRef};
 
-use crate::character::player::{self, Player, Score};
+use crate::character::player::{self, Player};
 use crate::gamestate::{CharacterDeathMessage, ExitGameMessage};
-use crate::world::level_manager::CurrentLevel;
+use crate::world::level_manager::{CurrentLevel, Score};
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(load_high_score())
@@ -57,7 +57,6 @@ fn update_score_label(
     let level_id = current_level.level_id;
 
     let Ok(score) = score_query.single() else {
-        info!("Can not find score.");
         return;
     };
     
@@ -81,22 +80,13 @@ fn update_score_label(
 }
 
 fn save_high_score(
-    exit_game_message: MessageReader<ExitGameMessage>,
-    mut player_death_message: MessageReader<CharacterDeathMessage>,
-    enemy_kill_count_query: Query<(Entity, &Score), With<Player>>,
+    score_query: Query<&Score>,
     high_score: Res<HighScore>
 ) {
-    let Ok((player_entity, score)) = enemy_kill_count_query.single() else {
+    let Ok(score) = score_query.single() else {
+        info!("No score found => No high score can be saved.");
         return;
     };
-
-    let player_died = player_death_message
-        .read()
-        .any(|death_message| death_message.target == player_entity);
-
-    if exit_game_message.is_empty() && !player_died {
-        return;
-    }
 
     let high_score_path = Path::new(HIGH_SCORE_PATH);
     let current_high_score = high_score.count;
