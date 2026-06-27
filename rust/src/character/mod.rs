@@ -7,6 +7,7 @@ use godot::classes::{AnimatedSprite2D, CharacterBody2D};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
+use crate::character::player::Player;
 use crate::gamestate::{CharacterDeathMessage, InGameState};
 use crate::weapon::Damage;
 use crate::weapon::projectile::Projectile;
@@ -200,7 +201,7 @@ fn handle_character_zero_health_system(
             info!("Player dead");
             commands.set_state(InGameState::DEFEAT);
         }
-        
+
         commands.entity(message.target).despawn();
     }
 }
