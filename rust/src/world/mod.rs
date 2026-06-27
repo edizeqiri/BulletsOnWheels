@@ -23,7 +23,10 @@ pub(super) fn plugin(app: &mut App) {
         .add_plugins(level_manager::LevelManagerPlugin)
         //.add_systems(Update, (spawn_death_scene_on_player_death, track_death_scene))
         .add_plugins(GodotSignalsPlugin::<NameEnteredEvent>::default())
-        .add_systems(OnEnter(InGameState::DEFEAT), spawn_ask_for_player_name_system)
+        .add_systems(
+            OnEnter(InGameState::DEFEAT),
+            spawn_ask_for_player_name_system
+        )
         .add_systems(Update, connect_enter_name_system)
         .add_observer(name_submitted);
 }
@@ -42,13 +45,10 @@ pub struct WorldAssets {
     pub player_death_highscore_scene: Handle<GodotResource>
 }
 
-fn spawn_ask_for_player_name_system(
-    mut commands: Commands,
-    assets: Res<WorldAssets>,
-) {
-    commands
-        .spawn_empty()
-        .insert(GodotScene::from_handle(assets.player_death_highscore_scene.clone()));
+fn spawn_ask_for_player_name_system(mut commands: Commands, assets: Res<WorldAssets>) {
+    commands.spawn_empty().insert(GodotScene::from_handle(
+        assets.player_death_highscore_scene.clone()
+    ));
 }
 
 fn connect_enter_name_system(
@@ -63,11 +63,11 @@ fn connect_enter_name_system(
     let Ok(enter_name_handler) = enter_name_field.single() else {
         return;
     };
-    
-     entered_name_signal.connect(
-        *enter_name_handler, 
-        LineEditSignals::TEXT_SUBMITTED, 
-        None, 
+
+    entered_name_signal.connect(
+        *enter_name_handler,
+        LineEditSignals::TEXT_SUBMITTED,
+        None,
         |args, _node_handle, _ent| {
             let Some(name) = args.get(0)?.try_to::<String>().ok() else {
                 error!("Name could not be found or parsed");
@@ -82,9 +82,10 @@ fn connect_enter_name_system(
 }
 
 // todo(sascha): not triggered anymore. weiiiird
-fn name_submitted(trigger: On<NameEnteredEvent>) {
+fn name_submitted(trigger: On<NameEnteredEvent>, mut commands: Commands) {
     let entered_name = &trigger.event().name;
-    info!("entered name {}", entered_name)
+    info!("entered name {}", entered_name);
+    commands.trigger(RestartGameEvent);
 }
 
 #[derive(Component)]
