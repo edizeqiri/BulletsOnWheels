@@ -6,12 +6,13 @@ use godot_bevy::prelude::{GodotNodeHandle, SceneTreeRef};
 
 use crate::character::player::{self, Player};
 use crate::gamestate::{CharacterDeathMessage, ExitGameMessage};
+use crate::world::NameEnteredEvent;
 use crate::world::level_manager::{CurrentLevel, Score};
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(load_high_score())
         .add_systems(Update, (score_tracker, update_score_label))
-        .add_systems(Update, save_high_score);
+        .add_observer(save_high_score);
 }
 
 use std::path::Path;
@@ -80,6 +81,7 @@ fn update_score_label(
 }
 
 fn save_high_score(
+    trigger: On<NameEnteredEvent>,
     score_query: Query<&Score>,
     high_score: Res<HighScore>
 ) {
@@ -87,6 +89,7 @@ fn save_high_score(
         info!("No score found => No high score can be saved.");
         return;
     };
+    let entered_name = &trigger.event().name;
 
     let high_score_path = Path::new(HIGH_SCORE_PATH);
     let current_high_score = high_score.count;

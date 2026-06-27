@@ -21,13 +21,12 @@ pub(super) fn plugin(app: &mut App) {
         //.add_systems(Update, (spawn_death_scene_on_player_death, track_death_scene))
         .add_plugins(GodotSignalsPlugin::<NameEnteredEvent>::default())
         .add_systems(OnEnter(InGameState::DEFEAT), spawn_ask_for_player_name_system)
-        .add_systems(Update, connect_enter_name_system)
-        .add_observer(name_submitted);
+        .add_systems(Update, connect_enter_name_system);
 }
 
 #[derive(Event, Clone, Default)]
-struct NameEnteredEvent {
-    name: String
+pub struct NameEnteredEvent {
+    pub name: String
 }
 
 #[derive(AssetCollection, Resource)]
@@ -77,14 +76,6 @@ fn connect_enter_name_system(
     info!("enter name signal connected");
     *connected = true;
 }
-
-// todo(sascha): not triggered anymore. weiiiird
-fn name_submitted(trigger: On<NameEnteredEvent>) {
-    let entered_name = &trigger.event().name;
-    info!("entered name {}", entered_name)
-}
-
-
 
 #[derive(Component)]
 struct DeathTimer(Timer);
