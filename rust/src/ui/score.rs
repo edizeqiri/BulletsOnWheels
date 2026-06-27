@@ -21,7 +21,7 @@ pub(super) fn plugin(app: &mut App) {
         )
         .add_systems(Update, (score_tracker, update_score_label))
         .add_observer(save_high_score)
-        .add_observer(fill_score_board);
+        .add_observer(spawn_score_board);
 }
 
 use std::path::Path;
@@ -99,7 +99,7 @@ fn update_score_label(
         return;
     };
     
-    let score_label_path = format!("{}/Score", level_id.root_node_path());
+    let score_label_path = format!("{}/ScoreLabel", level_id.root_node_path());
 
     let Some(root) = scene_tree.get().get_root() else {
         warn!("no root");
@@ -123,7 +123,6 @@ fn save_high_score(
     score_query: Query<&Score>,
     mut score_board: ResMut<ScoreBoard>,
     mut commands: Commands,
-    assets: Res<ScoreBoardAssets>,
 ) {
     let Ok(score) = score_query.single() else {
         info!("No score found => No high score can be saved.");
@@ -138,9 +137,7 @@ fn save_high_score(
     });
     
     save_score_board(entered_name, score.count);
-    commands
-        .spawn_empty()
-        .insert(GodotScene::from_handle(assets.score_board_scene.clone()));
+
     commands.trigger(SpawnLeaderBoardEvent);
 }
 
@@ -213,19 +210,26 @@ fn load_score_board() -> ScoreBoard {
     }
 }
 
-fn fill_score_board(
+fn spawn_score_board(
     _trigger: On<SpawnLeaderBoardEvent>,
     score_board: Res<ScoreBoard>,
     mut scene_tree: SceneTreeRef,
+    mut commands: Commands,
+    assets: Res<ScoreBoardAssets>,
 ) {
+    commands
+        .spawn_empty()
+        .insert(GodotScene::from_handle(assets.score_board_scene.clone()));
     let Some(root) = scene_tree.get().get_root() else {
         return;
     };
 
+    let score_board_label_path = "/root/ScoreBoard/Top5";
+    
     let Some(mut top5_label) =
-        root.try_get_node_as::<Label>("ScoreBoard/Top5")
+        root.try_get_node_as::<Label>(score_board_label_path)
     else {
-        warn!("Could not find ScoreBoard/Top5 label");
+        warn!("Could not find {}", score_board_label_path);
         return;
     };
 
@@ -246,3 +250,4 @@ fn prepare_leader_board_content(score_board: Res<ScoreBoard>,) -> String {
         .collect::<Vec<_>>()
         .join("\n");
 }
+

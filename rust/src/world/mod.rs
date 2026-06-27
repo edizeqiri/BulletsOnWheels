@@ -60,6 +60,18 @@ fn spawn_ask_for_player_name_system(
         .insert(DeathHighscoreScene);
 }
 
+fn despawn_ask_for_player_name_system(
+    _trigger: On<SpawnLeaderBoardEvent>,
+    death_high_score_query: Query<Entity, With<DeathHighscoreScene>>,
+    mut commands: Commands
+) {
+    let Ok(deaht_high_score_scene) = death_high_score_query.single() else {
+        error!("Could not despawn death highscore scene.");
+        return;
+    };
+    commands.entity(deaht_high_score_scene).despawn();
+}
+
 fn connect_enter_name_system(
     mut connected: Local<bool>,
     enter_name_field: Query<&GodotNodeHandle, With<LineEditMarker>>,
@@ -89,6 +101,7 @@ fn connect_enter_name_system(
     info!("enter name signal connected");
     *connected = true;
 }
+
 
 #[derive(Component)]
 struct DeathTimer(Timer);
