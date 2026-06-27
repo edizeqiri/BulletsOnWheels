@@ -7,10 +7,14 @@ use godot_bevy::prelude::{GodotNodeHandle, SceneTreeRef};
 use crate::character::player::{EnemyKillCount, Player};
 use crate::gamestate::{CharacterDeathMessage, ExitGameMessage};
 use crate::world::level_manager::CurrentLevel;
+use crate::world::level_manager::LevelId::Level1;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(load_high_score())
-        .add_systems(Update, (score_tracker, update_score_label))
+        .add_systems(
+            Update,
+            (score_tracker, update_score_label).run_if(in_state(Level1))
+        )
         .add_systems(Update, save_high_score);
 }
 
@@ -64,8 +68,7 @@ fn update_score_label(
 
     score_label.set_text(&format!(
         "Score: {}\nHigh Score: {}",
-        enemy_kill_count.count,
-        high_score.count,
+        enemy_kill_count.count, high_score.count,
     ));
 }
 

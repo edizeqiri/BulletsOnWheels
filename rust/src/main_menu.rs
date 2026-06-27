@@ -42,8 +42,7 @@ fn handle_button_system(
     collision: On<CollisionStarted>,
     mut commands: Commands,
     button_query: Query<&ButtonTypeComponent, (With<MenuButton>, With<Shootable>)>,
-    projectile_query: Query<Entity, With<Projectile>>,
-    mut exit_game_writer: MessageWriter<ExitGameMessage>
+    projectile_query: Query<Entity, With<Projectile>>
 ) {
     let event = collision.event();
 
@@ -71,7 +70,7 @@ fn handle_button_system(
         },
         ButtonType::EXIT => {
             info!("send exit game message");
-            exit_game_writer.write(ExitGameMessage);
+            commands.set_state(InGameState::DEFEAT);
         }
     }
 }
