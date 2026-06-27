@@ -11,6 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=893152994]
 layout_mode = 0
@@ -18,6 +19,7 @@ offset_left = -412.0
 offset_top = -183.0
 offset_right = 618.0
 offset_bottom = 403.0
+mouse_filter = 1
 color = Color(0, 0, 0, 0.5882353)
 
 [node name="Border" type="NinePatchRect" parent="." unique_id=582630816]
@@ -26,6 +28,7 @@ offset_left = 120.0
 offset_top = 24.0
 offset_right = 393.0
 offset_bottom = 240.0
+mouse_filter = 1
 texture = ExtResource("1_e0arn")
 region_rect = Rect2(2.0853238, 1.9393759, 27.91373, 28.053177)
 patch_margin_left = 6
@@ -88,6 +91,7 @@ custom_minimum_size = Vector2(108, 32)
 layout_mode = 0
 offset_right = 108.0
 offset_bottom = 32.0
+mouse_filter = 1
 texture = ExtResource("2_037ec")
 region_rect = Rect2(1.9137001, 1.8405623, 28.133274, 28.204317)
 patch_margin_left = 6

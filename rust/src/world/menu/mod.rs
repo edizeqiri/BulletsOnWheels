@@ -50,10 +50,10 @@ fn menu_not_connected(menu_handles: Res<MenuHandles>) -> bool {
 
 #[derive(NodeTreeView)]
 pub struct MenuUi {
-    #[node("/root/Border/RestartButton")]
+    #[node("/root/Menu/Border/RestartButton")]
     pub restart_button: GodotNodeHandle,
 
-    #[node("/root/Border/ExitButton")]
+    #[node("/root/Menu/Border/ExitButton")]
     pub exit_button: GodotNodeHandle
 }
 
@@ -88,6 +88,8 @@ fn exit_pause(
 fn reset_menu(mut menu: ResMut<MenuHandles>) {
     menu.initialized = false;
     menu.signals_connected = false;
+    menu.restart_button = None;
+    menu.exit_button = None;
 }
 
 fn pause_game_on_event(
@@ -128,7 +130,7 @@ fn init_menu_assets(mut menu_handles: ResMut<MenuHandles>, mut scene_tree: Scene
                 menu_handles.initialized = true;
             },
             Err(_) => {
-                debug!("Menu not loaded yet");
+                warn!("Menu not loaded yet");
             }
         }
     }
@@ -143,26 +145,33 @@ fn connect_menu_buttons(
         return;
     };
 
-    info!("Connecting buttons");
-    if let Some(restart_handle) = menu_handles.restart_button {
-        signals_restart.connect(
-            restart_handle,
-            BaseButtonSignals::PRESSED,
-            None,
-            |_args, _node_handle, _ent| Some(RestartGameEvent)
-        );
-    }
+    let (Some(restart_handle), Some(exit_handle)) =
+        (menu_handles.restart_button, menu_handles.exit_button)
+    else {
+        return;
+    };
 
-    if let Some(exit_handle) = menu_handles.restart_button {
-        signals_exit.connect(
-            exit_handle,
-            BaseButtonSignals::PRESSED,
-            None,
-            |_args, _node_handle, _ent| Some(ExitGameEvent)
-        );
-    }
+    info!("Connecting buttons");
+    signals_restart.connect(
+        restart_handle,
+        BaseButtonSignals::PRESSED,
+        None,
+        |_args, _node_handle, _ent| {
+            info!("Restart button pressed");
+            Some(RestartGameEvent)
+        }
+    );
+
+    signals_exit.connect(
+        exit_handle,
+        BaseButtonSignals::PRESSED,
+        None,
+        |_args, _node_handle, _ent| {
+            info!("Exit button pressed");
+            Some(ExitGameEvent)
+        }
+    );
 
     menu_handles.signals_connected = true;
-    info!("Buttons Connectecd");
-
+    info!("Buttons connected");
 }
