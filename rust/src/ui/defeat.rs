@@ -7,7 +7,7 @@ use crate::gamestate::InGameState;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(GodotSignalsPlugin::<NameEnteredEvent>::default())
-        .add_systems(OnEnter(InGameState::DEFEAT), spawn_ask_for_player_name_system)
+        .add_systems(OnEnter(InGameState::DEFEAT), (spawn_ask_for_player_name_system, connect_enter_name_system))
         .add_observer(name_submitted);
 }
 
@@ -23,12 +23,22 @@ pub(crate) struct DefeatAssets {
 }
 
 fn spawn_ask_for_player_name_system(
-    text_field_object: Query<&GodotNodeHandle, With<LineEditMarker>>,
-    entered_name_signal: GodotSignals<NameEnteredEvent>,
     mut commands: Commands,
     assets: Res<DefeatAssets>,
 ) {
+    commands
+        .spawn_empty()
+        .insert(GodotScene::from_handle(assets.enter_name_scene.clone()));
+    
+
+}
+
+fn connect_enter_name_system(
+    text_field_object: Query<&GodotNodeHandle, With<LineEditMarker>>,
+    entered_name_signal: GodotSignals<NameEnteredEvent>,
+) {
     let Ok(handler) = text_field_object.single() else {
+        info!("handler of line edit not found");
         return;
     };
     
@@ -45,10 +55,6 @@ fn spawn_ask_for_player_name_system(
             Some(NameEnteredEvent { name })
         }
     );
-    
-    commands
-        .spawn_empty()
-        .insert(GodotScene::from_handle(assets.enter_name_scene.clone()));
 }
 
 fn name_submitted(trigger: On<NameEnteredEvent>) {

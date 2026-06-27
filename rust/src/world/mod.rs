@@ -8,8 +8,8 @@ mod level;
 pub(crate) mod level_manager;
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(level1::plugin)
-        .add_plugins(level_manager::LevelManagerPlugin)
-        .add_systems(Update, restart_on_death);
+        .add_plugins(level_manager::LevelManagerPlugin);
+    //.add_systems(Update, restart_on_death);
 }
 
 fn restart_on_death(
