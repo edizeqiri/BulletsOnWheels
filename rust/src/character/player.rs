@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
 use crate::character::{
-    CharacterCore, CharacterDeathMessage, Health, MovementSpeed, ShootingState
+    CharacterCore, CharacterDeathMessage, Health, MovementSpeed, ShootingState,
 };
 use crate::gamestate::{AppState, InGameState};
 
@@ -41,23 +41,23 @@ pub struct PlayerBundle {
 
     core: CharacterCore,
 
-    enemy_kill_count: EnemyKillCount
+    enemy_kill_count: EnemyKillCount,
 }
 
 #[derive(Component, Default)]
 pub struct EnemyKillCount {
-    pub count: u32
+    pub count: u32,
 }
 
 #[derive(Message)]
 pub struct PlayerDeathMessage {
-    pub entity: Entity
+    pub entity: Entity,
 }
 
 fn player_shoot_system(
     player_query: Query<(Entity, &ShootingState), With<Player>>,
     mut shoot_timer: Local<f32>,
-    time: Res<Time>
+    time: Res<Time>,
 ) {
 }
 // fn check_player_zero_health_system(

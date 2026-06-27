@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://dmcj7qe3s67gh"]
+
+[ext_resource type="FontFile" uid="uid://b05j2x3qypkff" path="res://assets/kenney_fonts/Fonts/Kenney High.ttf" id="1_h1s5m"]
+
+[node name="ScoreLabel" type="Label" unique_id=1225436633]
+offset_left = 3.0
+offset_top = 116.0
+offset_right = 168.0
+offset_bottom = 147.0
+theme_override_fonts/font = ExtResource("1_h1s5m")
+text = "Score: 0
+High Score: 0"
