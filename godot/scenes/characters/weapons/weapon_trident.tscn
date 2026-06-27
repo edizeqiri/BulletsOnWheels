@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bv7sv6y6dr581" path="res://assets/staff/trident_staff.png" id="1_4qak2"]
 
 [node name="WeaponTrident" type="RWeapon2D" unique_id=127622143]
+speed = 3.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=125212372]
 position = Vector2(-7, 7)

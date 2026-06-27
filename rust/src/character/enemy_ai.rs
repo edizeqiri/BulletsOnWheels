@@ -92,7 +92,7 @@ fn enemy_move_system(
         for (mut enemy_direction, enemy_transform, enemy_type) in enemy_query {
             enemy_direction.vec = enemy_type
                 .moving(player_transform, enemy_transform)
-                .normalize();
+                .normalize_or_zero();
         }
     }
 }

@@ -21,6 +21,7 @@ shape = SubResource("RectangleShape2D_sdi4c")
 texture = ExtResource("1_g2els")
 
 [node name="WeaponTrident" parent="." unique_id=127622143 instance=ExtResource("2_g2els")]
+speed = 3.0
 fire_rate = 1.0
 position = Vector2(22, -6)
 rotation = 0.21544406

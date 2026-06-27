@@ -1,13 +1,14 @@
 use bevy::prelude::*;
 
 use crate::weapon::Damage;
-use crate::weapon::weapon::Speed;
+use crate::weapon::weapon::{SpawnedTime, Speed};
 
 #[derive(Default, Bundle)]
 pub struct ProjectileBundle {
     projectile: Projectile,
     damage: Damage,
-    velocity: Velocity
+    velocity: Velocity,
+    speed: Speed
 }
 
 #[derive(Component, Default)]
@@ -20,6 +21,8 @@ pub fn create_projectile(damage: Damage, speed: Speed, direction: Vec2) -> Proje
     ProjectileBundle {
         projectile: Projectile,
         damage: damage,
-        velocity: Velocity(direction.normalize() * speed.0)
+        // TODO(bug): it should be only normalize
+        velocity: Velocity(direction.normalize_or_zero()),
+        speed: speed
     }
 }
