@@ -2,7 +2,7 @@ use std::fs;
 
 use bevy::prelude::*;
 use godot::classes::Label;
-use godot_bevy::prelude::{GodotNodeHandle, SceneTreeRef};
+use godot_bevy::prelude::SceneTreeRef;
 
 use crate::character::player::{EnemyKillCount, Player};
 use crate::gamestate::{CharacterDeathMessage, ExitGameMessage};

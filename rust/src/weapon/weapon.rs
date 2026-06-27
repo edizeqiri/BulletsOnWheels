@@ -1,16 +1,15 @@
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
-use bevy::math::{FloatPow, Vec2};
+use bevy::math::Vec2;
 use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
 use crate::character::Aim;
-use crate::gamestate::{AppState, InGameState};
+use crate::gamestate::InGameState;
 use crate::weapon::Damage;
 use crate::weapon::projectile::{Projectile, ProjectileBundle, Velocity, create_projectile};
-use crate::world::level_manager::LevelId;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<ShootMessage>()
@@ -69,7 +68,7 @@ pub struct FireRate(pub f32);
 pub struct WeaponKindComponent(pub WeaponKind);
 
 impl Weapon {
-    pub fn new(damage: f32, speed: f32, fire_rate: f32, weapon_kind: WeaponKind) -> Self {
+    pub fn new(damage: f32, _speed: f32, fire_rate: f32, weapon_kind: WeaponKind) -> Self {
         Self {
             damage: Damage(damage),
             fire_rate: FireRate(fire_rate),
@@ -150,7 +149,7 @@ fn update_projectile_system(
         With<Projectile>
     >
 ) {
-    for (mut transform, velocity, spawned_time, mut speed) in projectile_query {
+    for (mut transform, velocity, _spawned_time, speed) in projectile_query {
         /*/
         if speed.current <= speed.max {
             //info!("current {}, max {}", speed.current, speed.max);
