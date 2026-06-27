@@ -57,10 +57,6 @@ fn update_score_label(
         return;
     };
 
-    for child in root.get_children().iter_shared() {
-        info!("child: {}", child.get_name());
-    }
-
     let Some(mut score_label) = root.try_get_node_as::<Label>(&score_label_path) else {
         warn!("Could not find Label at {}", score_label_path);
         return;
