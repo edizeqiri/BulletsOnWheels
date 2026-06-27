@@ -1,33 +1,17 @@
-use bevy::app::{App, AppExit, Update};
+use bevy::app::{App, AppExit, FixedUpdate, Update};
 use bevy::ecs::entity::Entity;
+use bevy::ecs::schedule::IntoScheduleConfigs;
 use bevy::log::info;
 use bevy::prelude::{
     Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States
 };
 use godot_bevy::prelude::SceneTreeRef;
 
-use crate::gamestate::start::StartGameMessage;
-
-pub(crate) mod start;
-
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<ExitGameMessage>()
-        .add_systems(Update, exit_game);
+        .add_systems(Update, exit_game)
+        .add_systems(FixedUpdate, log_state);
 }
-
-// pub(super) fn plugin(app: &mut App) {
-// app.add_message::<GameStateMessage>()
-// .add_systems(Update, state_machine_system)
-// .add_systems(
-// Update,
-// aggregate_message_system::<PlayerDeathMessage>.
-// run_if(in_state(GameState::RUNNING)), )
-// .add_systems(
-// Update,
-// aggregate_message_system::<StartGameMessage>.
-// run_if(in_state(GameState::START)), );
-// }
-// ---------- GAME STATE ---------- //
 
 #[derive(States, Debug, Clone, Eq, PartialEq, Hash, Default)]
 pub(crate) enum AppState {
@@ -40,8 +24,8 @@ pub(crate) enum AppState {
 
 #[derive(States, Debug, Default, Clone, Eq, PartialEq, Hash)]
 pub(crate) enum InGameState {
-    #[default]
     PAUSED,
+    #[default]
     RUNNING,
     DEFEAT
 }
@@ -78,12 +62,6 @@ impl From<&CharacterDeathMessage> for GameStateEnum {
     }
 }
 
-impl From<&StartGameMessage> for GameStateEnum {
-    fn from(_message: &StartGameMessage) -> Self {
-        GameStateEnum::StartGame
-    }
-}
-
 pub fn aggregate_message_system<M>(
     mut messages: MessageReader<M>,
     mut writer: MessageWriter<GameStateMessage>
@@ -96,41 +74,6 @@ pub fn aggregate_message_system<M>(
             kind: message.into()
         });
     }
-}
-
-// TODO: Refactor with enum delegate
-fn state_machine_system(
-    mut messages: MessageReader<GameStateMessage>,
-    current_state: Res<State<AppState>>,
-    mut next_state: ResMut<NextState<AppState>>
-) {
-    for message in messages.read() {
-        match (message.kind, current_state.get()) {
-            (GameStateEnum::PlayerDeath, AppState::RUNNING) => {
-                next_state.set(AppState::EXIT);
-            },
-            (GameStateEnum::StartGame, AppState::LOADING) => {
-                next_state.set(AppState::RUNNING);
-            },
-            _ => {}
-        }
-    }
-}
-
-#[derive(Resource, Clone)]
-pub struct PlayerResource {
-    // x_range: Range<i32>,
-    // y_range: Range<i32>,
-    // pub weapons: Weapons,
-    pub max_health: u32
-}
-
-#[derive(Resource, Clone)]
-pub struct EnemyResource {
-    // x_range: Range<i32>,
-    // y_range: Range<i32>,
-    // pub weapons: Weapons,
-    pub max_health: u32
 }
 
 #[derive(Message)]
@@ -150,4 +93,9 @@ fn exit_game(
         // godot exit
         scene_tree.get().quit();
     }
+}
+
+fn log_state(appstate: Res<State<AppState>>, ingamestate: Res<State<InGameState>>) {
+    info!("appstate is: {:?}", appstate.get());
+    info!("ingamestate is: {:?}", ingamestate.get());
 }

@@ -1,0 +1,103 @@
+[gd_scene format=3 uid="uid://cp66dkdurfb3b"]
+
+[ext_resource type="Texture2D" uid="uid://dre5kqi70j5k0" path="res://assets/pixel_ui/Tiles/Large tiles/Thick outline/tile_0018.png" id="1_e0arn"]
+[ext_resource type="Texture2D" uid="uid://c31leslhboncs" path="res://assets/pixel_ui/Tiles/Large tiles/Thick outline/tile_0017.png" id="2_037ec"]
+[ext_resource type="FontFile" uid="uid://cq7eug8jyxw4i" path="res://assets/kenney_fonts/Fonts/Kenney Pixel.ttf" id="3_y1o0p"]
+
+[node name="Menu" type="Control" unique_id=191442609]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=893152994]
+layout_mode = 0
+offset_left = -412.0
+offset_top = -183.0
+offset_right = 618.0
+offset_bottom = 403.0
+color = Color(0, 0, 0, 0.5882353)
+
+[node name="Border" type="NinePatchRect" parent="." unique_id=582630816]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 24.0
+offset_right = 393.0
+offset_bottom = 240.0
+texture = ExtResource("1_e0arn")
+region_rect = Rect2(2.0853238, 1.9393759, 27.91373, 28.053177)
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Menu Text" type="Label" parent="Border" unique_id=522195540]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 32.0
+offset_right = 200.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(0.52147543, 0.3109709, 0.120952405, 1)
+theme_override_fonts/font = ExtResource("3_y1o0p")
+theme_override_font_sizes/font_size = 32
+text = "Paused Game"
+
+[node name="RestartButton" type="Button" parent="Border" unique_id=1321352039]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 80.0
+offset_right = 188.0
+offset_bottom = 112.0
+
+[node name="RestartSprite" type="NinePatchRect" parent="Border/RestartButton" unique_id=887428885]
+custom_minimum_size = Vector2(108, 32)
+layout_mode = 0
+offset_right = 108.0
+offset_bottom = 32.0
+texture = ExtResource("2_037ec")
+region_rect = Rect2(1.9137001, 1.8405623, 28.133274, 28.204317)
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Menu Text" type="Label" parent="Border/RestartButton/RestartSprite" unique_id=362511600]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 10.0
+offset_right = 149.0
+offset_bottom = 34.0
+theme_override_fonts/font = ExtResource("3_y1o0p")
+theme_override_font_sizes/font_size = 16
+text = "Restart Game"
+
+[node name="ExitButton" type="Button" parent="Border" unique_id=564095782]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 128.0
+offset_right = 188.0
+offset_bottom = 159.0
+
+[node name="ExitSprite" type="NinePatchRect" parent="Border/ExitButton" unique_id=22008658]
+custom_minimum_size = Vector2(108, 32)
+layout_mode = 0
+offset_right = 108.0
+offset_bottom = 32.0
+texture = ExtResource("2_037ec")
+region_rect = Rect2(1.9137001, 1.8405623, 28.133274, 28.204317)
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6
+
+[node name="Menu Text" type="Label" parent="Border/ExitButton/ExitSprite" unique_id=253830794]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 10.0
+offset_right = 158.0
+offset_bottom = 34.0
+theme_override_fonts/font = ExtResource("3_y1o0p")
+theme_override_font_sizes/font_size = 16
+text = "Exit Game"

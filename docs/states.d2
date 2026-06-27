@@ -1,0 +1,18 @@
+direction: right
+
+"LevelLoadingState": { shape: hexagon }
+"State<AppState>": { shape: hexagon }
+"State<InGameState>": { shape: hexagon }
+
+"exit_pause": { shape: rectangle }
+"handle_keyboard_system": { shape: rectangle }
+"handle_level_scene_change": { shape: rectangle }
+"log_state": { shape: rectangle }
+"on_load_level_request": { shape: rectangle }
+
+"State<InGameState>" -> "exit_pause": reads
+"State<InGameState>" -> "handle_keyboard_system": reads
+"handle_level_scene_change" -> "LevelLoadingState": mutates
+"State<AppState>" -> "log_state": reads
+"State<InGameState>" -> "log_state": reads
+"on_load_level_request" -> "LevelLoadingState": mutates

@@ -1,10 +1,9 @@
-use std::thread::current;
-
 use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use godot_bevy::prelude::*;
 
 use crate::character::{CharacterCore, CharacterDeathMessage, Health, MovementSpeed};
+use crate::gamestate::InGameState;
 use crate::world::level_manager::{CurrentLevel, LevelId};
 // use crate::gamestate::EnemyResource;
 // use crate::weapon::Weapons;
@@ -13,7 +12,12 @@ use crate::world::level_manager::{CurrentLevel, LevelId};
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<EnemySpawnedMessage>()
         .add_message::<CreateEnemyMessage>()
-        .add_systems(Update, spawn_enemy_system.run_if(in_state(LevelId::Level1)));
+        .add_systems(
+            Update,
+            spawn_enemy_system
+                .run_if(in_state(LevelId::Level1))
+                .run_if(in_state(InGameState::RUNNING))
+        );
 }
 
 #[derive(Component, Default)]
@@ -47,15 +51,6 @@ pub struct EnemySpawnedMessage {
 #[derive(Message)]
 pub struct CreateEnemyMessage {
     pub position: Vec2
-}
-
-fn handle_enemy_zero_health_system(
-    mut commands: Commands,
-    mut enemy_death_messages: MessageReader<CharacterDeathMessage>
-) {
-    for message in enemy_death_messages.read() {
-        commands.entity(message.target).despawn();
-    }
 }
 
 fn spawn_enemy_system(

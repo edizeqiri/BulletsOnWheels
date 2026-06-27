@@ -1,0 +1,68 @@
+name: Architecture Diagrams
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  diagrams:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ". -> rust/target"
+
+      - name: Generate D2 sources
+        run: cargo run -p tools
+
+      - name: Install d2
+        run: curl -fsSL https://d2lang.com/install.sh | sh -s --
+
+      - name: Render SVGs
+        run: |
+          d2 --layout elk --theme 2 docs/events.d2   docs/events.svg
+          d2 --layout elk --theme 2 docs/messages.d2 docs/messages.svg
+          d2 --layout elk --theme 2 docs/states.d2   docs/states.svg
+
+      - name: Embed in README
+        run: |
+          python3 - <<'EOF'
+          import re, pathlib
+
+          readme = pathlib.Path("README.md")
+          text = readme.read_text()
+
+          def replace_section(text, tag, content):
+              pattern = rf'(<!-- ARCH:{tag} -->).*?(<!-- /ARCH:{tag} -->)'
+              replacement = f'<!-- ARCH:{tag} -->\n{content}\n<!-- /ARCH:{tag} -->'
+              if re.search(pattern, text, re.DOTALL):
+                  return re.sub(pattern, replacement, text, flags=re.DOTALL)
+              return text + f'\n\n## Architecture\n\n<!-- ARCH:{tag} -->\n{content}\n<!-- /ARCH:{tag} -->'
+
+          diagrams = [
+              ("events",   "## Events\n\n![Event Flow](docs/events.svg)"),
+              ("messages", "## Messages\n\n![Message Flow](docs/messages.svg)"),
+              ("states",   "## States\n\n![State Flow](docs/states.svg)"),
+          ]
+
+          for tag, content in diagrams:
+              text = replace_section(text, tag, content)
+
+          readme.write_text(text)
+          EOF
+
+      - name: Commit diagrams
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/ README.md
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: regenerate architecture diagrams"
+          git push
