@@ -18,7 +18,6 @@ direction: right
 "emit_level_loaded_event_when_scene_ready": { shape: rectangle }
 "exit_game": { shape: rectangle }
 "gamepad_input": { shape: rectangle }
-"handle_button_system": { shape: rectangle }
 "handle_character_zero_health_system": { shape: rectangle }
 "handle_keyboard_system": { shape: rectangle }
 "handle_mouse_motion_system": { shape: rectangle }
@@ -27,7 +26,6 @@ direction: right
 "save_high_score": { shape: rectangle }
 "score_tracker": { shape: rectangle }
 "shoot_at_player_system": { shape: rectangle }
-"spawn_death_scene_on_player_death": { shape: rectangle }
 "spawn_enemies_after_time": { shape: rectangle }
 "spawn_enemy_health_bar": { shape: rectangle }
 "spawn_enemy_system": { shape: rectangle }
@@ -42,7 +40,6 @@ direction: right
 "exit_game" -> "AppExit": writes
 "gamepad_input" -> "ExitGameMessage": writes
 "gamepad_input" -> "ShootMessage": writes
-"handle_button_system" -> "ExitGameMessage": writes
 "CharacterDeathMessage" -> "handle_character_zero_health_system": reads
 "handle_keyboard_system" -> "ExitGameMessage": writes
 "MouseMotion" -> "handle_mouse_motion_system": reads
@@ -53,7 +50,6 @@ direction: right
 "ExitGameMessage" -> "save_high_score": reads
 "CharacterDeathMessage" -> "score_tracker": reads
 "shoot_at_player_system" -> "ShootMessage": writes
-"CharacterDeathMessage" -> "spawn_death_scene_on_player_death": reads
 "spawn_enemies_after_time" -> "CreateEnemyMessage": writes
 "EnemySpawnedMessage" -> "spawn_enemy_health_bar": reads
 "CreateEnemyMessage" -> "spawn_enemy_system": reads

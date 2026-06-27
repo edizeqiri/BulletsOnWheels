@@ -7,11 +7,13 @@ direction: right
 "InGameState::PAUSED": { shape: hexagon }
 "InGameState::RUNNING": { shape: hexagon }
 "LevelId::Level1": { shape: hexagon }
+"LevelId::MainMenu": { shape: hexagon }
 
 "apply_character_movement": { shape: rectangle }
 "character_bullet_collision_system": { shape: rectangle }
 "connect_menu_buttons": { shape: rectangle }
 "exit_pause": { shape: rectangle }
+"handle_button_system": { shape: rectangle }
 "handle_character_zero_health_system": { shape: rectangle }
 "handle_keyboard_system": { shape: rectangle }
 "handle_level_scene_change": { shape: rectangle }
@@ -21,8 +23,10 @@ direction: right
 "on_shoot_message_system": { shape: rectangle }
 "pause_game_on_event": { shape: rectangle }
 "reset_game": { shape: rectangle }
+"spawn_death_scene_on_player_death": { shape: rectangle }
 "spawn_enemies_after_time": { shape: rectangle }
 "spawn_enemy_system": { shape: rectangle }
+"track_death_scene": { shape: rectangle }
 "update_healthbar_animation_system": { shape: rectangle }
 "update_projectile_system": { shape: rectangle }
 
@@ -32,6 +36,7 @@ direction: right
 "State<InGameState>" -> "exit_pause": reads
 "exit_pause" -> "InGameState::RUNNING": set_state
 "InGameState::PAUSED" -> "exit_pause": runs_in
+"handle_button_system" -> "InGameState::DEFEAT": set_state
 "handle_character_zero_health_system" -> "InGameState::DEFEAT": set_state
 "InGameState::RUNNING" -> "handle_character_zero_health_system": runs_in
 "State<InGameState>" -> "handle_keyboard_system": reads
@@ -44,9 +49,12 @@ direction: right
 "pause_game_on_event" -> "InGameState::PAUSED": set_state
 "InGameState::RUNNING" -> "pause_game_on_event": runs_in
 "reset_game" -> "InGameState::RUNNING": set_state
+"LevelId::MainMenu" -> "spawn_death_scene_on_player_death": runs_in
 "InGameState::RUNNING" -> "spawn_enemies_after_time": runs_in
 "LevelId::Level1" -> "spawn_enemies_after_time": runs_in
 "InGameState::RUNNING" -> "spawn_enemy_system": runs_in
 "LevelId::Level1" -> "spawn_enemy_system": runs_in
+"InGameState::DEFEAT" -> "track_death_scene": runs_in
+"LevelId::MainMenu" -> "track_death_scene": runs_in
 "InGameState::RUNNING" -> "update_healthbar_animation_system": runs_in
 "InGameState::RUNNING" -> "update_projectile_system": runs_in
