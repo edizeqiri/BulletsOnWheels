@@ -50,7 +50,7 @@ fn update_score_label(
         return;
     };
 
-    let score_label_path = format!("{}/ScoreLabel", level_id.root_node_path());
+    let score_label_path = format!("{}/HUD/ScoreLabel", level_id.root_node_path());
 
     let Some(root) = scene_tree.get().get_root() else {
         warn!("no root");
@@ -63,9 +63,9 @@ fn update_score_label(
     };
 
     score_label.set_text(&format!(
-        "Score: {}
-        High Score: {}",
-        enemy_kill_count.count, high_score.count
+        "Score: {}\nHigh Score: {}",
+        enemy_kill_count.count,
+        high_score.count,
     ));
 }
 
