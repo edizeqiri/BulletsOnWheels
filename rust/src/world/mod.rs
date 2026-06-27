@@ -65,7 +65,7 @@ fn connect_enter_name_system(
         None, 
         |args, _node_handle, _ent| {
             let Some(name) = args.get(0)?.try_to::<String>().ok() else {
-                error!("Name could not be parsed");
+                error!("Name could not be found or parsed");
                 return None;
             };
         
