@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use godot::classes::Label;
 use godot_bevy::prelude::{GodotNodeHandle, SceneTreeRef};
 
-use crate::character::player::{EnemyKillCount, Player};
+use crate::character::player::{self, Player, Score};
 use crate::gamestate::{CharacterDeathMessage, ExitGameMessage};
 use crate::world::level_manager::CurrentLevel;
 
@@ -25,31 +25,42 @@ struct HighScore {
 
 fn score_tracker(
     mut death_message_reader: MessageReader<CharacterDeathMessage>,
-    mut enemy_kill_count_query: Query<&mut EnemyKillCount>,
+    player_query: Query<Entity, With<Player>>,
+    mut score_query: Query<&mut Score>,
     mut high_score: ResMut<HighScore>
 ) {
     for message in death_message_reader.read() {
-        let Ok(mut enemy_kill_count) = enemy_kill_count_query.get_mut(message.source) else {
+        let Ok(player) = player_query.single() else {
             continue;
         };
-        enemy_kill_count.count += 1;
-        high_score.count = high_score.count.max(enemy_kill_count.count);
+        if message.source != player {
+            continue;
+        };
+
+        let Ok(mut score) = score_query.single_mut() else {
+            error!("component score not existent.");
+            return;
+        };
+        
+        score.count += 1;
+        high_score.count = high_score.count.max(score.count);
     }
 }
 
 // todo: this function shall be "level state" dependent
 fn update_score_label(
-    player_query: Query<&EnemyKillCount, (With<Player>, Changed<EnemyKillCount>)>,
+    score_query: Query<&Score, Changed<Score>>,
     current_level: Res<CurrentLevel>,
     mut scene_tree: SceneTreeRef,
     high_score: Res<HighScore>
 ) {
     let level_id = current_level.level_id;
 
-    let Ok(enemy_kill_count) = player_query.single() else {
+    let Ok(score) = score_query.single() else {
+        info!("Can not find score.");
         return;
     };
-
+    
     let score_label_path = format!("{}/Score", level_id.root_node_path());
 
     let Some(root) = scene_tree.get().get_root() else {
@@ -64,7 +75,7 @@ fn update_score_label(
 
     score_label.set_text(&format!(
         "Score: {}\nHigh Score: {}",
-        enemy_kill_count.count,
+        score.count,
         high_score.count,
     ));
 }
@@ -72,7 +83,7 @@ fn update_score_label(
 fn save_high_score(
     exit_game_message: MessageReader<ExitGameMessage>,
     mut player_death_message: MessageReader<CharacterDeathMessage>,
-    enemy_kill_count_query: Query<(Entity, &EnemyKillCount), With<Player>>,
+    enemy_kill_count_query: Query<(Entity, &Score), With<Player>>,
     high_score: Res<HighScore>
 ) {
     let Ok((player_entity, score)) = enemy_kill_count_query.single() else {

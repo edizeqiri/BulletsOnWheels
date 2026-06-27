@@ -38,12 +38,11 @@ pub struct PlayerBundle {
     speed: MovementSpeed,
 
     core: CharacterCore,
-
-    enemy_kill_count: EnemyKillCount,
 }
 
-#[derive(Component, Default)]
-pub struct EnemyKillCount {
+#[derive(Component, Default, GodotNode)]
+#[godot_node(base(Node2D), class_name(RScore))]
+pub struct Score {
     pub count: u32,
 }
 
