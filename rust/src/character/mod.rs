@@ -18,12 +18,15 @@ pub(super) fn plugin(app: &mut App) {
         .add_message::<CharacterDeathMessage>()
         .add_plugins(enemy_ai::plugin)
         .add_plugins(enemy::plugin)
-        .add_plugins(player::plugin)
         .add_systems(PhysicsUpdate, apply_character_movement)
         .add_observer(character_bullet_collision_system.run_if(in_state(InGameState::RUNNING)))
         .add_systems(
             Update,
-            update_healthbar_animation_system.run_if(in_state(InGameState::RUNNING))
+            (
+                handle_character_zero_health_system,
+                update_healthbar_animation_system
+            )
+                .run_if(in_state(InGameState::RUNNING))
         );
 }
 
@@ -129,7 +132,7 @@ fn character_bullet_collision_system(
         };
 
     let Ok(mut health) = health_query.get_mut(target_entity) else {
-        warn!("target has no health");
+        debug!("target has no health");
         return;
     };
 
@@ -140,10 +143,10 @@ fn character_bullet_collision_system(
 
     // skip self-hit
     if shooter.0 == target_entity {
-        info!("Self hit");
+        debug!("Self hit");
         return;
     }
-    info!(
+    debug!(
         "Health at {} and receiving damage {}",
         health.current, damage.0
     );
@@ -202,6 +205,10 @@ fn handle_character_zero_health_system(
             commands.set_state(InGameState::DEFEAT);
         }
 
-        commands.entity(message.target).despawn();
+        commands
+            .entity(message.target)
+            .queue_silenced(|e: EntityWorldMut| {
+                e.despawn();
+            });
     }
 }

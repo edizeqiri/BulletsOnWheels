@@ -7,7 +7,7 @@ use godot_bevy::prelude::*;
 
 use crate::gamestate::{AppState, InGameState};
 use crate::world::level_manager::CurrentLevel;
-use crate::world::{ExitGameEvent, PauseGameEvent, RestartGameEvent};
+use crate::world::{ExitGameEvent, ExitPauseGameEvent, PauseGameEvent, RestartGameEvent};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(AppState::RUNNING).load_collection::<MenuAssets>())
@@ -61,18 +61,33 @@ pub struct MenuUi {
 struct PauseMenu;
 
 fn exit_pause(
-    event: On<PauseGameEvent>,
+    event: On<ExitPauseGameEvent>,
     mut commands: Commands,
     current_state: Res<State<InGameState>>,
-    menu_query: Query<Entity, With<PauseMenu>>
+    menu_query: Query<Entity, With<PauseMenu>>,
+    menu_handles: Option<ResMut<MenuHandles>>
 ) {
     if *current_state.get() == InGameState::PAUSED {
         let Ok(entity) = menu_query.single() else {
             return;
         };
-        commands.entity(entity).despawn();
+        let Some(menu) = menu_handles else {
+            return;
+        };
+        commands
+            .entity(entity)
+            .queue_silenced(|mut e: EntityWorldMut| {
+                e.despawn();
+            });
         commands.set_state(InGameState::RUNNING);
+        reset_menu(menu);
+        info!("exit pause menu");
     }
+}
+
+fn reset_menu(mut menu: ResMut<MenuHandles>) {
+    menu.initialized = false;
+    menu.signals_connected = false;
 }
 
 fn pause_game_on_event(
@@ -81,7 +96,6 @@ fn pause_game_on_event(
     current_level: Res<CurrentLevel>,
     mut commands: Commands
 ) {
-    let pause_event = event.event();
     let Some(assets) = assets else {
         info!("No Assets");
         return;
@@ -101,6 +115,7 @@ fn pause_game_on_event(
         ))
         .id();
     commands.entity(level).add_child(menu);
+    info!("Enter pause menu");
 }
 
 fn init_menu_assets(mut menu_handles: ResMut<MenuHandles>, mut scene_tree: SceneTreeRef) {

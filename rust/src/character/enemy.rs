@@ -14,12 +14,6 @@ pub(super) fn plugin(app: &mut App) {
         .add_message::<CreateEnemyMessage>()
         .add_systems(
             Update,
-            handle_enemy_zero_health_system
-                .run_if(in_state(LevelId::Level1))
-                .run_if(in_state(InGameState::RUNNING))
-        )
-        .add_systems(
-            Update,
             spawn_enemy_system
                 .run_if(in_state(LevelId::Level1))
                 .run_if(in_state(InGameState::RUNNING))
@@ -57,15 +51,6 @@ pub struct EnemySpawnedMessage {
 #[derive(Message)]
 pub struct CreateEnemyMessage {
     pub position: Vec2
-}
-
-fn handle_enemy_zero_health_system(
-    mut commands: Commands,
-    mut enemy_death_messages: MessageReader<CharacterDeathMessage>
-) {
-    for message in enemy_death_messages.read() {
-        commands.entity(message.target).despawn();
-    }
 }
 
 fn spawn_enemy_system(

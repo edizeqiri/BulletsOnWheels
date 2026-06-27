@@ -191,7 +191,11 @@ fn handle_level_scene_change(
 
     // Despawn the previously active level's scene root, if any
     if let Some(old_entity) = current_level.entity.take() {
-        commands.entity(old_entity).despawn();
+        commands
+            .entity(old_entity)
+            .queue_silenced(|mut e: EntityWorldMut| {
+                e.despawn();
+            });
     }
 
     // Tear down the initial menu scene the first time we load a level.
@@ -209,7 +213,11 @@ fn handle_level_scene_change(
                 };
 
                 if node.get_path().to_string().starts_with(&menu_path) {
-                    commands.entity(entity).despawn();
+                    commands
+                        .entity(entity)
+                        .queue_silenced(|mut e: EntityWorldMut| {
+                            e.despawn();
+                        });
                 }
             }
 
