@@ -13,7 +13,6 @@ use crate::world::level_manager::{CurrentLevel, LevelId};
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<EnemySpawnedMessage>()
         .add_message::<CreateEnemyMessage>()
-        .add_systems(Update, (handle_enemy_zero_health_system).chain())
         .add_systems(Update, spawn_enemy_system.run_if(in_state(LevelId::Level1)));
 }
 

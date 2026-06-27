@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://dmcj7qe3s67gh"]
-
-[node name="HUD" type="CanvasLayer" unique_id=403740618]
-
-[node name="ScoreLabel" type="Label" parent="." unique_id=1225436633]
-offset_left = 18.0
-offset_top = 136.0
-offset_right = 58.0
-offset_bottom = 159.0

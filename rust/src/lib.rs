@@ -9,6 +9,7 @@ use crate::character::enemy::EnemyAssets;
 use crate::gamestate::{AppState, InGameState};
 use crate::weapon::weapon::ProjectileAssets;
 use crate::world::level_manager::LevelId;
+
 mod character;
 
 mod gamestate;

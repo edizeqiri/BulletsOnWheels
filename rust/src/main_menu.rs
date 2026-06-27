@@ -70,6 +70,7 @@ fn handle_button_system(
             // TODO: open settings
         },
         ButtonType::EXIT => {
+            info!("send exit game message");
             exit_game_writer.write(ExitGameMessage);
         }
     }

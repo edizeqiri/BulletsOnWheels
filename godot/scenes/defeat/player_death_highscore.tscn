@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://cyejxoekv18c2"]
+
+[ext_resource type="PackedScene" uid="uid://dbtslggybe1d4" path="res://scenes/defeat/base_player_death.tscn" id="1_w10g6"]
+[ext_resource type="PackedScene" uid="uid://cqjdyoa5jtaaj" path="res://scenes/defeat/enter_name.tscn" id="2_jdxt6"]
+
+[node name="PlayerDeathHighscore" type="Node2D" unique_id=663245670]
+
+[node name="NinePatchRect" parent="." unique_id=1975396380 instance=ExtResource("1_w10g6")]
+
+[node name="InputField" parent="NinePatchRect" unique_id=1464166659 instance=ExtResource("2_jdxt6")]
+z_index = 1
+position = Vector2(-37, -9)

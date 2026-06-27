@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://l66kvddon28n"]
+
+[ext_resource type="Texture2D" uid="uid://dnyt2xmx6m2hw" path="res://assets/pixel_ui/Tiles/Small tiles/Thin outline/tile_0012.png" id="1_ug3en"]
+[ext_resource type="FontFile" uid="uid://cq7eug8jyxw4i" path="res://assets/kenney_fonts/Fonts/Kenney Pixel.ttf" id="2_42iaq"]
+[ext_resource type="PackedScene" uid="uid://cmlyvo7l3n5xb" path="res://scenes/defeat/death_message_restart.tscn" id="3_42iaq"]
+
+[node name="NinePatchRect" type="NinePatchRect" unique_id=1975396380]
+z_index = 3
+offset_left = 121.0
+offset_top = 73.0
+offset_right = 361.0
+offset_bottom = 183.0
+texture = ExtResource("1_ug3en")
+patch_margin_left = 4
+patch_margin_top = 4
+patch_margin_right = 4
+patch_margin_bottom = 4
+
+[node name="Label" type="Label" parent="." unique_id=247795356]
+z_index = 2
+layout_mode = 0
+offset_left = 71.0
+offset_top = 18.0
+offset_right = 170.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0.73563325, 0.27011943, 0.23371321, 1)
+theme_override_fonts/font = ExtResource("2_42iaq")
+theme_override_font_sizes/font_size = 32
+text = "YOU DIED :("
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1990681426]
+z_index = 1
+layout_mode = 0
+offset_left = -412.0
+offset_top = -183.0
+offset_right = 618.0
+offset_bottom = 403.0
+color = Color(0, 0, 0, 0.78431374)
+
+[node name="ActionAfterDeath" parent="." unique_id=740189908 instance=ExtResource("3_42iaq")]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 58.0
+offset_right = 199.0
+offset_bottom = 81.0
