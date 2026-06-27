@@ -12,6 +12,7 @@ use crate::world::level_manager::LevelId;
 
 mod character;
 
+mod debug;
 mod gamestate;
 mod input;
 mod main_menu;
@@ -27,6 +28,7 @@ fn build_app(app: &mut App) {
     //     .add_plugins(GodotAudioPlugin)
     //     .add_plugins(BevyInputBridgePlugin);
     app.add_plugins(GodotDefaultPlugins)
+        .add_plugins(debug::plugin)
         .add_plugins(world::plugin)
         .add_plugins(weapon::plugin)
         .add_plugins(character::plugin)

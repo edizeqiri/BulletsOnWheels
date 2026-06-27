@@ -15,6 +15,7 @@ direction: right
 "exit_pause": { shape: rectangle }
 "handle_button_system": { shape: rectangle }
 "handle_keyboard_system": { shape: rectangle }
+"init_world": { shape: rectangle }
 "level_state_change_system": { shape: rectangle }
 "name_submitted": { shape: rectangle }
 "on_load_level_request": { shape: rectangle }
@@ -31,6 +32,7 @@ direction: right
 "handle_button_system" -> "LoadLevelMessage": triggers
 "handle_keyboard_system" -> "ExitPauseGameEvent": triggers
 "handle_keyboard_system" -> "PauseGameEvent": triggers
+"init_world" -> "LoadLevelMessage": triggers
 "LoadLevelMessage" -> "level_state_change_system": reads
 "NameEnteredEvent" -> "name_submitted": reads
 "name_submitted" -> "RestartGameEvent": triggers

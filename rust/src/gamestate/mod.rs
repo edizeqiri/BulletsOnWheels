@@ -7,6 +7,8 @@ use bevy::prelude::{
 };
 use godot_bevy::prelude::SceneTreeRef;
 
+use crate::world::level_manager::LevelId;
+
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<ExitGameMessage>()
         .add_systems(Update, exit_game)
@@ -95,7 +97,12 @@ fn exit_game(
     }
 }
 
-fn log_state(appstate: Res<State<AppState>>, ingamestate: Res<State<InGameState>>) {
+fn log_state(
+    appstate: Res<State<AppState>>,
+    ingamestate: Res<State<InGameState>>,
+    levlestate: Res<State<LevelId>>
+) {
     debug!("appstate is: {:?}", appstate.get());
     debug!("ingamestate is: {:?}", ingamestate.get());
+    debug!("levlestate is: {:?}", levlestate.get());
 }

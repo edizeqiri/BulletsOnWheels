@@ -10,6 +10,7 @@ use crate::character::Aim;
 use crate::gamestate::{AppState, InGameState};
 use crate::weapon::Damage;
 use crate::weapon::projectile::{Projectile, ProjectileBundle, Velocity, create_projectile};
+use crate::world::level_manager::LevelId;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<ShootMessage>()
@@ -134,7 +135,8 @@ pub(crate) fn on_shoot_message_system(
                 .insert(new_transform)
                 .insert(SpawnedTime(time.elapsed()))
                 .insert(Shooter(message.shooter))
-                .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
+                .insert(GodotScene::from_handle(assets.projectile_scene.clone()))
+                .insert(DespawnOnExit(InGameState::RUNNING));
         }
     }
 }
