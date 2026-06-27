@@ -10,6 +10,7 @@ use godot_bevy::prelude::*;
 
 use crate::character::player::Player;
 use crate::gamestate::{AppState, CharacterDeathMessage, InGameState};
+use crate::ui::score::SpawnLeaderBoardEvent;
 use crate::world::level::level1;
 use crate::world::level_manager::{CurrentLevel, LoadLevelMessage};
 mod level;
@@ -21,7 +22,8 @@ pub(super) fn plugin(app: &mut App) {
         //.add_systems(Update, (spawn_death_scene_on_player_death, track_death_scene))
         .add_plugins(GodotSignalsPlugin::<NameEnteredEvent>::default())
         .add_systems(OnEnter(InGameState::DEFEAT), spawn_ask_for_player_name_system)
-        .add_systems(Update, connect_enter_name_system);
+        .add_systems(Update, connect_enter_name_system)
+        .add_observer(despawn_ask_for_player_name_system);
 }
 
 #[derive(Event, Clone, Default)]
@@ -38,13 +40,29 @@ pub struct WorldAssets {
     pub player_death_highscore_scene: Handle<GodotResource>,
 }
 
+#[derive(Component)]
+pub struct DeathHighscoreScene;
+
 fn spawn_ask_for_player_name_system(
     mut commands: Commands,
     assets: Res<WorldAssets>,
 ) {
     commands
         .spawn_empty()
-        .insert(GodotScene::from_handle(assets.player_death_highscore_scene.clone()));
+        .insert(GodotScene::from_handle(assets.player_death_highscore_scene.clone()))
+        .insert(DeathHighscoreScene);
+}
+
+fn despawn_ask_for_player_name_system(
+    _trigger: On<SpawnLeaderBoardEvent>,
+    death_high_score_query: Query<Entity, With<DeathHighscoreScene>>,
+    mut commands: Commands
+) {
+    let Ok(deaht_high_score_scene) = death_high_score_query.single() else {
+        error!("Could not despawn death highscore scene.");
+        return;
+    };
+    commands.entity(deaht_high_score_scene).despawn();
 }
 
 fn connect_enter_name_system(

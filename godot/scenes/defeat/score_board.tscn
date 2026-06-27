@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://cnolqirben082"]
+
+[ext_resource type="Texture2D" uid="uid://b208h2iu5tsrb" path="res://assets/magicscroll.png" id="1_kj5am"]
+[ext_resource type="Texture2D" uid="uid://bwmbdigbgrh7x" path="res://assets/leaderboard.png" id="2_4b0e1"]
+[ext_resource type="FontFile" uid="uid://cq7eug8jyxw4i" path="res://assets/kenney_fonts/Fonts/Kenney Pixel.ttf" id="3_4b0e1"]
+
+[node name="ScoreBoard" type="Control" unique_id=1776552083]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Magicsroll" type="Sprite2D" parent="." unique_id=636958261]
+position = Vector2(232.00002, 139.00003)
+scale = Vector2(0.2578125, 0.2578125)
+texture = ExtResource("1_kj5am")
+
+[node name="Leaderboard" type="Sprite2D" parent="." unique_id=1757146516]
+position = Vector2(231, 42)
+scale = Vector2(0.16843215, 0.16843213)
+texture = ExtResource("2_4b0e1")
+
+[node name="Top5" type="Label" parent="." unique_id=584783892]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("3_4b0e1")

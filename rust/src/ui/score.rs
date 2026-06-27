@@ -2,24 +2,37 @@ use std::fs::{self, File};
 use::std::io::Write;
 
 use bevy::prelude::*;
+use bevy_asset_loader::asset_collection::AssetCollection;
+use bevy_asset_loader::loading_state::LoadingState;
+use bevy_asset_loader::prelude::*;
 use godot::classes::Label;
-use godot_bevy::prelude::{GodotNodeHandle, SceneTreeRef};
+use godot_bevy::prelude::*;
 
 use crate::character::player::{self, Player};
-use crate::gamestate::{CharacterDeathMessage, ExitGameMessage};
+use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameMessage};
 use crate::world::NameEnteredEvent;
 use crate::world::level_manager::{CurrentLevel, Score};
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(load_score_board())
+        .add_loading_state(
+            LoadingState::new(AppState::RUNNING)
+                .load_collection::<ScoreBoardAssets>(),
+        )
         .add_systems(Update, (score_tracker, update_score_label))
-        .add_observer(save_high_score);
+        .add_observer(save_high_score)
+        .add_observer(fill_score_board);
 }
 
 use std::path::Path;
 
-const HIGH_SCORE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/highscore.txt");
 const SCORE_BOARD_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/score_board.csv");
+
+#[derive(AssetCollection, Resource)]
+pub struct ScoreBoardAssets {
+    #[asset(path = "scenes/defeat/score_board.tscn")]
+    pub score_board_scene: Handle<GodotResource>,
+}
 
 #[derive(Resource)]
 struct ScoreBoard {
@@ -40,6 +53,9 @@ impl Default for ScoreBoard {
         }
     }
 }
+
+#[derive(Event)]
+pub struct SpawnLeaderBoardEvent;
 
 struct ScoreBoardEntry {
     name: String,
@@ -105,7 +121,9 @@ fn update_score_label(
 fn save_high_score(
     trigger: On<NameEnteredEvent>,
     score_query: Query<&Score>,
-    mut score_board: ResMut<ScoreBoard>
+    mut score_board: ResMut<ScoreBoard>,
+    mut commands: Commands,
+    assets: Res<ScoreBoardAssets>,
 ) {
     let Ok(score) = score_query.single() else {
         info!("No score found => No high score can be saved.");
@@ -113,13 +131,17 @@ fn save_high_score(
     };
     let entered_name = &trigger.event().name;
 
-    score_board.high_score = update_high_score(score.count, score_board.high_score);
+    // no need for high score update, as it is constantly updated
     score_board.entry.push(ScoreBoardEntry {
        name: entered_name.clone(),
        score: score.count
     });
     
     save_score_board(entered_name, score.count);
+    commands
+        .spawn_empty()
+        .insert(GodotScene::from_handle(assets.score_board_scene.clone()));
+    commands.trigger(SpawnLeaderBoardEvent);
 }
 
 fn update_high_score(score: u32, current_high_score: u32) -> u32 {
@@ -189,4 +211,38 @@ fn load_score_board() -> ScoreBoard {
         entry: score_board,
         high_score: high_score,
     }
+}
+
+fn fill_score_board(
+    _trigger: On<SpawnLeaderBoardEvent>,
+    score_board: Res<ScoreBoard>,
+    mut scene_tree: SceneTreeRef,
+) {
+    let Some(root) = scene_tree.get().get_root() else {
+        return;
+    };
+
+    let Some(mut top5_label) =
+        root.try_get_node_as::<Label>("ScoreBoard/Top5")
+    else {
+        warn!("Could not find ScoreBoard/Top5 label");
+        return;
+    };
+
+    let content = prepare_leader_board_content(score_board);
+    
+    top5_label.set_text(&content);
+}
+
+fn prepare_leader_board_content(score_board: Res<ScoreBoard>,) -> String {
+    return score_board
+        .entry
+        .iter()
+        .take(5)
+        .enumerate()
+        .map(|(i, entry)| {
+            format!("{}. {} {}", i + 1, entry.name, entry.score)
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
 }

@@ -1,6 +1,6 @@
 use bevy::app::App;
 
-mod score;
+pub(crate) mod score;
 
 pub(super) fn plugin(app: &mut App) {
     app
