@@ -7,6 +7,29 @@ use godot_bevy::prelude::*;
 
 /// FYI: This code comes from godot_bevy.
 
+impl Plugin for LevelManagerPlugin {
+    fn build(&self, app: &mut App) {
+        app.init_resource::<CurrentLevel>()
+            .init_resource::<PendingLevel>()
+            .init_resource::<LevelLoadingState>()
+            .init_resource::<SceneTreeSignalConnected>()
+            // Enable signal routing for SceneTree.scene_changed
+            .add_plugins(GodotSignalsPlugin::<SceneChanged>::default())
+            .add_observer(on_load_level_request)
+            .add_observer(level_state_change_system)
+            .add_observer(on_scene_changed)
+            .add_observer(change_state_system_on_loaded_level)
+            .add_systems(Startup, connect_scene_tree_signal)
+            .add_systems(
+                Update,
+                (
+                    (handle_level_scene_change, ApplyDeferred).chain(),
+                    emit_level_loaded_event_when_scene_ready
+                )
+            );
+    }
+}
+
 /// Event fired when the Godot scene changes.
 /// This demonstrates using `connect_object` to listen to singleton signals.
 #[derive(Event, Debug, Clone)]
@@ -40,15 +63,6 @@ impl LevelId {
             LevelId::MainMenu => "/root/MainMenu"
         }
     }
-
-    /// Get display name for UI
-    pub fn display_name(&self) -> &'static str {
-        match self {
-            LevelId::Level0 => "Level 0",
-            LevelId::Level1 => "Level 1",
-            LevelId::MainMenu => "Main Menu"
-        }
-    }
 }
 
 /// Resource that tracks the current active level (read-mostly for game state)
@@ -57,19 +71,13 @@ pub struct CurrentLevel {
     pub level_id: LevelId,
     /// Entity holding the spawned `GodotScene`/`GodotNodeHandle` for the
     /// current level
-    entity: Option<Entity>
+    pub entity: Option<Entity>
 }
 
 impl CurrentLevel {
     /// Set the current level
     pub fn set(&mut self, level_id: LevelId) {
         self.level_id = level_id;
-    }
-
-    /// Clear the current level state
-    pub fn clear(&mut self) {
-        self.level_id = LevelId::Level0;
-        self.entity = None;
     }
 }
 
@@ -101,28 +109,6 @@ pub struct LevelLoadedMessage {
 }
 
 pub struct LevelManagerPlugin;
-
-impl Plugin for LevelManagerPlugin {
-    fn build(&self, app: &mut App) {
-        app.init_resource::<CurrentLevel>()
-            .init_resource::<PendingLevel>()
-            .init_resource::<LevelLoadingState>()
-            .init_resource::<SceneTreeSignalConnected>()
-            // Enable signal routing for SceneTree.scene_changed
-            .add_plugins(GodotSignalsPlugin::<SceneChanged>::default())
-            .add_observer(on_load_level_request)
-            .add_observer(level_state_change_system)
-            .add_observer(on_scene_changed)
-            .add_systems(Startup, connect_scene_tree_signal)
-            .add_systems(
-                Update,
-                (
-                    (handle_level_scene_change, ApplyDeferred).chain(),
-                    emit_level_loaded_event_when_scene_ready
-                )
-            );
-    }
-}
 
 /// Tracks whether we've connected to the SceneTree signal
 #[derive(Resource, Default)]
@@ -212,6 +198,7 @@ fn handle_level_scene_change(
     // It's Godot's main scene (not a Bevy entity), so nothing else frees it;
     // leaving it in the tree overlaps the level and keeps its shootable
     // buttons live, re-triggering LoadLevelMessage.
+
     if !loading_state.menu_cleared {
         if let Some(mut menu) = scene_tree.get().get_current_scene() {
             let menu_path = menu.get_path().to_string();
@@ -268,4 +255,10 @@ fn emit_level_loaded_event_when_scene_ready(
             }
         }
     }
+}
+
+fn change_state_system_on_loaded_level(event: On<LevelLoadedMessage>, mut commands: Commands) {
+    let trigger = event.event();
+    commands.set_state(trigger.level_id);
+    info!("current level state: {:?}", trigger.level_id);
 }
