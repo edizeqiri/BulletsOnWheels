@@ -78,7 +78,8 @@ fn spawn_ask_for_player_name_system(mut commands: Commands, mut assets: ResMut<W
         .spawn_empty()
         .insert(GodotScene::from_handle(
             assets.player_death_highscore_scene.clone()
-        ));
+        ))
+        .insert(DeathHighscoreScene);
     assets.is_connected = false;
 }
 
