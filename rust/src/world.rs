@@ -41,6 +41,10 @@ fn init_world(mut commands: Commands) {
     commands.trigger(LoadLevelMessage { level_id: MainMenu });
 }
 
+#[derive(Component, Default, GodotNode)]
+#[godot_node(base(Button), class_name(RRestartButton))]
+pub struct RestartButton;
+
 #[derive(Event, Clone, Default)]
 pub struct NameEnteredEvent {
     pub name: String
