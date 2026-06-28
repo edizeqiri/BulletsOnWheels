@@ -4,22 +4,19 @@ use bevy_asset_loader::loading_state::config::ConfigureLoadingState;
 use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use godot_bevy::prelude::*;
 
-use crate::character::player::Player;
-use crate::gamestate::{AppState, CharacterDeathMessage, InGameState};
-use crate::ui::score::SpawnLeaderBoardEvent;
-use crate::world::level::level1;
-use crate::world::level_manager::LevelId::{self, Level1, MainMenu};
-use crate::world::level_manager::{CurrentLevel, LoadLevelMessage};
-mod level;
-pub(crate) mod level_manager;
-mod menu;
+use crate::gamestate::{AppState, InGameState};
+use crate::level1;
+use crate::level_manager::LevelId::{self, Level1, MainMenu};
+use crate::level_manager::{CurrentLevel, LoadLevelMessage};
+use crate::menu;
+use crate::score::SpawnLeaderBoardEvent;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(AppState::RUNNING).load_collection::<WorldAssets>())
         .add_observer(reset_game)
         .add_plugins(level1::plugin)
         .add_plugins(menu::plugin)
-        .add_plugins(level_manager::LevelManagerPlugin)
+        .add_plugins(crate::level_manager::LevelManagerPlugin)
         .add_systems(Startup, init_world)
         .add_systems(
             OnEnter(InGameState::DEFEAT),
@@ -134,7 +131,7 @@ pub struct ExitGameEvent;
 
 fn reset_game(_: On<RestartGameEvent>, mut commands: Commands) {
     commands.trigger(LoadLevelMessage {
-        level_id: level_manager::LevelId::MainMenu
+        level_id: crate::level_manager::LevelId::MainMenu
     });
     commands.set_state(InGameState::RUNNING);
 }

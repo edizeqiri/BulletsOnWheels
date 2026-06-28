@@ -4,9 +4,9 @@ use godot_bevy::prelude::*;
 use godot_bevy_macros::GodotNode;
 use rand::Rng;
 
-use crate::character::enemy::CreateEnemyMessage;
+use crate::enemy::CreateEnemyMessage;
 use crate::gamestate::InGameState;
-use crate::world::level_manager::LevelId;
+use crate::level_manager::LevelId;
 
 pub(crate) fn plugin(app: &mut App) {
     app.insert_resource(SpawnTimer(Timer::from_seconds(0.5, TimerMode::Repeating)))

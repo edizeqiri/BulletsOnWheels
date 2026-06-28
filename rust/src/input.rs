@@ -1,8 +1,5 @@
-mod gamepad;
-mod keyboard;
-mod mouse;
-
 use bevy::app::App;
+use crate::{keyboard, gamepad, mouse};
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_plugins(keyboard::plugin)

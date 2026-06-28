@@ -3,8 +3,8 @@ use godot_bevy::plugins::input::MouseButton;
 use godot_bevy::prelude::*;
 
 use crate::character::Aim;
-use crate::character::player::Player;
-use crate::weapon::weapon::ShootMessage;
+use crate::player::Player;
+use crate::weapon_impl::ShootMessage;
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_systems(Update, handle_mouse_motion_system)

@@ -4,7 +4,7 @@ use bevy::log::info;
 use bevy::prelude::{Message, MessageReader, MessageWriter, Res, State, States};
 use godot_bevy::prelude::SceneTreeRef;
 
-use crate::world::level_manager::LevelId;
+use crate::level_manager::LevelId;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<ExitGameMessage>()

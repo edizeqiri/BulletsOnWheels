@@ -2,15 +2,15 @@
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::character::enemy::Enemy;
-use crate::character::enemy_ai::EnemyType::Hunter;
-use crate::character::player::Player;
+use crate::enemy::Enemy;
+use crate::enemy_ai::EnemyType::Hunter;
+use crate::player::Player;
 use crate::character::{Aim, MovementDirection};
-use crate::weapon::weapon::ShootMessage;
+use crate::weapon_impl::ShootMessage;
 // use crate::weapon::ShootEvent;
 // use crate::world::LevelState;
 // use crate::world::map::map::Level;
-pub(super) fn plugin(app: &mut App) {
+pub(crate) fn plugin(app: &mut App) {
     app.insert_resource(GodotTransformConfig::two_way())
         .insert_resource(Time::<Fixed>::from_seconds(1.5))
         .add_systems(FixedUpdate, shoot_at_player_system)

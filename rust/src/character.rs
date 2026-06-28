@@ -1,17 +1,15 @@
-pub mod enemy;
-mod enemy_ai;
-pub mod player;
-
 use bevy::prelude::*;
 use godot::classes::{AnimatedSprite2D, CharacterBody2D};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::character::player::Player;
+use crate::enemy_ai;
+use crate::enemy;
+use crate::player::Player;
 use crate::gamestate::{CharacterDeathMessage, InGameState};
 use crate::weapon::Damage;
-use crate::weapon::projectile::Projectile;
-use crate::weapon::weapon::{Shooter, Weapon};
+use crate::projectile::Projectile;
+use crate::weapon_impl::{Shooter, Weapon};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<CharacterHitMessage>()

@@ -6,10 +6,10 @@ use godot::prelude::*;
 use godot_bevy::prelude::*;
 
 use crate::gamestate::{AppState, InGameState};
-use crate::world::level_manager::CurrentLevel;
+use crate::level_manager::CurrentLevel;
 use crate::world::{ExitGameEvent, ExitPauseGameEvent, PauseGameEvent, RestartGameEvent};
 
-pub(super) fn plugin(app: &mut App) {
+pub(crate) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(AppState::RUNNING).load_collection::<MenuAssets>())
         .init_resource::<MenuHandles>()
         .add_plugins(GodotSignalsPlugin::<RestartGameEvent>::default())

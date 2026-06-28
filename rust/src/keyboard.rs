@@ -4,7 +4,7 @@ use godot::global::Key;
 use godot_bevy::prelude::*;
 
 use crate::character::MovementDirection;
-use crate::character::player::Player;
+use crate::player::Player;
 use crate::gamestate::{ExitGameMessage, InGameState};
 use crate::world::{ExitPauseGameEvent, PauseGameEvent};
 

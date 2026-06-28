@@ -5,19 +5,29 @@ use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::character::enemy::EnemyAssets;
+use crate::enemy::EnemyAssets;
 use crate::gamestate::{AppState, InGameState};
-use crate::weapon::weapon::ProjectileAssets;
-use crate::world::level_manager::LevelId;
+use crate::weapon_impl::ProjectileAssets;
+use crate::level_manager::LevelId;
 
 mod character;
-
 mod debug;
+mod enemy;
+mod enemy_ai;
+mod gamepad;
 mod gamestate;
 mod input;
+mod keyboard;
+mod level1;
+mod level_manager;
 mod main_menu;
-mod ui;
+mod menu;
+mod mouse;
+mod player;
+mod projectile;
+mod score;
 mod weapon;
+mod weapon_impl;
 mod world;
 
 #[bevy_app]
@@ -34,7 +44,7 @@ fn build_app(app: &mut App) {
         .add_plugins(character::plugin)
         .add_plugins(input::plugin)
         .add_plugins(main_menu::plugin)
-        .add_plugins(ui::plugin)
+        .add_plugins(score::plugin)
         .add_plugins(gamestate::plugin)
         .add_plugins(StatesPlugin)
         .init_state::<AppState>()

@@ -8,16 +8,21 @@ use bevy_asset_loader::prelude::*;
 use godot::classes::{Label, RichTextLabel};
 use godot_bevy::prelude::*;
 
-use crate::character::player::{self, Player};
 use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameMessage, InGameState};
-use crate::world::level_manager::{CurrentLevel, LevelId, Score};
-use crate::world::{NameEnteredEvent, RestartGameEvent};
+use crate::level_manager::{CurrentLevel, LevelId, Score};
+use crate::level_manager::LevelId::Level1;
+use crate::player::Player;
+use crate::world::NameEnteredEvent;
 
-pub(super) fn plugin(app: &mut App) {
-    app.insert_resource(load_score_board())
+use std::path::Path;
+
+
+pub(crate) fn plugin(app: &mut App) {
+    app
         .add_loading_state(
             LoadingState::new(AppState::RUNNING).load_collection::<ScoreBoardAssets>(),
         )
+        .insert_resource(ScoreBoard::default())
         .add_systems(
             Update,
             (init_score, score_tracker, update_score_label)
@@ -34,8 +39,6 @@ pub(super) fn plugin(app: &mut App) {
         .add_observer(spawn_score_board);
 }
 
-use std::path::Path;
-
 const SCORE_BOARD_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/score_board.csv");
 
 #[derive(AssetCollection, Resource)]
@@ -46,7 +49,7 @@ pub struct ScoreBoardAssets {
     score_board_is_loaded: bool,
 }
 
-#[derive(Resource)]
+#[derive(Resource, Default)]
 struct ScoreBoard {
     entries: Vec<ScoreBoardEntry>,
 }
@@ -70,7 +73,6 @@ struct ScoreBoardEntry {
 
 fn init_score(mut score_query: Query<&mut Score>, score_board: Res<ScoreBoard>) {
     let Ok(mut score) = score_query.single_mut() else {
-        error!("component score not existent.");
         return;
     };
     if score.highscore != -1 {
@@ -93,7 +95,6 @@ fn score_tracker(
         };
 
         let Ok(mut score) = score_query.single_mut() else {
-            error!("component score not existent.");
             return;
         };
 

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::character::Health;
-use crate::character::enemy::{Enemy, EnemySpawnedMessage};
+use crate::enemy::{Enemy, EnemySpawnedMessage};
 
 #[cfg(debug_assertions)]
 pub(super) fn plugin(app: &mut App) {

@@ -9,9 +9,9 @@ use godot_bevy::prelude::*;
 use crate::character::Aim;
 use crate::gamestate::InGameState;
 use crate::weapon::Damage;
-use crate::weapon::projectile::{Projectile, ProjectileBundle, Velocity, create_projectile};
+use crate::projectile::{Projectile, ProjectileBundle, Velocity, create_projectile};
 
-pub(super) fn plugin(app: &mut App) {
+pub(crate) fn plugin(app: &mut App) {
     app.add_message::<ShootMessage>()
         .add_systems(
             Update,

@@ -4,12 +4,12 @@ use godot_bevy::prelude::*;
 
 use crate::character::{CharacterCore, Health, MovementSpeed};
 use crate::gamestate::InGameState;
-use crate::world::level_manager::{CurrentLevel, LevelId};
+use crate::level_manager::{CurrentLevel, LevelId};
 // use crate::gamestate::EnemyResource;
 // use crate::weapon::Weapons;
 // use crate::world::map::map::Level;
 
-pub(super) fn plugin(app: &mut App) {
+pub(crate) fn plugin(app: &mut App) {
     app.add_message::<EnemySpawnedMessage>()
         .add_message::<CreateEnemyMessage>()
         .add_systems(

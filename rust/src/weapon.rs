@@ -1,11 +1,9 @@
 use bevy::app::App;
 use bevy::prelude::*;
-
-pub(crate) mod projectile;
-pub(crate) mod weapon;
+use crate::weapon_impl;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins(weapon::plugin);
+    app.add_plugins(weapon_impl::plugin);
 }
 
 #[derive(Component, Debug, Clone, Copy)]
