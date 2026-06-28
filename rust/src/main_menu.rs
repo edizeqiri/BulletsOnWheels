@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use godot::classes::CharacterBody2D;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 use rand::Rng;
@@ -10,11 +11,21 @@ use crate::projectile::Projectile;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_observer(handle_button_system)
-        .add_systems(FixedUpdate, random_walk_system);
+        .add_systems(FixedUpdate, random_walk_system)
+        .add_systems(PhysicsUpdate, wall_bounce_system);
 }
 
 #[derive(Component, Default)]
 struct MenuButton;
+
+#[derive(Component)]
+struct WalkTimer(Timer);
+
+impl Default for WalkTimer {
+    fn default() -> Self {
+        Self(Timer::from_seconds(2.0, TimerMode::Repeating))
+    }
+}
 
 #[derive(Component, Default)]
 struct Shootable;
@@ -28,6 +39,7 @@ struct ShootableButtonBundle {
     menu_button: MenuButton,
     shootable: Shootable,
     movement_direction: MovementDirection,
+    walk_timer: WalkTimer,
 
     #[export_fields(value(export_type(f32), default(50.)))]
     movement_speed: MovementSpeed
@@ -81,24 +93,49 @@ fn handle_button_system(
         }
     }
 }
-// fn check_collision(
-// collisions: Collisions,
-// menu_button_query: Query<Entity, With<MenuButton>>,
-// wall_query: Query<Entity, With<StaticBody2DMarker>>
-// ) {
-// for
-// if collisions.contains(a, b)
-// }
-fn random_walk_system(button_query: Query<&mut MovementDirection, With<MenuButton>>) {
+
+/// CharacterBody2D vs StaticBody2D does not emit collision signals, so
+/// `CollisionStarted` never fires for buttons hitting walls.
+fn wall_bounce_system(
+    mut query: Query<(&GodotNodeHandle, &mut MovementDirection), With<MenuButton>>,
+    mut godot: GodotAccess
+) {
+    for (handle, mut dir) in &mut query {
+        let Some(body) = godot.try_get::<CharacterBody2D>(*handle) else {
+            continue;
+        };
+
+        let mut normal = Vector2::ZERO;
+        for i in 0..body.get_slide_collision_count() {
+            if let Some(collision) = body.get_slide_collision(i) {
+                normal += collision.get_normal();
+            }
+        }
+
+        if normal == Vector2::ZERO {
+            continue;
+        }
+
+        let n = normal.normalized();
+        dir.vec = dir.vec.reflect(Vec2::new(n.x, n.y));
+    }
+}
+
+fn random_walk_system(
+    mut button_query: Query<
+        (&mut MovementDirection, &mut MovementSpeed, &mut WalkTimer),
+        With<MenuButton>
+    >,
+    time: Res<Time>
+) {
     let mut rng = rand::rng();
 
-    for mut movement_dir in button_query {
-        let rng_vec = Vec2::new(
-            rng.random_range(-100. ..100.),
-            rng.random_range(-100. ..100.)
-        )
-        .normalize_or_zero();
-
-        movement_dir.vec = rng_vec;
+    for (mut movement_dir, mut speed, mut timer) in &mut button_query {
+        timer.0.tick(time.delta());
+        if timer.0.just_finished() {
+            movement_dir.vec = Vec2::new(rng.random_range(-1.0..1.0), rng.random_range(-1.0..1.0))
+                .normalize_or_zero();
+            speed.0 = rng.random_range(40.0..60.0);
+        }
     }
 }

@@ -282,7 +282,7 @@ impl Default for Score {
         Self {
             count: 0,
             highscore: -1,
-            is_new_highscore: false,
+            is_new_highscore: false
         }
     }
 }

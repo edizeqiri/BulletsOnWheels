@@ -7,8 +7,8 @@ use godot_bevy::prelude::*;
 use crate::gamestate::{AppState, InGameState};
 use crate::level_manager::LevelId::{self, Level1, MainMenu};
 use crate::level_manager::{CurrentLevel, LoadLevelMessage};
-use crate::menu;
 use crate::score::SpawnLeaderBoardEvent;
+use crate::{level1, menu};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(AppState::RUNNING).load_collection::<WorldAssets>())
@@ -111,7 +111,6 @@ fn connect_enter_name_system(
     info!("enter name signal connected");
     assets.is_connected = true;
 }
-
 
 #[derive(Component)]
 struct DeathTimer(Timer);

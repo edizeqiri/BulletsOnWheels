@@ -1,6 +1,7 @@
-use ::std::io::Write;
 use std::fs::{self, File};
+use std::path::Path;
 
+use ::std::io::Write;
 use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use bevy_asset_loader::loading_state::LoadingState;
@@ -9,34 +10,30 @@ use godot::classes::{Label, RichTextLabel};
 use godot_bevy::prelude::*;
 
 use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameMessage, InGameState};
-use crate::level_manager::{CurrentLevel, LevelId, Score};
 use crate::level_manager::LevelId::Level1;
+use crate::level_manager::{CurrentLevel, LevelId, Score};
 use crate::player::Player;
 use crate::world::NameEnteredEvent;
 
-use std::path::Path;
-
-
 pub(crate) fn plugin(app: &mut App) {
-    app
-        .add_loading_state(
-            LoadingState::new(AppState::RUNNING).load_collection::<ScoreBoardAssets>(),
-        )
-        .insert_resource(ScoreBoard::default())
-        .add_systems(
-            Update,
-            (init_score, score_tracker, update_score_label)
-                .run_if(in_state(LevelId::Level1))
-                .run_if(in_state(InGameState::RUNNING)),
-        )
-        .add_systems(
-            Update,
-            update_score_board
-                .run_if(in_state(InGameState::DEFEAT))
-                .run_if(in_state(LevelId::Level1)),
-        )
-        .add_observer(save_score_board)
-        .add_observer(spawn_score_board);
+    app.add_loading_state(
+        LoadingState::new(AppState::RUNNING).load_collection::<ScoreBoardAssets>()
+    )
+    .insert_resource(ScoreBoard::default())
+    .add_systems(
+        Update,
+        (init_score, score_tracker, update_score_label)
+            .run_if(in_state(LevelId::Level1))
+            .run_if(in_state(InGameState::RUNNING))
+    )
+    .add_systems(
+        Update,
+        update_score_board
+            .run_if(in_state(InGameState::DEFEAT))
+            .run_if(in_state(LevelId::Level1))
+    )
+    .add_observer(save_score_board)
+    .add_observer(spawn_score_board);
 }
 
 const SCORE_BOARD_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/score_board.csv");
@@ -46,12 +43,12 @@ pub struct ScoreBoardAssets {
     #[asset(path = "scenes/defeat/score_board.tscn")]
     pub score_board_scene: Handle<GodotResource>,
 
-    score_board_is_loaded: bool,
+    score_board_is_loaded: bool
 }
 
 #[derive(Resource, Default)]
 struct ScoreBoard {
-    entries: Vec<ScoreBoardEntry>,
+    entries: Vec<ScoreBoardEntry>
 }
 
 impl ScoreBoard {
@@ -68,7 +65,7 @@ pub struct SpawnLeaderBoardEvent;
 
 struct ScoreBoardEntry {
     name: String,
-    score: i32,
+    score: i32
 }
 
 fn init_score(mut score_query: Query<&mut Score>, score_board: Res<ScoreBoard>) {
@@ -84,7 +81,7 @@ fn init_score(mut score_query: Query<&mut Score>, score_board: Res<ScoreBoard>) 
 fn score_tracker(
     mut death_message_reader: MessageReader<CharacterDeathMessage>,
     player_query: Query<Entity, With<Player>>,
-    mut score_query: Query<&mut Score>,
+    mut score_query: Query<&mut Score>
 ) {
     for message in death_message_reader.read() {
         let Ok(player) = player_query.single() else {
@@ -110,7 +107,7 @@ fn score_tracker(
 fn update_score_label(
     score_query: Query<&Score, Changed<Score>>,
     current_level: Res<CurrentLevel>,
-    mut scene_tree: SceneTreeRef,
+    mut scene_tree: SceneTreeRef
 ) {
     let level_id = current_level.level_id;
 
@@ -140,7 +137,7 @@ fn save_score_board(
     trigger: On<NameEnteredEvent>,
     score_query: Query<&Score>,
     mut score_board: ResMut<ScoreBoard>,
-    mut commands: Commands,
+    mut commands: Commands
 ) {
     let Ok(score) = score_query.single() else {
         info!("No score found => No high score can be saved.");
@@ -151,7 +148,7 @@ fn save_score_board(
     // todo: limit to 5 and save all entries instead of only one
     score_board.entries.push(ScoreBoardEntry {
         name: entered_name.clone(),
-        score: score.count,
+        score: score.count
     });
 
     score_board.entries.sort_by(|a, b| b.score.cmp(&a.score));
@@ -181,7 +178,7 @@ fn load_score_board() -> ScoreBoard {
     let Ok(score_board_file) = fs::read_to_string(SCORE_BOARD_PATH) else {
         warn!("Could not read high score from file: {}", SCORE_BOARD_PATH);
         return ScoreBoard {
-            entries: Vec::default(),
+            entries: Vec::default()
         };
     };
 
@@ -200,7 +197,7 @@ fn load_score_board() -> ScoreBoard {
 
             Some(ScoreBoardEntry {
                 name: name.trim().to_string(),
-                score: score as i32,
+                score: score as i32
             })
         })
         .collect();
@@ -208,14 +205,14 @@ fn load_score_board() -> ScoreBoard {
     score_board_entries.sort_by(|a, b| b.score.cmp(&a.score));
 
     ScoreBoard {
-        entries: score_board_entries,
+        entries: score_board_entries
     }
 }
 
 fn spawn_score_board(
     _trigger: On<SpawnLeaderBoardEvent>,
     mut commands: Commands,
-    mut assets: ResMut<ScoreBoardAssets>,
+    mut assets: ResMut<ScoreBoardAssets>
 ) {
     commands
         .spawn_empty()
@@ -227,7 +224,7 @@ fn spawn_score_board(
 fn update_score_board(
     score_board: Res<ScoreBoard>,
     mut scene_tree: SceneTreeRef,
-    mut assets: ResMut<ScoreBoardAssets>,
+    mut assets: ResMut<ScoreBoardAssets>
 ) {
     if assets.score_board_is_loaded {
         return;
