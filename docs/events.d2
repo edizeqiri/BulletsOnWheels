@@ -8,24 +8,28 @@ direction: right
 "PauseGameEvent": { shape: parallelogram }
 "RestartGameEvent": { shape: parallelogram }
 "SceneChanged": { shape: parallelogram }
+"SpawnLeaderBoardEvent": { shape: parallelogram }
 
 "change_state_system_on_loaded_level": { shape: rectangle }
 "character_bullet_collision_system": { shape: rectangle }
+"despawn_ask_for_player_name_system": { shape: rectangle }
 "emit_level_loaded_event_when_scene_ready": { shape: rectangle }
 "exit_pause": { shape: rectangle }
 "handle_button_system": { shape: rectangle }
 "handle_keyboard_system": { shape: rectangle }
 "init_world": { shape: rectangle }
 "level_state_change_system": { shape: rectangle }
-"name_submitted": { shape: rectangle }
 "on_load_level_request": { shape: rectangle }
 "on_scene_changed": { shape: rectangle }
 "pause_game_on_event": { shape: rectangle }
 "reset_game": { shape: rectangle }
+"save_score_board": { shape: rectangle }
+"spawn_score_board": { shape: rectangle }
 "track_death_scene": { shape: rectangle }
 
 "LevelLoadedEvent" -> "change_state_system_on_loaded_level": reads
 "CollisionStarted" -> "character_bullet_collision_system": reads
+"SpawnLeaderBoardEvent" -> "despawn_ask_for_player_name_system": reads
 "emit_level_loaded_event_when_scene_ready" -> "LevelLoadedEvent": triggers
 "ExitPauseGameEvent" -> "exit_pause": reads
 "CollisionStarted" -> "handle_button_system": reads
@@ -34,11 +38,12 @@ direction: right
 "handle_keyboard_system" -> "PauseGameEvent": triggers
 "init_world" -> "LoadLevelMessage": triggers
 "LoadLevelMessage" -> "level_state_change_system": reads
-"NameEnteredEvent" -> "name_submitted": reads
-"name_submitted" -> "RestartGameEvent": triggers
 "LoadLevelMessage" -> "on_load_level_request": reads
 "SceneChanged" -> "on_scene_changed": reads
 "PauseGameEvent" -> "pause_game_on_event": reads
 "RestartGameEvent" -> "reset_game": reads
 "reset_game" -> "LoadLevelMessage": triggers
+"NameEnteredEvent" -> "save_score_board": reads
+"save_score_board" -> "SpawnLeaderBoardEvent": triggers
+"SpawnLeaderBoardEvent" -> "spawn_score_board": reads
 "track_death_scene" -> "RestartGameEvent": triggers

@@ -10,3 +10,5 @@ offset_bottom = 150.0
 theme_override_fonts/font = ExtResource("1_h1s5m")
 text = "Score: 0
 High Score: 0"
+
+[node name="RScore" type="RScore" parent="." unique_id=1351499217]

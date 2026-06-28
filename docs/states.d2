@@ -18,17 +18,21 @@ direction: right
 "handle_keyboard_system": { shape: rectangle }
 "handle_level_scene_change": { shape: rectangle }
 "init_menu_assets": { shape: rectangle }
+"init_score": { shape: rectangle }
 "log_state": { shape: rectangle }
 "on_load_level_request": { shape: rectangle }
 "on_shoot_message_system": { shape: rectangle }
 "pause_game_on_event": { shape: rectangle }
 "reset_game": { shape: rectangle }
+"score_tracker": { shape: rectangle }
 "spawn_death_scene_on_player_death": { shape: rectangle }
 "spawn_enemies_after_time": { shape: rectangle }
 "spawn_enemy_system": { shape: rectangle }
 "track_death_scene": { shape: rectangle }
 "update_healthbar_animation_system": { shape: rectangle }
 "update_projectile_system": { shape: rectangle }
+"update_score_board": { shape: rectangle }
+"update_score_label": { shape: rectangle }
 
 "InGameState::RUNNING" -> "apply_character_movement": runs_in
 "InGameState::RUNNING" -> "character_bullet_collision_system": runs_in
@@ -42,13 +46,16 @@ direction: right
 "State<InGameState>" -> "handle_keyboard_system": reads
 "handle_level_scene_change" -> "LevelLoadingState": mutates
 "InGameState::PAUSED" -> "init_menu_assets": runs_in
+"InGameState::RUNNING" -> "init_score": runs_in
+"LevelId::Level1" -> "init_score": runs_in
 "State<AppState>" -> "log_state": reads
 "State<InGameState>" -> "log_state": reads
 "on_load_level_request" -> "LevelLoadingState": mutates
 "InGameState::RUNNING" -> "on_shoot_message_system": runs_in
 "pause_game_on_event" -> "InGameState::PAUSED": set_state
-"InGameState::RUNNING" -> "pause_game_on_event": runs_in
 "reset_game" -> "InGameState::RUNNING": set_state
+"InGameState::RUNNING" -> "score_tracker": runs_in
+"LevelId::Level1" -> "score_tracker": runs_in
 "LevelId::MainMenu" -> "spawn_death_scene_on_player_death": runs_in
 "InGameState::RUNNING" -> "spawn_enemies_after_time": runs_in
 "LevelId::Level1" -> "spawn_enemies_after_time": runs_in
@@ -58,3 +65,7 @@ direction: right
 "LevelId::MainMenu" -> "track_death_scene": runs_in
 "InGameState::RUNNING" -> "update_healthbar_animation_system": runs_in
 "InGameState::RUNNING" -> "update_projectile_system": runs_in
+"InGameState::DEFEAT" -> "update_score_board": runs_in
+"LevelId::Level1" -> "update_score_board": runs_in
+"InGameState::RUNNING" -> "update_score_label": runs_in
+"LevelId::Level1" -> "update_score_label": runs_in

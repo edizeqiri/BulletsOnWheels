@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dccpxafchbbuj"
-path="res://.godot/imported/magicsroll.png-377aa7811f0d9f54cd7ade3471c0abba.ctex"
+uid="uid://b208h2iu5tsrb"
+path="res://.godot/imported/magicscroll.png-71d35946af654a0bc5c54eba97ab5309.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/magicsroll.png"
-dest_files=["res://.godot/imported/magicsroll.png-377aa7811f0d9f54cd7ade3471c0abba.ctex"]
+source_file="res://assets/magicscroll.png"
+dest_files=["res://.godot/imported/magicscroll.png-71d35946af654a0bc5c54eba97ab5309.ctex"]
 
 [params]
 

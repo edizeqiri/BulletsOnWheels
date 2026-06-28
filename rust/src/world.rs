@@ -9,6 +9,7 @@ use crate::level1;
 use crate::level_manager::LevelId::{self, Level1, MainMenu};
 use crate::level_manager::{CurrentLevel, LoadLevelMessage};
 use crate::menu;
+use crate::score::SpawnLeaderBoardEvent;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(AppState::RUNNING).load_collection::<WorldAssets>())
@@ -33,7 +34,7 @@ pub(super) fn plugin(app: &mut App) {
             spawn_ask_for_player_name_system.run_if(in_state(Level1))
         )
         .add_systems(Update, connect_enter_name_system.run_if(in_state(Level1)))
-        .add_observer(name_submitted);
+        .add_observer(despawn_ask_for_player_name_system);
 }
 
 fn init_world(mut commands: Commands) {
@@ -41,8 +42,8 @@ fn init_world(mut commands: Commands) {
 }
 
 #[derive(Event, Clone, Default)]
-struct NameEnteredEvent {
-    name: String
+pub struct NameEnteredEvent {
+    pub name: String
 }
 
 #[derive(AssetCollection, Resource)]
@@ -55,13 +56,27 @@ pub struct WorldAssets {
     pub is_connected: bool
 }
 
+#[derive(Component)]
+pub struct DeathHighscoreScene;
+fn despawn_ask_for_player_name_system(
+    _trigger: On<SpawnLeaderBoardEvent>,
+    death_high_score_query: Query<Entity, With<DeathHighscoreScene>>,
+    mut commands: Commands
+) {
+    let Ok(deaht_high_score_scene) = death_high_score_query.single() else {
+        error!("Could not despawn death highscore scene.");
+        return;
+    };
+    commands.entity(deaht_high_score_scene).despawn();
+}
+
 fn spawn_ask_for_player_name_system(mut commands: Commands, mut assets: ResMut<WorldAssets>) {
     commands
         .spawn_empty()
         .insert(GodotScene::from_handle(
             assets.player_death_highscore_scene.clone()
         ))
-        .insert(DespawnOnEnter(InGameState::RUNNING));
+        .insert(DeathHighscoreScene);
     assets.is_connected = false;
 }
 
@@ -98,12 +113,6 @@ fn connect_enter_name_system(
     assets.is_connected = true;
 }
 
-// todo(sascha): not triggered anymore. weiiiird
-fn name_submitted(trigger: On<NameEnteredEvent>, mut commands: Commands) {
-    let entered_name = &trigger.event().name;
-    info!("entered name {}", entered_name);
-    commands.trigger(RestartGameEvent);
-}
 
 #[derive(Component)]
 struct DeathTimer(Timer);

@@ -23,7 +23,6 @@ direction: right
 "handle_mouse_motion_system": { shape: rectangle }
 "handle_mouse_system": { shape: rectangle }
 "on_shoot_message_system": { shape: rectangle }
-"save_high_score": { shape: rectangle }
 "score_tracker": { shape: rectangle }
 "shoot_at_player_system": { shape: rectangle }
 "spawn_enemies_after_time": { shape: rectangle }
@@ -46,8 +45,6 @@ direction: right
 "MouseButtonInput" -> "handle_mouse_system": reads
 "handle_mouse_system" -> "ShootMessage": writes
 "ShootMessage" -> "on_shoot_message_system": reads
-"CharacterDeathMessage" -> "save_high_score": reads
-"ExitGameMessage" -> "save_high_score": reads
 "CharacterDeathMessage" -> "score_tracker": reads
 "shoot_at_player_system" -> "ShootMessage": writes
 "spawn_enemies_after_time" -> "CreateEnemyMessage": writes
