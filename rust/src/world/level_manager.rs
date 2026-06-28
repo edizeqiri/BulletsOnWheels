@@ -270,3 +270,21 @@ fn change_state_system_on_loaded_level(event: On<LevelLoadedEvent>, mut commands
     commands.set_state(trigger.level_id);
     info!("current level state: {:?}", trigger.level_id);
 }
+
+#[derive(Component, GodotNode)]
+#[godot_node(base(Node2D), class_name(RScore))]
+pub struct Score {
+    pub count: i32,
+    pub highscore: i32,
+    pub is_new_highscore: bool
+}
+
+impl Default for Score {
+    fn default() -> Self {
+        Self {
+            count: 0,
+            highscore: -1,
+            is_new_highscore: false,
+        }
+    }
+}
