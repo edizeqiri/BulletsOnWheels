@@ -4,17 +4,11 @@ use bevy::ecs::entity::Entity;
 use bevy::ecs::event::Event;
 use bevy::ecs::observer::On;
 use bevy::ecs::query::With;
-#[cfg(target_arch = "wasm32")]
-use bevy::ecs::query::With;
-use bevy::ecs::system::Query;
-#[cfg(target_arch = "wasm32")]
 use bevy::ecs::system::Query;
 use bevy::log::info;
 use bevy::prelude::{Message, MessageReader, MessageWriter, Res, State, States};
 use godot::classes::Label;
 use godot_bevy::interop::{GodotAccess, GodotNodeHandle};
-#[cfg(target_arch = "wasm32")]
-use godot_bevy::interop::GodotNodeHandle;
 use godot_bevy::prelude::SceneTreeRef;
 use godot_bevy_macros::GodotNode;
 
@@ -77,8 +71,8 @@ fn exit_game(
     mut godot: GodotAccess
 ) {
     let Ok(handle) = handles.single() else {
-            return;
-        };
+        return;
+    };
     let Some(mut label) = godot.try_get::<Label>(*handle) else {
         return;
     };

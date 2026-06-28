@@ -13,3 +13,4 @@ godot/addons/backstitch/
 .backstitch_version
 godot/.backstitch/
 backstitch.cfg
+rust/resources/score_board.csv

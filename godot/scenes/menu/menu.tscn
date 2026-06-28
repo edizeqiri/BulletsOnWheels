@@ -96,6 +96,6 @@ theme_override_colors/font_color = Color(0.7372549, 0.27058825, 0.23529412, 1)
 theme_override_fonts/font = ExtResource("3_y1o0p")
 theme_override_font_sizes/font_size = 16
 text = "This does nothing.
-Restart Game."
+Reload or exit website."
 horizontal_alignment = 1
 vertical_alignment = 1
