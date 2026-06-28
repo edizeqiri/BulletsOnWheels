@@ -74,11 +74,9 @@ fn exit_pause(
         let Some(menu) = menu_handles else {
             return;
         };
-        commands
-            .entity(entity)
-            .queue_silenced(|e: EntityWorldMut| {
-                e.despawn();
-            });
+        commands.entity(entity).queue_silenced(|e: EntityWorldMut| {
+            e.despawn();
+        });
         commands.set_state(InGameState::RUNNING);
         reset_menu(menu);
         info!("exit pause menu");

@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://dacpe2hwwlkgl" path="res://assets/input_prompts/Keyboard & Mouse/Default/mouse_left.png" id="14_tfctf"]
 [ext_resource type="Texture2D" uid="uid://bmg4l00r6etfj" path="res://assets/input_prompts/PlayStation Series/Default/playstation_stick_l.png" id="15_vnpsp"]
 [ext_resource type="Texture2D" uid="uid://damnrbxrg12ia" path="res://assets/input_prompts/PlayStation Series/Default/playstation_trigger_r1.png" id="16_a1gy5"]
+[ext_resource type="PackedScene" uid="uid://bwnmpwxmb155" path="res://scenes/main_menu/walls.tscn" id="17_a1gy5"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_leamy"]
 texture = ExtResource("1_0ebjn")
@@ -277,3 +278,5 @@ position = Vector2(131, 185)
 [node name="Title" parent="." unique_id=1751772652 instance=ExtResource("4_uqeha")]
 position = Vector2(163, 66)
 scale = Vector2(0.5, 0.5)
+
+[node name="Walls" parent="." unique_id=184729697 instance=ExtResource("17_a1gy5")]

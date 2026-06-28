@@ -4,10 +4,10 @@ use bevy::prelude::*;
 use godot::classes::Label;
 use godot_bevy::prelude::SceneTreeRef;
 
-use crate::player::{EnemyKillCount, Player};
 use crate::gamestate::{CharacterDeathMessage, ExitGameMessage};
 use crate::level_manager::CurrentLevel;
 use crate::level_manager::LevelId::Level1;
+use crate::player::{EnemyKillCount, Player};
 
 pub(crate) fn plugin(app: &mut App) {
     app.insert_resource(load_high_score())

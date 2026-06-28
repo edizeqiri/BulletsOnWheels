@@ -1,13 +1,16 @@
 use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
+use rand::Rng;
 
+use crate::character::{MovementDirection, MovementSpeed};
 use crate::gamestate::InGameState;
-use crate::projectile::Projectile;
 use crate::level_manager::{LevelId, LoadLevelMessage};
+use crate::projectile::Projectile;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_observer(handle_button_system);
+    app.add_observer(handle_button_system)
+        .add_systems(FixedUpdate, random_walk_system);
 }
 
 #[derive(Component, Default)]
@@ -23,7 +26,11 @@ struct ShootableButtonBundle {
     button_type: ButtonTypeComponent,
 
     menu_button: MenuButton,
-    shootable: Shootable
+    shootable: Shootable,
+    movement_direction: MovementDirection,
+
+    #[export_fields(value(export_type(f32), default(50.)))]
+    movement_speed: MovementSpeed
 }
 
 #[derive(Component, Default)]
@@ -72,5 +79,19 @@ fn handle_button_system(
             info!("send exit game message");
             commands.set_state(InGameState::DEFEAT);
         }
+    }
+}
+
+fn random_walk_system(button_query: Query<&mut MovementDirection, With<MenuButton>>) {
+    let mut rng = rand::rng();
+
+    for mut movement_dir in button_query {
+        let rng_vec = Vec2::new(
+            rng.random_range(-100. ..100.),
+            rng.random_range(-100. ..100.)
+        )
+        .normalize_or_zero();
+
+        movement_dir.vec = rng_vec;
     }
 }

@@ -5,10 +5,9 @@ use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use godot_bevy::prelude::*;
 
 use crate::gamestate::{AppState, InGameState};
-use crate::level1;
 use crate::level_manager::LevelId::{self, Level1, MainMenu};
 use crate::level_manager::{CurrentLevel, LoadLevelMessage};
-use crate::menu;
+use crate::{level1, menu};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(AppState::RUNNING).load_collection::<WorldAssets>())

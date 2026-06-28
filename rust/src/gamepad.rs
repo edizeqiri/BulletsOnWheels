@@ -3,10 +3,10 @@ use godot::classes::Input;
 use godot::global::JoyAxis;
 use godot_bevy::prelude::*;
 
-use crate::player::Player;
-use crate::gamestate::ExitGameMessage;
-use crate::weapon_impl::ShootMessage;
 use crate::character::{Aim, MovementDirection};
+use crate::gamestate::ExitGameMessage;
+use crate::player::Player;
+use crate::weapon_impl::ShootMessage;
 
 const DEADZONE: f32 = 0.05;
 
