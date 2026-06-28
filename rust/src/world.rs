@@ -5,9 +5,9 @@ use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use godot_bevy::prelude::*;
 
 use crate::gamestate::{AppState, InGameState};
-use crate::level1;
 use crate::level_manager::LevelId::{self, Level1, MainMenu};
 use crate::level_manager::{CurrentLevel, LoadLevelMessage};
+use crate::level1;
 use crate::menu;
 use crate::score::SpawnLeaderBoardEvent;
 
@@ -20,20 +20,21 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(Startup, init_world)
         .add_systems(
             OnEnter(InGameState::DEFEAT),
-            spawn_death_scene_on_player_death.run_if(in_state(LevelId::MainMenu))
+            spawn_death_scene_on_player_death.run_if(in_state(LevelId::MainMenu)),
         )
         .add_systems(
             Update,
             track_death_scene
                 .run_if(in_state(InGameState::DEFEAT))
-                .run_if(in_state(LevelId::MainMenu))
+                .run_if(in_state(LevelId::MainMenu)),
         )
         .add_plugins(GodotSignalsPlugin::<NameEnteredEvent>::default())
         .add_systems(
             OnEnter(InGameState::DEFEAT),
-            spawn_ask_for_player_name_system.run_if(in_state(Level1))
+            spawn_ask_for_player_name_system.run_if(in_state(Level1)),
         )
         .add_systems(Update, connect_enter_name_system.run_if(in_state(Level1)))
+        .add_systems(Update, connect_restart_buttons)
         .add_observer(despawn_ask_for_player_name_system);
 }
 
@@ -43,11 +44,37 @@ fn init_world(mut commands: Commands) {
 
 #[derive(Component, Default, GodotNode)]
 #[godot_node(base(Button), class_name(RRestartButton))]
-pub struct RestartButton;
+pub struct RestartButton {
+    pub is_connected: bool
+}
+
+fn connect_restart_buttons(
+    mut restart_buttons: Query<(&GodotNodeHandle, &mut RestartButton)>,
+    signal: GodotSignals<RestartGameEvent>,
+) {
+
+    for (restart_handle, mut restart_button) in &mut restart_buttons {
+        if restart_button.is_connected {
+            continue;
+        }
+
+        signal.connect(
+            *restart_handle,
+            BaseButtonSignals::PRESSED,
+            None,
+            |_args, _node_handle, _ent| {
+                info!("Restart button pressed");
+                Some(RestartGameEvent)
+            },
+        );
+
+        restart_button.is_connected = true;
+    }
+}
 
 #[derive(Event, Clone, Default)]
 pub struct NameEnteredEvent {
-    pub name: String
+    pub name: String,
 }
 
 #[derive(AssetCollection, Resource)]
@@ -57,7 +84,7 @@ pub struct WorldAssets {
 
     #[asset(path = "scenes/defeat/player_death_highscore.tscn")]
     pub player_death_highscore_scene: Handle<GodotResource>,
-    pub is_connected: bool
+    pub is_connected: bool,
 }
 
 #[derive(Component)]
@@ -65,7 +92,7 @@ pub struct DeathHighscoreScene;
 fn despawn_ask_for_player_name_system(
     _trigger: On<SpawnLeaderBoardEvent>,
     death_high_score_query: Query<Entity, With<DeathHighscoreScene>>,
-    mut commands: Commands
+    mut commands: Commands,
 ) {
     let Ok(deaht_high_score_scene) = death_high_score_query.single() else {
         error!("Could not despawn death highscore scene.");
@@ -78,7 +105,7 @@ fn spawn_ask_for_player_name_system(mut commands: Commands, mut assets: ResMut<W
     commands
         .spawn_empty()
         .insert(GodotScene::from_handle(
-            assets.player_death_highscore_scene.clone()
+            assets.player_death_highscore_scene.clone(),
         ))
         .insert(DeathHighscoreScene);
     assets.is_connected = false;
@@ -87,7 +114,7 @@ fn spawn_ask_for_player_name_system(mut commands: Commands, mut assets: ResMut<W
 fn connect_enter_name_system(
     enter_name_field: Query<&GodotNodeHandle, With<LineEditMarker>>,
     entered_name_signal: GodotSignals<NameEnteredEvent>,
-    world_assets: Option<ResMut<WorldAssets>>
+    world_assets: Option<ResMut<WorldAssets>>,
 ) {
     let Some(mut assets) = world_assets else {
         return;
@@ -111,12 +138,11 @@ fn connect_enter_name_system(
             };
 
             Some(NameEnteredEvent { name })
-        }
+        },
     );
     info!("enter name signal connected");
     assets.is_connected = true;
 }
-
 
 #[derive(Component)]
 struct DeathTimer(Timer);
@@ -135,7 +161,7 @@ pub struct ExitGameEvent;
 
 fn reset_game(_: On<RestartGameEvent>, mut commands: Commands) {
     commands.trigger(LoadLevelMessage {
-        level_id: crate::level_manager::LevelId::MainMenu
+        level_id: crate::level_manager::LevelId::MainMenu,
     });
     commands.set_state(InGameState::RUNNING);
 }
@@ -146,7 +172,7 @@ pub struct ResetSceneEvent(pub Entity);
 fn spawn_death_scene_on_player_death(
     mut commands: Commands,
     current_level: Res<CurrentLevel>,
-    assets: Option<Res<WorldAssets>>
+    assets: Option<Res<WorldAssets>>,
 ) {
     let Some(ref assets) = assets else {
         info!("player death asset not loaded yet");
@@ -161,7 +187,7 @@ fn spawn_death_scene_on_player_death(
     let scene = commands
         .spawn((
             GodotScene::from_handle(assets.death_scene_restart.clone()),
-            DeathTimer(Timer::from_seconds(3., TimerMode::Once))
+            DeathTimer(Timer::from_seconds(3., TimerMode::Once)),
         ))
         .id();
 
@@ -171,7 +197,7 @@ fn spawn_death_scene_on_player_death(
 fn track_death_scene(
     mut commands: Commands,
     time_query: Query<(&mut DeathTimer, Entity)>,
-    time: Res<Time>
+    time: Res<Time>,
 ) {
     for (mut times, entity) in time_query {
         if times.0.is_finished() {

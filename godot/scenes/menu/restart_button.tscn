@@ -3,9 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://c31leslhboncs" path="res://assets/pixel_ui/Tiles/Large tiles/Thick outline/tile_0017.png" id="1_y6lav"]
 [ext_resource type="FontFile" uid="uid://cq7eug8jyxw4i" path="res://assets/kenney_fonts/Fonts/Kenney Pixel.ttf" id="2_brpft"]
 
-[node name="RestartButton" type="Button" unique_id=1918014682]
-offset_right = 8.0
-offset_bottom = 8.0
+[node name="RestartButton" type="RRestartButton" unique_id=1922346972]
+offset_right = 107.0
+offset_bottom = 32.0
 action_mode = 0
 
 [node name="RestartSprite" type="NinePatchRect" parent="." unique_id=1875056185]
