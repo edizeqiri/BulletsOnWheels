@@ -1,6 +1,7 @@
 direction: right
 
 "CollisionStarted": { shape: parallelogram }
+"ExitGameEvent": { shape: parallelogram }
 "ExitPauseGameEvent": { shape: parallelogram }
 "LevelLoadedEvent": { shape: parallelogram }
 "LoadLevelMessage": { shape: parallelogram }
@@ -14,7 +15,9 @@ direction: right
 "character_bullet_collision_system": { shape: rectangle }
 "despawn_ask_for_player_name_system": { shape: rectangle }
 "emit_level_loaded_event_when_scene_ready": { shape: rectangle }
+"exit_game": { shape: rectangle }
 "exit_pause": { shape: rectangle }
+"gamepad_input": { shape: rectangle }
 "handle_button_system": { shape: rectangle }
 "handle_keyboard_system": { shape: rectangle }
 "init_world": { shape: rectangle }
@@ -31,9 +34,12 @@ direction: right
 "CollisionStarted" -> "character_bullet_collision_system": reads
 "SpawnLeaderBoardEvent" -> "despawn_ask_for_player_name_system": reads
 "emit_level_loaded_event_when_scene_ready" -> "LevelLoadedEvent": triggers
+"ExitGameEvent" -> "exit_game": reads
 "ExitPauseGameEvent" -> "exit_pause": reads
+"gamepad_input" -> "ExitGameEvent": triggers
 "CollisionStarted" -> "handle_button_system": reads
 "handle_button_system" -> "LoadLevelMessage": triggers
+"handle_keyboard_system" -> "ExitGameEvent": triggers
 "handle_keyboard_system" -> "ExitPauseGameEvent": triggers
 "handle_keyboard_system" -> "PauseGameEvent": triggers
 "init_world" -> "LoadLevelMessage": triggers

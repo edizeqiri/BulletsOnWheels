@@ -1,25 +1,18 @@
 direction: right
 
-"AppExit": { shape: page }
 "CharacterDeathMessage": { shape: page }
 "CharacterHitMessage": { shape: page }
 "CreateEnemyMessage": { shape: page }
 "EnemySpawnedMessage": { shape: page }
-"ExitGameMessage": { shape: page }
-"GameStateMessage": { shape: page }
-"M": { shape: page }
 "MouseButtonInput": { shape: page }
 "MouseMotion": { shape: page }
 "SceneTreeMessage": { shape: page }
 "ShootMessage": { shape: page }
 
-"aggregate_message_system": { shape: rectangle }
 "character_bullet_collision_system": { shape: rectangle }
 "emit_level_loaded_event_when_scene_ready": { shape: rectangle }
-"exit_game": { shape: rectangle }
 "gamepad_input": { shape: rectangle }
 "handle_character_zero_health_system": { shape: rectangle }
-"handle_keyboard_system": { shape: rectangle }
 "handle_mouse_motion_system": { shape: rectangle }
 "handle_mouse_system": { shape: rectangle }
 "on_shoot_message_system": { shape: rectangle }
@@ -30,17 +23,11 @@ direction: right
 "spawn_enemy_system": { shape: rectangle }
 "update_healthbar_animation_system": { shape: rectangle }
 
-"M" -> "aggregate_message_system": reads
-"aggregate_message_system" -> "GameStateMessage": writes
 "character_bullet_collision_system" -> "CharacterDeathMessage": writes
 "character_bullet_collision_system" -> "CharacterHitMessage": writes
 "SceneTreeMessage" -> "emit_level_loaded_event_when_scene_ready": reads
-"ExitGameMessage" -> "exit_game": reads
-"exit_game" -> "AppExit": writes
-"gamepad_input" -> "ExitGameMessage": writes
 "gamepad_input" -> "ShootMessage": writes
 "CharacterDeathMessage" -> "handle_character_zero_health_system": reads
-"handle_keyboard_system" -> "ExitGameMessage": writes
 "MouseMotion" -> "handle_mouse_motion_system": reads
 "MouseButtonInput" -> "handle_mouse_system": reads
 "handle_mouse_system" -> "ShootMessage": writes
