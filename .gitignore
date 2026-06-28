@@ -7,3 +7,9 @@ godot/rust/target
 
 rust/target
 godot/exports
+
+/addons/backstitch/
+/godot_editor/
+.backstitch_version
+/.backstitch/
+backstitch.cfg

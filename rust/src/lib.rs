@@ -5,19 +5,30 @@ use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::character::enemy::EnemyAssets;
+use crate::enemy::EnemyAssets;
 use crate::gamestate::{AppState, InGameState};
-use crate::weapon::weapon::ProjectileAssets;
-use crate::world::level_manager::LevelId;
+use crate::weapon_impl::ProjectileAssets;
+use crate::level_manager::LevelId;
 
 mod character;
-
 mod debug;
+mod enemy;
+mod enemy_ai;
+mod gamepad;
 mod gamestate;
 mod input;
+mod keyboard;
+mod level1;
+mod level_manager;
 mod main_menu;
+mod menu;
+mod mouse;
+mod player;
+mod projectile;
+mod score;
 mod ui;
 mod weapon;
+mod weapon_impl;
 mod world;
 
 #[bevy_app]

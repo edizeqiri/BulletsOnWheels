@@ -1,3 +1,3 @@
 [gd_scene format=3 uid="uid://bjsfwt816j4tp"]
 
-[node name="BevyAppSingleton" type="BevyApp"]
+[node name="BevyAppSingleton" type="BevyApp" unique_id=1097141648]
