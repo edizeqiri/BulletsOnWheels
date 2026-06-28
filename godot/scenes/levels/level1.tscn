@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dkfbqgsl3ty8c" path="res://scenes/characters/player.tscn" id="2_4tcl0"]
 [ext_resource type="PackedScene" uid="uid://ccsypye2gp2j0" path="res://scenes/characters/enemy.tscn" id="3_dd0lh"]
 [ext_resource type="PackedScene" uid="uid://da6rbwumqg13r" path="res://scenes/levels/score_label.tscn" id="4_bfxgj"]
+[ext_resource type="PackedScene" uid="uid://bwnmpwxmb155" path="res://scenes/main_menu/walls.tscn" id="5_dywbp"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bfxgj"]
 texture = ExtResource("1_x6ivy")
@@ -173,3 +174,5 @@ position = Vector2(242, 144)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RSpawnPoint2D" unique_id=1980587914]
 shape = SubResource("RectangleShape2D_bfxgj")
+
+[node name="Walls" parent="." unique_id=184729697 instance=ExtResource("5_dywbp")]

@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://bwnmpwxmb155"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_c40ga"]
+normal = Vector2(0.0036100848, -0.9999935)
+distance = -271.0
+
+[node name="Walls" type="StaticBody2D" unique_id=184729697]
+
+[node name="West" type="CollisionShape2D" parent="." unique_id=449199457]
+position = Vector2(283.00006, 125.00001)
+rotation = 1.5656819
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("WorldBoundaryShape2D_c40ga")
+
+[node name="South" type="CollisionShape2D" parent="." unique_id=657056919]
+position = Vector2(242, -11)
+shape = SubResource("WorldBoundaryShape2D_c40ga")
+
+[node name="East" type="CollisionShape2D" parent="." unique_id=921465164]
+position = Vector2(195.99998, 146.00003)
+rotation = -1.5666289
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("WorldBoundaryShape2D_c40ga")
+
+[node name="North" type="CollisionShape2D" parent="." unique_id=2144688867]
+position = Vector2(242, 278.99997)
+rotation = 3.138454
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("WorldBoundaryShape2D_c40ga")
