@@ -144,6 +144,9 @@ separation = Vector2i(1, 1)
 [sub_resource type="TileSet" id="TileSet_dywbp"]
 sources/0 = SubResource("TileSetAtlasSource_bfxgj")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bfxgj"]
+size = Vector2(370, 191)
+
 [node name="Level1" type="Node2D" unique_id=1196009209]
 
 [node name="Layer1" type="TileMapLayer" parent="." unique_id=94572651]
@@ -164,3 +167,9 @@ offset_left = 25.0
 offset_top = 213.0
 offset_right = 190.0
 offset_bottom = 244.0
+
+[node name="RSpawnPoint2D" type="RSpawnPoint2D" parent="." unique_id=1551969237]
+position = Vector2(242, 144)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RSpawnPoint2D" unique_id=1980587914]
+shape = SubResource("RectangleShape2D_bfxgj")
