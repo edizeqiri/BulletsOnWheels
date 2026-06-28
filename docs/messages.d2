@@ -18,6 +18,7 @@ direction: right
 "on_shoot_message_system": { shape: rectangle }
 "score_tracker": { shape: rectangle }
 "shoot_at_player_system": { shape: rectangle }
+"shoot_virtual_joystick": { shape: rectangle }
 "spawn_enemies_after_time": { shape: rectangle }
 "spawn_enemy_health_bar": { shape: rectangle }
 "spawn_enemy_system": { shape: rectangle }
@@ -34,6 +35,7 @@ direction: right
 "ShootMessage" -> "on_shoot_message_system": reads
 "CharacterDeathMessage" -> "score_tracker": reads
 "shoot_at_player_system" -> "ShootMessage": writes
+"shoot_virtual_joystick" -> "ShootMessage": writes
 "spawn_enemies_after_time" -> "CreateEnemyMessage": writes
 "EnemySpawnedMessage" -> "spawn_enemy_health_bar": reads
 "CreateEnemyMessage" -> "spawn_enemy_system": reads
