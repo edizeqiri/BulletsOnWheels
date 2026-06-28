@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use bevy_asset_loader::loading_state::LoadingState;
 use bevy_asset_loader::prelude::*;
-use godot::classes::Label;
+use godot::classes::{Label, RichTextLabel};
 use godot_bevy::prelude::*;
 
 use crate::character::player::{self, Player};
@@ -240,26 +240,33 @@ fn update_label(scene_tree: &mut SceneTreeRef, label_path: &str, content: String
         return false;
     };
 
-    let Some(mut label) = root.try_get_node_as::<Label>(label_path) else {
-        warn!("Could not find {}", label_path);
+    let Some(mut label) = root.try_get_node_as::<RichTextLabel>(label_path) else {
         return false;
     };
 
+    label.set_use_bbcode(true);
     label.set_text(&content);
     return true;
 }
 
 fn prepare_leader_board_content(score_board: Res<ScoreBoard>) -> String {
-    let mut lines = vec![format!("{:<5} {:<16} {:<8}", "Rank", "Name", "Score")];
+    let mut text = String::from("[table=3]");
 
+    // Header
+    text.push_str("[cell][b]Rank[/b][/cell]");
+    text.push_str("[cell][b]Name[/b][/cell]");
+    text.push_str("[cell][b]Score[/b][/cell]");
+
+    // Rows
     for (i, entry) in score_board.entry.iter().take(5).enumerate() {
-        lines.push(format!(
-            "{:<5} {:<16} {:<8}",
-            format!("{}.", i + 1),
+        text.push_str(&format!(
+            "[cell]{}.[/cell][cell]{}[/cell][cell]{}[/cell]",
+            i + 1,
             entry.name,
             entry.score
         ));
     }
 
-    lines.join("\n")
+    text.push_str("[/table]");
+    text
 }

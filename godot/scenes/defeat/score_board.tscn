@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://b208h2iu5tsrb" path="res://assets/magicscroll.png" id="1_kj5am"]
 [ext_resource type="Texture2D" uid="uid://bwmbdigbgrh7x" path="res://assets/leaderboard.png" id="2_4b0e1"]
-[ext_resource type="FontFile" uid="uid://cq7eug8jyxw4i" path="res://assets/kenney_fonts/Fonts/Kenney Pixel.ttf" id="3_4b0e1"]
+[ext_resource type="FontFile" uid="uid://b05j2x3qypkff" path="res://assets/kenney_fonts/Fonts/Kenney High.ttf" id="3_4b0e1"]
 
 [node name="ScoreBoard" type="Control" unique_id=1776552083]
 layout_mode = 3
@@ -20,20 +20,19 @@ position = Vector2(231, 42)
 scale = Vector2(0.16843215, 0.16843213)
 texture = ExtResource("2_4b0e1")
 
-[node name="Top5" type="Label" parent="." unique_id=584783892]
+[node name="Top5" type="RichTextLabel" parent="." unique_id=1000023418]
 layout_mode = 0
 offset_left = 172.0
-offset_top = 80.0
-offset_right = 212.0
-offset_bottom = 103.0
-scale = Vector2(3.1139262, 4.2542295)
-theme_override_fonts/font = ExtResource("3_4b0e1")
-
-[node name="GridContainer" type="GridContainer" parent="." unique_id=362183758]
-layout_mode = 0
-offset_left = 171.0
-offset_top = 80.0
-offset_right = 211.0
-offset_bottom = 120.0
-scale = Vector2(3.1423266, 2.556435)
-columns = 3
+offset_top = 81.0
+offset_right = 295.0
+offset_bottom = 182.0
+theme_override_fonts/normal_font = ExtResource("3_4b0e1")
+theme_override_fonts/bold_font = ExtResource("3_4b0e1")
+theme_override_fonts/bold_italics_font = ExtResource("3_4b0e1")
+theme_override_fonts/italics_font = ExtResource("3_4b0e1")
+theme_override_fonts/mono_font = ExtResource("3_4b0e1")
+theme_override_font_sizes/normal_font_size = 13
+theme_override_font_sizes/bold_font_size = 13
+theme_override_font_sizes/bold_italics_font_size = 13
+theme_override_font_sizes/italics_font_size = 13
+theme_override_font_sizes/mono_font_size = 13
