@@ -81,7 +81,14 @@ fn handle_button_system(
         }
     }
 }
-
+// fn check_collision(
+// collisions: Collisions,
+// menu_button_query: Query<Entity, With<MenuButton>>,
+// wall_query: Query<Entity, With<StaticBody2DMarker>>
+// ) {
+// for
+// if collisions.contains(a, b)
+// }
 fn random_walk_system(button_query: Query<&mut MovementDirection, With<MenuButton>>) {
     let mut rng = rand::rng();
 
