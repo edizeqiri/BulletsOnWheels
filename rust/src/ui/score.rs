@@ -10,7 +10,7 @@ use godot_bevy::prelude::*;
 
 use crate::character::player::{self, Player};
 use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameMessage, InGameState};
-use crate::world::NameEnteredEvent;
+use crate::world::{NameEnteredEvent, RestartGameEvent};
 use crate::world::level_manager::{CurrentLevel, Score};
 
 pub(super) fn plugin(app: &mut App) {
@@ -253,14 +253,16 @@ fn prepare_leader_board_content(score_board: Res<ScoreBoard>) -> String {
     let mut text = String::from("[table=3]");
 
     // Header
-    text.push_str("[cell][b]Rank[/b][/cell]");
-    text.push_str("[cell][b]Name[/b][/cell]");
-    text.push_str("[cell][b]Score[/b][/cell]");
+    text.push_str("[cell][left][b]Rank[/b][/left][/cell]");
+    text.push_str("[cell][left][b]Name[/b][/left][/cell]");
+    text.push_str("[cell][right][b]Score[/b][/right][/cell]");
 
     // Rows
     for (i, entry) in score_board.entry.iter().take(5).enumerate() {
         text.push_str(&format!(
-            "[cell]{}.[/cell][cell]{}[/cell][cell]{}[/cell]",
+            "[cell][left]{}.[/left][/cell]\
+             [cell][left]{}[/left][/cell]\
+             [cell][right]{}[/right][/cell]",
             i + 1,
             entry.name,
             entry.score
