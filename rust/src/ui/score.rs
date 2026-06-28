@@ -52,11 +52,11 @@ struct ScoreBoard {
 }
 
 impl ScoreBoard {
-    fn get_high_score(&self) -> u32 {
+    fn get_high_score(&self) -> i32 {
         let Some(high_score) = self.entries.iter().max_by_key(|e| e.score) else {
             return 0;
         };
-        high_score.score
+        high_score.score as i32
     }
 }
 
@@ -65,7 +65,7 @@ pub struct SpawnLeaderBoardEvent;
 
 struct ScoreBoardEntry {
     name: String,
-    score: u32,
+    score: i32,
 }
 
 fn init_score(mut score_query: Query<&mut Score>, score_board: Res<ScoreBoard>) {
@@ -73,6 +73,9 @@ fn init_score(mut score_query: Query<&mut Score>, score_board: Res<ScoreBoard>) 
         error!("component score not existent.");
         return;
     };
+    if score.highscore != -1 {
+        return;
+    }
     score.highscore = score_board.get_high_score();
 }
 
@@ -150,6 +153,8 @@ fn save_score_board(
         score: score.count,
     });
 
+    score_board.entries.sort_by(|a, b| b.score.cmp(&a.score));
+
     let score_board_path = Path::new(SCORE_BOARD_PATH);
 
     let Ok(mut file) = File::options()
@@ -179,7 +184,7 @@ fn load_score_board() -> ScoreBoard {
         };
     };
 
-    let mut score_board: Vec<ScoreBoardEntry> = score_board_file
+    let mut score_board_entries: Vec<ScoreBoardEntry> = score_board_file
         .lines()
         .filter_map(|line| {
             let Some((name, score_as_string)) = line.split_once(',') else {
@@ -194,15 +199,15 @@ fn load_score_board() -> ScoreBoard {
 
             Some(ScoreBoardEntry {
                 name: name.trim().to_string(),
-                score,
+                score: score as i32,
             })
         })
         .collect();
 
-    score_board.sort_by(|a, b| b.score.cmp(&a.score));
+    score_board_entries.sort_by(|a, b| b.score.cmp(&a.score));
 
     ScoreBoard {
-        entries: score_board,
+        entries: score_board_entries,
     }
 }
 
