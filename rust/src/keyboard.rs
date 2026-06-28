@@ -4,8 +4,8 @@ use godot::global::Key;
 use godot_bevy::prelude::*;
 
 use crate::character::MovementDirection;
-use crate::player::Player;
 use crate::gamestate::{ExitGameMessage, InGameState};
+use crate::player::Player;
 use crate::world::{ExitPauseGameEvent, PauseGameEvent};
 
 pub(crate) fn plugin(app: &mut App) {

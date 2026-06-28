@@ -1,5 +1,6 @@
 use bevy::app::App;
 use bevy::prelude::*;
+
 use crate::weapon_impl;
 
 pub(super) fn plugin(app: &mut App) {

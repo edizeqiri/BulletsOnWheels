@@ -3,13 +3,12 @@ use godot::classes::{AnimatedSprite2D, CharacterBody2D};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::enemy_ai;
-use crate::enemy;
-use crate::player::Player;
 use crate::gamestate::{CharacterDeathMessage, InGameState};
-use crate::weapon::Damage;
+use crate::player::Player;
 use crate::projectile::Projectile;
+use crate::weapon::Damage;
 use crate::weapon_impl::{Shooter, Weapon};
+use crate::{enemy, enemy_ai};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<CharacterHitMessage>()

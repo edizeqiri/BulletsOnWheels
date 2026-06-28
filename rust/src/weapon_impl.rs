@@ -8,8 +8,8 @@ use godot_bevy::prelude::*;
 
 use crate::character::Aim;
 use crate::gamestate::InGameState;
-use crate::weapon::Damage;
 use crate::projectile::{Projectile, ProjectileBundle, Velocity, create_projectile};
+use crate::weapon::Damage;
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_message::<ShootMessage>()
