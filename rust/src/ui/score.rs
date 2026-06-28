@@ -10,7 +10,7 @@ use godot_bevy::prelude::*;
 
 use crate::character::player::{self, Player};
 use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameMessage, InGameState};
-use crate::world::level_manager::{CurrentLevel, Score};
+use crate::world::level_manager::{CurrentLevel, LevelId, Score};
 use crate::world::{NameEnteredEvent, RestartGameEvent};
 
 pub(super) fn plugin(app: &mut App) {
@@ -18,12 +18,19 @@ pub(super) fn plugin(app: &mut App) {
         .add_loading_state(
             LoadingState::new(AppState::RUNNING).load_collection::<ScoreBoardAssets>(),
         )
-        .add_systems(Update, (score_tracker, update_score_label))
         .add_systems(
             Update,
-            update_score_board.run_if(in_state(InGameState::DEFEAT)),
+            (init_score, score_tracker, update_score_label)
+                .run_if(in_state(LevelId::Level1))
+                .run_if(in_state(InGameState::RUNNING)),
         )
-        .add_observer(save_high_score)
+        .add_systems(
+            Update,
+            update_score_board
+                .run_if(in_state(InGameState::DEFEAT))
+                .run_if(in_state(LevelId::Level1)),
+        )
+        .add_observer(save_score_board)
         .add_observer(spawn_score_board);
 }
 
@@ -41,19 +48,15 @@ pub struct ScoreBoardAssets {
 
 #[derive(Resource)]
 struct ScoreBoard {
-    entry: Vec<ScoreBoardEntry>,
-    high_score: u32, // technically seen could be taken from entry directly -> but this avoids all the overhead to get it
+    entries: Vec<ScoreBoardEntry>,
 }
 
-impl Default for ScoreBoard {
-    fn default() -> Self {
-        Self {
-            entry: vec![ScoreBoardEntry {
-                name: "test".to_string(),
-                score: 0,
-            }],
-            high_score: 0,
-        }
+impl ScoreBoard {
+    fn get_high_score(&self) -> u32 {
+        let Some(high_score) = self.entries.iter().max_by_key(|e| e.score) else {
+            return 0;
+        };
+        high_score.score
     }
 }
 
@@ -65,11 +68,18 @@ struct ScoreBoardEntry {
     score: u32,
 }
 
+fn init_score(mut score_query: Query<&mut Score>, score_board: Res<ScoreBoard>) {
+    let Ok(mut score) = score_query.single_mut() else {
+        error!("component score not existent.");
+        return;
+    };
+    score.highscore = score_board.get_high_score();
+}
+
 fn score_tracker(
     mut death_message_reader: MessageReader<CharacterDeathMessage>,
     player_query: Query<Entity, With<Player>>,
     mut score_query: Query<&mut Score>,
-    mut score_board: ResMut<ScoreBoard>,
 ) {
     for message in death_message_reader.read() {
         let Ok(player) = player_query.single() else {
@@ -85,7 +95,10 @@ fn score_tracker(
         };
 
         score.count += 1;
-        score_board.high_score = update_high_score(score.count, score_board.high_score);
+        if score.count > score.highscore {
+            score.highscore = score.count;
+            score.is_new_highscore = true;
+        };
     }
 }
 
@@ -94,7 +107,6 @@ fn update_score_label(
     score_query: Query<&Score, Changed<Score>>,
     current_level: Res<CurrentLevel>,
     mut scene_tree: SceneTreeRef,
-    score_board: Res<ScoreBoard>,
 ) {
     let level_id = current_level.level_id;
 
@@ -116,11 +128,11 @@ fn update_score_label(
 
     score_label.set_text(&format!(
         "Score: {}\nHigh Score: {}",
-        score.count, score_board.high_score,
+        score.count, score.highscore,
     ));
 }
 
-fn save_high_score(
+fn save_score_board(
     trigger: On<NameEnteredEvent>,
     score_query: Query<&Score>,
     mut score_board: ResMut<ScoreBoard>,
@@ -132,26 +144,12 @@ fn save_high_score(
     };
     let entered_name = &trigger.event().name;
 
-    // no need for high score update, as it is constantly updated
-    score_board.entry.push(ScoreBoardEntry {
+    // todo: limit to 5 and save all entries instead of only one
+    score_board.entries.push(ScoreBoardEntry {
         name: entered_name.clone(),
         score: score.count,
     });
 
-    save_score_board(entered_name, score.count);
-
-    commands.trigger(SpawnLeaderBoardEvent);
-}
-
-fn update_high_score(score: u32, current_high_score: u32) -> u32 {
-    if score > current_high_score {
-        info!("NEW HIGHSCORRRRRE!!!");
-        return score;
-    };
-    return current_high_score;
-}
-
-fn save_score_board(name: &str, score: u32) {
     let score_board_path = Path::new(SCORE_BOARD_PATH);
 
     let Ok(mut file) = File::options()
@@ -166,17 +164,18 @@ fn save_score_board(name: &str, score: u32) {
         return;
     };
 
-    if let Err(error) = writeln!(file, "{},{}", name, score) {
+    if let Err(error) = writeln!(file, "{},{}", entered_name, score.count) {
         error!("Could not write to score board: {}", error);
     }
+
+    commands.trigger(SpawnLeaderBoardEvent);
 }
 
 fn load_score_board() -> ScoreBoard {
     let Ok(score_board_file) = fs::read_to_string(SCORE_BOARD_PATH) else {
         warn!("Could not read high score from file: {}", SCORE_BOARD_PATH);
         return ScoreBoard {
-            high_score: 0,
-            entry: Vec::default(),
+            entries: Vec::default(),
         };
     };
 
@@ -202,11 +201,8 @@ fn load_score_board() -> ScoreBoard {
 
     score_board.sort_by(|a, b| b.score.cmp(&a.score));
 
-    let high_score = score_board.first().map(|entry| entry.score).unwrap_or(0);
-
     ScoreBoard {
-        entry: score_board,
-        high_score: high_score,
+        entries: score_board,
     }
 }
 
@@ -259,7 +255,7 @@ fn prepare_leader_board_content(score_board: Res<ScoreBoard>) -> String {
     text.push_str("[cell][right][b]Score[/b][/right][/cell]");
 
     // Rows
-    for (i, entry) in score_board.entry.iter().take(5).enumerate() {
+    for (i, entry) in score_board.entries.iter().take(5).enumerate() {
         text.push_str(&format!(
             "[cell][left]{}.[/left][/cell]\
              [cell][left]{}[/left][/cell]\

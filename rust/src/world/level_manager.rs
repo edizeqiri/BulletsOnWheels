@@ -275,4 +275,6 @@ fn change_state_system_on_loaded_level(event: On<LevelLoadedEvent>, mut commands
 #[godot_node(base(Node2D), class_name(RScore))]
 pub struct Score {
     pub count: u32,
+    pub highscore: u32,
+    pub is_new_highscore: bool
 }
