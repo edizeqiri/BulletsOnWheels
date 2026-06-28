@@ -29,19 +29,19 @@ fn handle_keyboard_system(
     let mut base = Vec2::ZERO;
 
     // Up
-    if gd_input.is_key_pressed(Key::W) {
+    if gd_input.is_action_pressed("up") {
         base += Vec2 { x: 0., y: -1. };
     }
     // Left
-    if gd_input.is_key_pressed(Key::A) {
+    if gd_input.is_action_pressed("left") {
         base += Vec2 { x: -1., y: 0. };
     }
     // Down
-    if gd_input.is_key_pressed(Key::S) {
+    if gd_input.is_action_pressed("down") {
         base += Vec2 { x: 0., y: 1. };
     }
     // Right
-    if gd_input.is_key_pressed(Key::D) {
+    if gd_input.is_action_pressed("right") {
         base += Vec2 { x: 1., y: 0. };
     }
     // Delete: exit button
