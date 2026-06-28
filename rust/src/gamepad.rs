@@ -8,7 +8,7 @@ use crate::gamestate::ExitGameMessage;
 use crate::player::Player;
 use crate::weapon_impl::ShootMessage;
 
-const DEADZONE: f32 = 0.05;
+pub const DEADZONE: f32 = 0.05;
 
 pub(crate) fn plugin(app: &mut App) {
     app //.add_message::<StartGameMessage>()
@@ -27,26 +27,28 @@ fn gamepad_input(
 
     let gd_input = godot.singleton::<Input>();
 
-    if gd_input.get_connected_joypads().is_empty() {
-        return;
+    let move_vec = gd_input.get_vector("left", "right", "up", "down");
+
+    let aim_vec_godot = gd_input.get_vector("aim_left", "aim_right", "aim_up", "aim_down");
+
+    let aim_vec = Vec2 {
+        x: aim_vec_godot.x,
+        y: aim_vec_godot.y
     };
 
-    let aim_vec = Vec2::new(
-        gd_input.get_joy_axis(0, JoyAxis::RIGHT_X),
-        gd_input.get_joy_axis(0, JoyAxis::RIGHT_Y)
-    );
-    if aim_vec.length() > DEADZONE {
+    if aim_vec.length() < DEADZONE {
+        aim.vec = Vec2::ZERO;
+    } else {
         aim.vec = aim_vec;
     }
 
-    let move_vec = Vec2::new(
-        gd_input.get_joy_axis(0, JoyAxis::LEFT_X),
-        gd_input.get_joy_axis(0, JoyAxis::LEFT_Y)
-    );
     movement.vec = if move_vec.length() < DEADZONE {
         Vec2::ZERO
     } else {
-        move_vec
+        Vec2 {
+            x: move_vec.x,
+            y: move_vec.y
+        }
     };
 
     if gd_input.is_action_just_pressed("shoot") {

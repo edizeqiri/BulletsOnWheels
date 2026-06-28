@@ -280,3 +280,27 @@ position = Vector2(163, 66)
 scale = Vector2(0.5, 0.5)
 
 [node name="Walls" parent="." unique_id=184729697 instance=ExtResource("17_a1gy5")]
+
+[node name="VirtualJoystick" type="VirtualJoystick" parent="." unique_id=552136549]
+offset_left = 20.0
+offset_top = 212.0
+offset_right = 60.0
+offset_bottom = 252.0
+joystick_size = 50.0
+tip_size = 25.0
+action_left = &"left"
+action_right = &"right"
+action_up = &"up"
+action_down = &"down"
+
+[node name="VirtualJoystick2" type="VirtualJoystick" parent="." unique_id=412419031]
+offset_left = 418.0
+offset_top = 209.0
+offset_right = 458.0
+offset_bottom = 249.0
+joystick_size = 50.0
+tip_size = 25.0
+action_left = &"aim_left"
+action_right = &"aim_right"
+action_up = &"aim_up"
+action_down = &"aim_down"

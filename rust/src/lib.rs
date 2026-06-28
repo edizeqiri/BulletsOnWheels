@@ -26,6 +26,7 @@ mod mouse;
 mod player;
 mod projectile;
 mod score;
+mod virtual_joystick;
 mod weapon;
 mod weapon_impl;
 mod world;
