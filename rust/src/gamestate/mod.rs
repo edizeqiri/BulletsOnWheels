@@ -1,18 +1,15 @@
 use bevy::app::{App, AppExit, FixedUpdate, Update};
 use bevy::ecs::entity::Entity;
-use bevy::ecs::schedule::IntoScheduleConfigs;
-use bevy::log::{debug, info};
-use bevy::prelude::{
-    Message, MessageReader, MessageWriter, NextState, Res, ResMut, Resource, State, States
-};
+use bevy::log::info;
+use bevy::prelude::{Message, MessageReader, MessageWriter, Res, State, States};
 use godot_bevy::prelude::SceneTreeRef;
 
 use crate::world::level_manager::LevelId;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_message::<ExitGameMessage>()
-        .add_systems(Update, exit_game)
-        .add_systems(FixedUpdate, log_state);
+        .add_systems(Update, exit_game);
+    //.add_systems(FixedUpdate, log_state);
 }
 
 #[derive(States, Debug, Clone, Eq, PartialEq, Hash, Default)]
@@ -102,7 +99,7 @@ fn log_state(
     ingamestate: Res<State<InGameState>>,
     levlestate: Res<State<LevelId>>
 ) {
-    debug!("appstate is: {:?}", appstate.get());
-    debug!("ingamestate is: {:?}", ingamestate.get());
-    debug!("levlestate is: {:?}", levlestate.get());
+    info!("appstate is: {:?}", appstate.get());
+    info!("ingamestate is: {:?}", ingamestate.get());
+    info!("levlestate is: {:?}", levlestate.get());
 }

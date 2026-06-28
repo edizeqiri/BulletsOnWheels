@@ -61,7 +61,7 @@ pub struct MenuUi {
 struct PauseMenu;
 
 fn exit_pause(
-    event: On<ExitPauseGameEvent>,
+    _event: On<ExitPauseGameEvent>,
     mut commands: Commands,
     current_state: Res<State<InGameState>>,
     menu_query: Query<Entity, With<PauseMenu>>,
@@ -76,7 +76,7 @@ fn exit_pause(
         };
         commands
             .entity(entity)
-            .queue_silenced(|mut e: EntityWorldMut| {
+            .queue_silenced(|e: EntityWorldMut| {
                 e.despawn();
             });
         commands.set_state(InGameState::RUNNING);
@@ -93,7 +93,7 @@ fn reset_menu(mut menu: ResMut<MenuHandles>) {
 }
 
 fn pause_game_on_event(
-    event: On<PauseGameEvent>,
+    _event: On<PauseGameEvent>,
     assets: Option<Res<MenuAssets>>,
     current_level: Res<CurrentLevel>,
     mut commands: Commands

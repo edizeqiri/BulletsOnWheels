@@ -1,15 +1,10 @@
-use std::thread::sleep;
-use std::time::Duration;
-
 use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use bevy_asset_loader::loading_state::config::ConfigureLoadingState;
 use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
-use godot::register::info;
 use godot_bevy::prelude::*;
 
-use crate::character::player::Player;
-use crate::gamestate::{AppState, CharacterDeathMessage, InGameState};
+use crate::gamestate::{AppState, InGameState};
 use crate::world::level::level1;
 use crate::world::level_manager::LevelId::{self, Level1, MainMenu};
 use crate::world::level_manager::{CurrentLevel, LoadLevelMessage};
@@ -39,7 +34,7 @@ pub(super) fn plugin(app: &mut App) {
             OnEnter(InGameState::DEFEAT),
             spawn_ask_for_player_name_system.run_if(in_state(Level1))
         )
-        .add_systems(Update, connect_enter_name_system)
+        .add_systems(Update, connect_enter_name_system.run_if(in_state(Level1)))
         .add_observer(name_submitted);
 }
 
@@ -58,27 +53,32 @@ pub struct WorldAssets {
     pub death_scene_restart: Handle<GodotResource>,
 
     #[asset(path = "scenes/defeat/player_death_highscore.tscn")]
-    pub player_death_highscore_scene: Handle<GodotResource>
+    pub player_death_highscore_scene: Handle<GodotResource>,
+    pub is_connected: bool
 }
 
-fn spawn_ask_for_player_name_system(mut commands: Commands, assets: Res<WorldAssets>) {
+fn spawn_ask_for_player_name_system(mut commands: Commands, mut assets: ResMut<WorldAssets>) {
     commands
         .spawn_empty()
         .insert(GodotScene::from_handle(
             assets.player_death_highscore_scene.clone()
         ))
         .insert(DespawnOnEnter(InGameState::RUNNING));
+    assets.is_connected = false;
 }
 
 fn connect_enter_name_system(
-    mut connected: Local<bool>,
     enter_name_field: Query<&GodotNodeHandle, With<LineEditMarker>>,
-    entered_name_signal: GodotSignals<NameEnteredEvent>
+    entered_name_signal: GodotSignals<NameEnteredEvent>,
+    world_assets: Option<ResMut<WorldAssets>>
 ) {
-    if *connected {
+    let Some(mut assets) = world_assets else {
+        return;
+    };
+
+    if assets.is_connected {
         return;
     }
-
     let Ok(enter_name_handler) = enter_name_field.single() else {
         return;
     };
@@ -97,7 +97,7 @@ fn connect_enter_name_system(
         }
     );
     info!("enter name signal connected");
-    *connected = true;
+    assets.is_connected = true;
 }
 
 // todo(sascha): not triggered anymore. weiiiird
@@ -164,11 +164,9 @@ fn track_death_scene(
 ) {
     for (mut times, entity) in time_query {
         if times.0.is_finished() {
-            commands
-                .entity(entity)
-                .queue_silenced(|mut e: EntityWorldMut| {
-                    e.despawn();
-                });
+            commands.entity(entity).queue_silenced(|e: EntityWorldMut| {
+                e.despawn();
+            });
             commands.trigger(RestartGameEvent);
         } else {
             times.0.tick(time.delta());

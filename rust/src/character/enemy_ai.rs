@@ -45,7 +45,7 @@ impl Default for EnemyType {
 pub struct EnemyFugitive;
 
 impl EnemyAI for EnemyFugitive {
-    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
+    fn moving(&self, _player: &Transform, _enemy: &Transform) -> Vec2 {
         todo!()
     }
 }
@@ -54,7 +54,7 @@ impl EnemyAI for EnemyFugitive {
 pub struct EnemySeeker;
 
 impl EnemyAI for EnemySeeker {
-    fn moving(&self, player: &Transform, enemy: &Transform) -> Vec2 {
+    fn moving(&self, _player: &Transform, _enemy: &Transform) -> Vec2 {
         todo!()
     }
 }

@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::gamestate::{ExitGameMessage, InGameState};
+use crate::gamestate::InGameState;
 use crate::weapon::projectile::Projectile;
 use crate::world::level_manager::{LevelId, LoadLevelMessage};
 
