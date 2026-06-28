@@ -1,5 +1,7 @@
 use bevy::app::{App, AppExit, FixedUpdate, Update};
 use bevy::ecs::entity::Entity;
+use bevy::ecs::event::Event;
+use bevy::ecs::observer::On;
 use bevy::log::info;
 use bevy::prelude::{Message, MessageReader, MessageWriter, Res, State, States};
 use godot_bevy::prelude::SceneTreeRef;
@@ -7,8 +9,7 @@ use godot_bevy::prelude::SceneTreeRef;
 use crate::level_manager::LevelId;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_message::<ExitGameMessage>()
-        .add_systems(Update, exit_game);
+    app.add_observer(exit_game);
     //.add_systems(FixedUpdate, log_state);
 }
 
@@ -75,23 +76,23 @@ pub fn aggregate_message_system<M>(
     }
 }
 
-#[derive(Message)]
-pub struct ExitGameMessage;
+#[derive(Event, Debug, Clone)]
+pub struct ExitGameEvent;
 
+// todo(sascha): make two exit games depending on wasm context
 fn exit_game(
-    mut exit_game_reader: MessageReader<ExitGameMessage>,
+    _trigger: On<ExitGameEvent>,
     mut exit: MessageWriter<AppExit>,
     mut scene_tree: SceneTreeRef
 ) {
-    for _ in exit_game_reader.read() {
-        info!("Exit game.");
+    info!("Exit game.");
 
-        // bevy exit
-        exit.write(AppExit::Success);
+    // bevy exit
+    exit.write(AppExit::Success);
 
-        // godot exit
-        scene_tree.get().quit();
-    }
+    // godot exit
+    scene_tree.get().quit();
+
 }
 
 fn log_state(

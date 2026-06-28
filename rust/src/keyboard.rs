@@ -4,7 +4,7 @@ use godot::global::Key;
 use godot_bevy::prelude::*;
 
 use crate::character::MovementDirection;
-use crate::gamestate::{ExitGameMessage, InGameState};
+use crate::gamestate::{ExitGameEvent, InGameState};
 use crate::player::Player;
 use crate::world::{ExitPauseGameEvent, PauseGameEvent};
 
@@ -15,9 +15,8 @@ pub(crate) fn plugin(app: &mut App) {
 fn handle_keyboard_system(
     mut query: Query<&mut MovementDirection, With<Player>>,
     mut godot: GodotAccess,
-    mut exit_game_message_writer: MessageWriter<ExitGameMessage>,
     mut commands: Commands,
-    statei: Res<State<InGameState>>,
+    state: Res<State<InGameState>>,
     mut escape_was_pressed: Local<bool>
 ) {
     let Ok(mut movement) = query.single_mut() else {
@@ -46,12 +45,12 @@ fn handle_keyboard_system(
     }
     // Delete: exit button
     if gd_input.is_key_pressed(Key::DELETE) {
-        exit_game_message_writer.write(ExitGameMessage);
+        commands.trigger(ExitGameEvent);
     }
 
     let escape_pressed = gd_input.is_key_pressed(Key::ESCAPE);
     if escape_pressed && !*escape_was_pressed {
-        if *statei.get() == InGameState::RUNNING {
+        if *state.get() == InGameState::RUNNING {
             commands.trigger(PauseGameEvent);
         } else {
             commands.trigger(ExitPauseGameEvent);
