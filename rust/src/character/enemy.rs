@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use godot_bevy::prelude::*;
 
-use crate::character::{CharacterCore, CharacterDeathMessage, Health, MovementSpeed};
+use crate::character::{CharacterCore, Health, MovementSpeed};
 use crate::gamestate::InGameState;
 use crate::world::level_manager::{CurrentLevel, LevelId};
 // use crate::gamestate::EnemyResource;
