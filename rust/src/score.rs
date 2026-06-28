@@ -9,7 +9,7 @@ use bevy_asset_loader::prelude::*;
 use godot::classes::{Label, RichTextLabel};
 use godot_bevy::prelude::*;
 
-use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameMessage, InGameState};
+use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameEvent, InGameState};
 use crate::level_manager::LevelId::Level1;
 use crate::level_manager::{CurrentLevel, LevelId, Score};
 use crate::player::Player;
@@ -19,6 +19,7 @@ pub(crate) fn plugin(app: &mut App) {
     app.add_loading_state(
         LoadingState::new(AppState::RUNNING).load_collection::<ScoreBoardAssets>()
     )
+    .insert_resource(load_score_board())
     .insert_resource(ScoreBoard::default())
     .add_systems(
         Update,

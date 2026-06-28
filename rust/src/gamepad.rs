@@ -4,7 +4,7 @@ use godot::global::JoyAxis;
 use godot_bevy::prelude::*;
 
 use crate::character::{Aim, MovementDirection};
-use crate::gamestate::ExitGameMessage;
+use crate::gamestate::ExitGameEvent;
 use crate::player::Player;
 use crate::weapon_impl::ShootMessage;
 
@@ -19,7 +19,7 @@ fn gamepad_input(
     mut query: Query<(&mut Aim, &mut MovementDirection, Entity), With<Player>>,
     mut godot: GodotAccess,
     mut shoot_message: MessageWriter<ShootMessage>,
-    mut exit_game_message_writer: MessageWriter<ExitGameMessage>
+    mut commands: Commands
 ) {
     let Ok((mut aim, mut movement, player)) = query.single_mut() else {
         return;
@@ -59,6 +59,6 @@ fn gamepad_input(
     };
 
     if gd_input.is_action_just_pressed("exit") {
-        exit_game_message_writer.write(ExitGameMessage);
+        commands.trigger(ExitGameEvent);
     };
 }

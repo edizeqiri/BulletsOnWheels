@@ -160,9 +160,6 @@ pub struct ExitPauseGameEvent;
 #[derive(Event, Debug, Clone)]
 pub struct RestartGameEvent;
 
-#[derive(Event, Debug, Clone)]
-pub struct ExitGameEvent;
-
 fn reset_game(_: On<RestartGameEvent>, mut commands: Commands) {
     commands.trigger(LoadLevelMessage {
         level_id: crate::level_manager::LevelId::MainMenu
