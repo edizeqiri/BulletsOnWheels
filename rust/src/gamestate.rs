@@ -79,7 +79,7 @@ pub fn aggregate_message_system<M>(
 #[derive(Event, Debug, Clone)]
 pub struct ExitGameEvent;
 
-// todo(sascha): make two exit games depending on wasm context
+#[cfg(not(target_arch = "wasm32"))]
 fn exit_game(
     _trigger: On<ExitGameEvent>,
     mut exit: MessageWriter<AppExit>,
