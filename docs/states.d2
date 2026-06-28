@@ -53,6 +53,7 @@ direction: right
 "on_load_level_request" -> "LevelLoadingState": mutates
 "InGameState::RUNNING" -> "on_shoot_message_system": runs_in
 "pause_game_on_event" -> "InGameState::PAUSED": set_state
+"InGameState::RUNNING" -> "pause_game_on_event": runs_in
 "reset_game" -> "InGameState::RUNNING": set_state
 "InGameState::RUNNING" -> "score_tracker": runs_in
 "LevelId::Level1" -> "score_tracker": runs_in
