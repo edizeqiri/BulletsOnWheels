@@ -33,11 +33,47 @@ pub(super) fn plugin(app: &mut App) {
             spawn_ask_for_player_name_system.run_if(in_state(Level1))
         )
         .add_systems(Update, connect_enter_name_system.run_if(in_state(Level1)))
+        .add_systems(
+            Update,
+            connect_restart_buttons
+                .run_if(in_state(InGameState::PAUSED)
+                    .or_else(in_state(InGameState::DEFEAT).and_then(in_state(Level1)))
+                )
+        )
         .add_observer(despawn_ask_for_player_name_system);
 }
 
 fn init_world(mut commands: Commands) {
     commands.trigger(LoadLevelMessage { level_id: MainMenu });
+}
+
+#[derive(Component, Default, GodotNode)]
+#[godot_node(base(Button), class_name(RRestartButton))]
+pub struct RestartButton {
+    pub is_connected: bool
+}
+
+fn connect_restart_buttons(
+    mut restart_buttons: Query<(&GodotNodeHandle, &mut RestartButton)>,
+    signal: GodotSignals<RestartGameEvent>
+) {
+    for (restart_handle, mut restart_button) in &mut restart_buttons {
+        if restart_button.is_connected {
+            continue;
+        }
+
+        signal.connect(
+            *restart_handle,
+            BaseButtonSignals::PRESSED,
+            None,
+            |_args, _node_handle, _ent| {
+                info!("Restart button pressed");
+                Some(RestartGameEvent)
+            }
+        );
+
+        restart_button.is_connected = true;
+    }
 }
 
 #[derive(Event, Clone, Default)]

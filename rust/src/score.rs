@@ -155,21 +155,21 @@ fn save_score_board(
 
     let score_board_path = Path::new(SCORE_BOARD_PATH);
 
-    let Ok(mut file) = File::options()
+    let file = File::options()
         .append(true)
         .create(true)
-        .open(score_board_path)
-    else {
+        .open(score_board_path);
+
+    if file.is_ok() {
+        if let Err(error) = writeln!(file.unwrap(), "{},{}", entered_name, score.count) {
+            error!("Could not write to score board: {}", error);
+        }
+    } else {
         error!(
-            "No Score Board File could be opened at: {:?}",
+            "No Score Board File could be opened at: {:?}, Scores will not be saved.",
             SCORE_BOARD_PATH
         );
-        return;
     };
-
-    if let Err(error) = writeln!(file, "{},{}", entered_name, score.count) {
-        error!("Could not write to score board: {}", error);
-    }
 
     commands.trigger(SpawnLeaderBoardEvent);
 }

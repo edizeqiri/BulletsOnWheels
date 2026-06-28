@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://bwmbdigbgrh7x" path="res://assets/leaderboard.png" id="2_4b0e1"]
 [ext_resource type="FontFile" uid="uid://b05j2x3qypkff" path="res://assets/kenney_fonts/Fonts/Kenney High.ttf" id="3_4b0e1"]
 [ext_resource type="FontFile" uid="uid://b8rfeqhootern" path="res://assets/kenney_fonts/Fonts/Kenney Mini Square.ttf" id="4_ws1x8"]
+[ext_resource type="PackedScene" uid="uid://bshsdvm65jlnw" path="res://scenes/menu/restart_button.tscn" id="5_13j7s"]
 
 [node name="ScoreBoard" type="Control" unique_id=1776552083]
 layout_mode = 3
@@ -72,3 +73,11 @@ offset_top = -183.0
 offset_right = 618.0
 offset_bottom = 403.0
 color = Color(0, 0, 0, 0.78431374)
+
+[node name="RestartButton" parent="." unique_id=1918014682 instance=ExtResource("5_13j7s")]
+z_index = 3
+layout_mode = 0
+offset_left = 178.0
+offset_top = 203.0
+offset_right = 186.0
+offset_bottom = 211.0

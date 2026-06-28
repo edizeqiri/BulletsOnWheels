@@ -14,10 +14,7 @@ pub(crate) fn plugin(app: &mut App) {
         .init_resource::<MenuHandles>()
         .add_plugins(GodotSignalsPlugin::<RestartGameEvent>::default())
         .add_plugins(GodotSignalsPlugin::<ExitGameEvent>::default())
-        .add_observer(
-            pause_game_on_event
-                .run_if(in_state(InGameState::RUNNING).or_else(in_state(InGameState::DEFEAT)))
-        )
+        .add_observer(pause_game_on_event.run_if(in_state(InGameState::RUNNING)))
         .add_observer(exit_pause.run_if(in_state(InGameState::PAUSED)))
         .add_systems(
             Update,
@@ -153,15 +150,6 @@ fn connect_menu_buttons(
     };
 
     info!("Connecting buttons");
-    signals_restart.connect(
-        restart_handle,
-        BaseButtonSignals::PRESSED,
-        None,
-        |_args, _node_handle, _ent| {
-            info!("Restart button pressed");
-            Some(RestartGameEvent)
-        }
-    );
 
     signals_exit.connect(
         exit_handle,
