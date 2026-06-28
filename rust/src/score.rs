@@ -19,6 +19,7 @@ pub(crate) fn plugin(app: &mut App) {
     app.add_loading_state(
         LoadingState::new(AppState::RUNNING).load_collection::<ScoreBoardAssets>()
     )
+    .insert_resource(load_score_board())
     .insert_resource(ScoreBoard::default())
     .add_systems(
         Update,

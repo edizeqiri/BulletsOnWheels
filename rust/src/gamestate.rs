@@ -1,10 +1,22 @@
 use bevy::app::{App, AppExit, FixedUpdate, Update};
+use bevy::ecs::component::Component;
 use bevy::ecs::entity::Entity;
 use bevy::ecs::event::Event;
 use bevy::ecs::observer::On;
+use bevy::ecs::query::With;
+#[cfg(target_arch = "wasm32")]
+use bevy::ecs::query::With;
+use bevy::ecs::system::Query;
+#[cfg(target_arch = "wasm32")]
+use bevy::ecs::system::Query;
 use bevy::log::info;
 use bevy::prelude::{Message, MessageReader, MessageWriter, Res, State, States};
+use godot::classes::Label;
+use godot_bevy::interop::{GodotAccess, GodotNodeHandle};
+#[cfg(target_arch = "wasm32")]
+use godot_bevy::interop::GodotNodeHandle;
 use godot_bevy::prelude::SceneTreeRef;
+use godot_bevy_macros::GodotNode;
 
 use crate::level_manager::LevelId;
 
@@ -30,54 +42,18 @@ pub(crate) enum InGameState {
     DEFEAT
 }
 
-pub trait GameStateTransition {
-    fn current_state(&self) -> AppState;
-    fn next_state(&self) -> AppState;
-}
-
-// ---------- MESSAGES CHANGING GAMESTATE --------- //
-
 #[derive(Message)]
 pub struct CharacterDeathMessage {
     pub source: Entity,
     pub target: Entity
 }
 
-// ---------- STATE MACHINE ---------- //
-
-#[derive(Message)]
-pub struct GameStateMessage {
-    kind: GameStateEnum
-}
-
-#[derive(Copy, Clone)]
-pub enum GameStateEnum {
-    PlayerDeath,
-    StartGame
-}
-
-impl From<&CharacterDeathMessage> for GameStateEnum {
-    fn from(_message: &CharacterDeathMessage) -> Self {
-        GameStateEnum::PlayerDeath
-    }
-}
-
-pub fn aggregate_message_system<M>(
-    mut messages: MessageReader<M>,
-    mut writer: MessageWriter<GameStateMessage>
-) where
-    M: Message,
-    for<'a> &'a M: Into<GameStateEnum>
-{
-    for message in messages.read() {
-        writer.write(GameStateMessage {
-            kind: message.into()
-        });
-    }
-}
-
 #[derive(Event, Debug, Clone)]
 pub struct ExitGameEvent;
+
+#[derive(GodotNode, Component, Default)]
+#[godot_node(base(Label), class_name(RExitGameLabel))]
+pub struct ExitGameLabel;
 
 #[cfg(not(target_arch = "wasm32"))]
 fn exit_game(
@@ -92,7 +68,21 @@ fn exit_game(
 
     // godot exit
     scene_tree.get().quit();
+}
 
+#[cfg(target_arch = "wasm32")]
+fn exit_game(
+    _trigger: On<ExitGameEvent>,
+    handles: Query<&GodotNodeHandle, With<ExitGameLabel>>,
+    mut godot: GodotAccess
+) {
+    let Ok(handle) = handles.single() else {
+            return;
+        };
+    let Some(mut label) = godot.try_get::<Label>(*handle) else {
+        return;
+    };
+    label.set_visible(true);
 }
 
 fn log_state(
