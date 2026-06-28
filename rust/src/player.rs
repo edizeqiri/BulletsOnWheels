@@ -21,13 +21,6 @@ pub struct PlayerBundle {
     speed: MovementSpeed,
 
     core: CharacterCore,
-
-    enemy_kill_count: EnemyKillCount
-}
-
-#[derive(Component, Default)]
-pub struct EnemyKillCount {
-    pub count: u32
 }
 
 #[derive(Message)]

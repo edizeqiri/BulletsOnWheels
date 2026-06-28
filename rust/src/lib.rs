@@ -26,7 +26,6 @@ mod mouse;
 mod player;
 mod projectile;
 mod score;
-mod ui;
 mod weapon;
 mod weapon_impl;
 mod world;
@@ -45,7 +44,7 @@ fn build_app(app: &mut App) {
         .add_plugins(character::plugin)
         .add_plugins(input::plugin)
         .add_plugins(main_menu::plugin)
-        .add_plugins(ui::plugin)
+        .add_plugins(score::plugin)
         .add_plugins(gamestate::plugin)
         .add_plugins(StatesPlugin)
         .init_state::<AppState>()

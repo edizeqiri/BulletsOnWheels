@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://cnolqirben082"]
+
+[ext_resource type="Texture2D" uid="uid://b208h2iu5tsrb" path="res://assets/magicscroll.png" id="1_kj5am"]
+[ext_resource type="Texture2D" uid="uid://bwmbdigbgrh7x" path="res://assets/leaderboard.png" id="2_4b0e1"]
+[ext_resource type="FontFile" uid="uid://b05j2x3qypkff" path="res://assets/kenney_fonts/Fonts/Kenney High.ttf" id="3_4b0e1"]
+[ext_resource type="FontFile" uid="uid://b8rfeqhootern" path="res://assets/kenney_fonts/Fonts/Kenney Mini Square.ttf" id="4_ws1x8"]
+
+[node name="ScoreBoard" type="Control" unique_id=1776552083]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Magicsroll" type="Sprite2D" parent="." unique_id=636958261]
+z_index = 2
+position = Vector2(232.00002, 139.00003)
+scale = Vector2(0.2578125, 0.2578125)
+texture = ExtResource("1_kj5am")
+
+[node name="Leaderboard" type="Sprite2D" parent="." unique_id=1757146516]
+z_index = 2
+position = Vector2(231, 42)
+scale = Vector2(0.16843215, 0.16843213)
+texture = ExtResource("2_4b0e1")
+
+[node name="Top5" type="RichTextLabel" parent="." unique_id=1000023418]
+z_index = 2
+layout_mode = 0
+offset_left = 172.0
+offset_top = 81.0
+offset_right = 295.0
+offset_bottom = 182.0
+theme_override_fonts/normal_font = ExtResource("3_4b0e1")
+theme_override_fonts/bold_font = ExtResource("4_ws1x8")
+theme_override_fonts/bold_italics_font = ExtResource("3_4b0e1")
+theme_override_fonts/italics_font = ExtResource("3_4b0e1")
+theme_override_fonts/mono_font = ExtResource("3_4b0e1")
+theme_override_font_sizes/normal_font_size = 13
+theme_override_font_sizes/bold_font_size = 12
+theme_override_font_sizes/bold_italics_font_size = 13
+theme_override_font_sizes/italics_font_size = 13
+theme_override_font_sizes/mono_font_size = 13
+bbcode_enabled = true
+text = "[table=3]
+[cell][left][b]Rank[/b][/left][/cell]
+[cell][left][b]Name[/b][/left][/cell]
+[cell][right][b]Score[/b][/right][/cell]
+
+[cell][left]1.[/left][/cell]
+[cell][left]Sascha[/left][/cell]
+[cell][right]15230[/right][/cell]
+
+[cell][left]2.[/left][/cell]
+[cell][left]Edi[/left][/cell]
+[cell][right]10840[/right][/cell]
+
+[cell][left]3.[/left][/cell]
+[cell][left]Alex[/left][/cell]
+[cell][right]9570[/right][/cell]
+
+[cell][left]4.[/left][/cell]
+[cell][left]Maria[/left][/cell]
+[cell][right]8245[/right][/cell]
+[/table]"
+horizontal_alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1007211930]
+z_index = 1
+layout_mode = 0
+offset_left = -412.0
+offset_top = -183.0
+offset_right = 618.0
+offset_bottom = 403.0
+color = Color(0, 0, 0, 0.78431374)
