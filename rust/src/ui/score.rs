@@ -10,8 +10,8 @@ use godot_bevy::prelude::*;
 
 use crate::character::player::{self, Player};
 use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameMessage, InGameState};
-use crate::world::{NameEnteredEvent, RestartGameEvent};
 use crate::world::level_manager::{CurrentLevel, Score};
+use crate::world::{NameEnteredEvent, RestartGameEvent};
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(load_score_board())
@@ -217,7 +217,8 @@ fn spawn_score_board(
 ) {
     commands
         .spawn_empty()
-        .insert(GodotScene::from_handle(assets.score_board_scene.clone()));
+        .insert(GodotScene::from_handle(assets.score_board_scene.clone()))
+        .insert(DespawnOnEnter(InGameState::RUNNING));
     assets.score_board_is_loaded = false;
 }
 
