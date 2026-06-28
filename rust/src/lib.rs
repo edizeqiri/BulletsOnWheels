@@ -7,8 +7,8 @@ use godot_bevy::prelude::*;
 
 use crate::enemy::EnemyAssets;
 use crate::gamestate::{AppState, InGameState};
-use crate::weapon_impl::ProjectileAssets;
 use crate::level_manager::LevelId;
+use crate::weapon_impl::ProjectileAssets;
 
 mod character;
 mod debug;

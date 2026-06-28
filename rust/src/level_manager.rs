@@ -213,11 +213,9 @@ fn handle_level_scene_change(
                 };
 
                 if node.get_path().to_string().starts_with(&menu_path) {
-                    commands
-                        .entity(entity)
-                        .queue_silenced(|e: EntityWorldMut| {
-                            e.despawn();
-                        });
+                    commands.entity(entity).queue_silenced(|e: EntityWorldMut| {
+                        e.despawn();
+                    });
                 }
             }
 
@@ -284,7 +282,7 @@ impl Default for Score {
         Self {
             count: 0,
             highscore: -1,
-            is_new_highscore: false,
+            is_new_highscore: false
         }
     }
 }

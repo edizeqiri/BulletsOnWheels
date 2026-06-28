@@ -2,10 +2,10 @@
 use bevy::prelude::*;
 use godot_bevy::prelude::*;
 
+use crate::character::{Aim, MovementDirection};
 use crate::enemy::Enemy;
 use crate::enemy_ai::EnemyType::Hunter;
 use crate::player::Player;
-use crate::character::{Aim, MovementDirection};
 use crate::weapon_impl::ShootMessage;
 // use crate::weapon::ShootEvent;
 // use crate::world::LevelState;
