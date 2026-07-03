@@ -26,7 +26,8 @@ offset_bottom = 43.0
 theme_override_colors/font_color = Color(0.73563325, 0.27011943, 0.23371321, 1)
 theme_override_fonts/font = ExtResource("2_42iaq")
 theme_override_font_sizes/font_size = 32
-text = "WRONG MINITION :("
+text = "WRONG MINION :("
+horizontal_alignment = 1
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1990681426]
 z_index = 1
