@@ -11,6 +11,7 @@ direction: right
 
 "apply_character_movement": { shape: rectangle }
 "character_bullet_collision_system": { shape: rectangle }
+"connect_enter_name_system": { shape: rectangle }
 "connect_menu_buttons": { shape: rectangle }
 "exit_pause": { shape: rectangle }
 "handle_button_system": { shape: rectangle }
@@ -25,6 +26,7 @@ direction: right
 "pause_game_on_event": { shape: rectangle }
 "reset_game": { shape: rectangle }
 "score_tracker": { shape: rectangle }
+"spawn_ask_for_player_name_system": { shape: rectangle }
 "spawn_death_scene_on_player_death": { shape: rectangle }
 "spawn_enemies_after_time": { shape: rectangle }
 "spawn_enemy_system": { shape: rectangle }
@@ -36,6 +38,7 @@ direction: right
 
 "InGameState::RUNNING" -> "apply_character_movement": runs_in
 "InGameState::RUNNING" -> "character_bullet_collision_system": runs_in
+"LevelId::Level1" -> "connect_enter_name_system": runs_in
 "InGameState::PAUSED" -> "connect_menu_buttons": runs_in
 "State<InGameState>" -> "exit_pause": reads
 "exit_pause" -> "InGameState::RUNNING": set_state
@@ -57,6 +60,7 @@ direction: right
 "reset_game" -> "InGameState::RUNNING": set_state
 "InGameState::RUNNING" -> "score_tracker": runs_in
 "LevelId::Level1" -> "score_tracker": runs_in
+"LevelId::Level1" -> "spawn_ask_for_player_name_system": runs_in
 "LevelId::MainMenu" -> "spawn_death_scene_on_player_death": runs_in
 "InGameState::RUNNING" -> "spawn_enemies_after_time": runs_in
 "LevelId::Level1" -> "spawn_enemies_after_time": runs_in

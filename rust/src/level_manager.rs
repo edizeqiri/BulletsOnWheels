@@ -7,27 +7,25 @@ use godot_bevy::prelude::*;
 
 /// FYI: This code comes from godot_bevy.
 
-impl Plugin for LevelManagerPlugin {
-    fn build(&self, app: &mut App) {
-        app.init_resource::<CurrentLevel>()
-            .init_resource::<PendingLevel>()
-            .init_resource::<LevelLoadingState>()
-            .init_resource::<SceneTreeSignalConnected>()
-            // Enable signal routing for SceneTree.scene_changed
-            .add_plugins(GodotSignalsPlugin::<SceneChanged>::default())
-            .add_observer(on_load_level_request)
-            .add_observer(level_state_change_system)
-            .add_observer(on_scene_changed)
-            .add_observer(change_state_system_on_loaded_level)
-            .add_systems(Startup, connect_scene_tree_signal)
-            .add_systems(
-                Update,
-                (
-                    (handle_level_scene_change, ApplyDeferred).chain(),
-                    emit_level_loaded_event_when_scene_ready
-                )
-            );
-    }
+pub(crate) fn plugin(app: &mut App) {
+    app.init_resource::<CurrentLevel>()
+        .init_resource::<PendingLevel>()
+        .init_resource::<LevelLoadingState>()
+        .init_resource::<SceneTreeSignalConnected>()
+        // Enable signal routing for SceneTree.scene_changed
+        .add_plugins(GodotSignalsPlugin::<SceneChanged>::default())
+        .add_observer(on_load_level_request)
+        .add_observer(level_state_change_system)
+        .add_observer(on_scene_changed)
+        .add_observer(change_state_system_on_loaded_level)
+        .add_systems(Startup, connect_scene_tree_signal)
+        .add_systems(
+            Update,
+            (
+                (handle_level_scene_change, ApplyDeferred).chain(),
+                emit_level_loaded_event_when_scene_ready
+            )
+        );
 }
 
 /// Event fired when the Godot scene changes.
@@ -267,22 +265,4 @@ fn change_state_system_on_loaded_level(event: On<LevelLoadedEvent>, mut commands
     let trigger = event.event();
     commands.set_state(trigger.level_id);
     info!("current level state: {:?}", trigger.level_id);
-}
-
-#[derive(Component, GodotNode)]
-#[godot_node(base(Node2D), class_name(RScore))]
-pub struct Score {
-    pub count: i32,
-    pub highscore: i32,
-    pub is_new_highscore: bool
-}
-
-impl Default for Score {
-    fn default() -> Self {
-        Self {
-            count: 0,
-            highscore: -1,
-            is_new_highscore: false
-        }
-    }
 }

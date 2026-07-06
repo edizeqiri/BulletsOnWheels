@@ -6,10 +6,12 @@ use rand::Rng;
 
 use crate::enemy::CreateEnemyMessage;
 use crate::gamestate::InGameState;
-use crate::level_manager::{LevelId, Score};
+use crate::level_manager::LevelId;
+use crate::score::{self, LiveScore};
 
 pub(crate) fn plugin(app: &mut App) {
-    app.insert_resource(SpawnTimer(Timer::from_seconds(2., TimerMode::Repeating)))
+    app.add_plugins(score::plugin)
+        .insert_resource(SpawnTimer(Timer::from_seconds(2., TimerMode::Repeating)))
         .add_systems(
             Update,
             spawn_enemies_after_time
@@ -29,7 +31,7 @@ fn spawn_enemies_after_time(
     mut timer: ResMut<SpawnTimer>,
     mut enemy_writer: MessageWriter<CreateEnemyMessage>,
     spawn_area_query: Query<&GodotNodeHandle, With<SpawnArea>>,
-    score_board_query: Query<&Score>,
+    score_board_query: Query<&LiveScore>,
     mut godot: GodotAccess
 ) {
     if !timer.0.tick(time.delta()).just_finished() {
