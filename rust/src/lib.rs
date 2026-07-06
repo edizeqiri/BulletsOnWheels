@@ -29,6 +29,7 @@ mod score;
 mod weapon;
 mod weapon_impl;
 mod world;
+mod ui;
 
 #[bevy_app]
 fn build_app(app: &mut App) {

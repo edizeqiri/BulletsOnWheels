@@ -35,10 +35,10 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(Update, connect_enter_name_system.run_if(in_state(Level1)))
         .add_systems(
             Update,
-            connect_restart_buttons
-                .run_if(in_state(InGameState::PAUSED)
+            connect_restart_buttons.run_if(
+                in_state(InGameState::PAUSED)
                     .or_else(in_state(InGameState::DEFEAT).and_then(in_state(Level1)))
-                )
+            )
         )
         .add_observer(despawn_ask_for_player_name_system);
 }
@@ -55,20 +55,45 @@ pub struct RestartButton {
 
 fn connect_restart_buttons(
     mut restart_buttons: Query<(&GodotNodeHandle, &mut RestartButton)>,
-    signal: GodotSignals<RestartGameEvent>
+    restart_game_signal: GodotSignals<RestartGameEvent>,
+    button_entered_signal: GodotSignals<ButtonEnteredEvent>,
+    button_exited_signal: GodotSignals<ButtonExitedEvent>
 ) {
     for (restart_handle, mut restart_button) in &mut restart_buttons {
         if restart_button.is_connected {
             continue;
         }
-
-        signal.connect(
+        restart_game_signal.connect(
             *restart_handle,
             BaseButtonSignals::PRESSED,
             None,
             |_args, _node_handle, _ent| {
                 info!("Restart button pressed");
                 Some(RestartGameEvent)
+            }
+        );
+
+        button_entered_signal.connect(
+            *restart_handle,
+            CollisionObject2DSignals::MOUSE_ENTERED,
+            None,
+            |_args, restart_handle, _ent| {
+                info!("Mouse hovered over button.");
+                Some(ButtonEnteredEvent {
+                    button_handle: restart_handle,
+                })
+            }
+        );
+
+        button_exited_signal.connect(
+            *restart_handle,
+            CollisionObject2DSignals::MOUSE_EXITED,
+            None,
+            |_args, restart_handle, _ent| {
+                info!("Mouse leaving button.");
+                Some(ButtonExitedEvent {
+                    button_handle: restart_handle,
+                })
             }
         );
 
@@ -159,6 +184,16 @@ pub struct ExitPauseGameEvent;
 
 #[derive(Event, Debug, Clone)]
 pub struct RestartGameEvent;
+
+#[derive(Event, Debug, Clone)]
+pub struct ButtonEnteredEvent {
+    pub button_handle: GodotNodeHandle
+}
+
+#[derive(Event, Debug, Clone)]
+pub struct ButtonExitedEvent {
+    pub button_handle: GodotNodeHandle
+}
 
 fn reset_game(_: On<RestartGameEvent>, mut commands: Commands) {
     commands.trigger(LoadLevelMessage {
