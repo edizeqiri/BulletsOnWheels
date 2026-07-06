@@ -9,8 +9,7 @@ use bevy_asset_loader::prelude::*;
 use godot::classes::{Label, RichTextLabel};
 use godot_bevy::prelude::*;
 
-use crate::gamestate::{AppState, CharacterDeathMessage, ExitGameEvent, InGameState};
-use crate::level_manager::LevelId::Level1;
+use crate::gamestate::{AppState, CharacterDeathMessage, InGameState};
 use crate::level_manager::{CurrentLevel, LevelId, Score};
 use crate::player::Player;
 use crate::world::NameEnteredEvent;
