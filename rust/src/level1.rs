@@ -7,9 +7,11 @@ use rand::Rng;
 use crate::enemy::CreateEnemyMessage;
 use crate::gamestate::InGameState;
 use crate::level_manager::LevelId;
+use crate::score;
 
 pub(crate) fn plugin(app: &mut App) {
-    app.insert_resource(SpawnTimer(Timer::from_seconds(0.5, TimerMode::Repeating)))
+    app.add_plugins(score::plugin)
+        .insert_resource(SpawnTimer(Timer::from_seconds(0.5, TimerMode::Repeating)))
         .add_systems(
             Update,
             spawn_enemies_after_time
@@ -44,11 +46,11 @@ fn spawn_enemies_after_time(
         let rect = (shape.get_rect().size / 2.0);
         let center = node.get_global_position();
 
-        info!("view: {:?}", rect);
-        info!("center: {:?}", center);
+        debug!("view: {:?}", rect);
+        debug!("center: {:?}", center);
         let x = rng.random_range((center.x - rect.x)..(center.x + rect.x));
         let y = rng.random_range((center.y - rect.y)..(center.y + rect.y));
-        info!("x: {} | y: {}", x, y);
+        debug!("x: {} | y: {}", x, y);
         enemy_writer.write(CreateEnemyMessage {
             position: Vec2 { x, y }
         });
