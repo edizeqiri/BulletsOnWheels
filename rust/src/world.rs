@@ -35,10 +35,10 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(Update, connect_enter_name_system.run_if(in_state(Level1)))
         .add_systems(
             Update,
-            connect_restart_buttons
-                .run_if(in_state(InGameState::PAUSED)
+            connect_restart_buttons.run_if(
+                in_state(InGameState::PAUSED)
                     .or_else(in_state(InGameState::DEFEAT).and_then(in_state(Level1)))
-                )
+            )
         )
         .add_observer(despawn_ask_for_player_name_system);
 }
