@@ -13,9 +13,12 @@ use crate::enemy::{Enemy, EnemySpawnedMessage};
 #[cfg(not(target_arch = "wasm32"))]
 use crate::gamestate::ExitGameEvent;
 use crate::gamestate::InGameState;
-use crate::input;
+use crate::level_manager::LevelId::MainMenu;
+use crate::level_manager::LoadLevelMessage;
 use crate::weapon::Damage;
 use crate::weapon_impl::{FireRate, ProjectileShot, Speed, WeaponKindComponent};
+use crate::world::RestartGameEvent;
+use crate::{input, level_manager, level1, menu};
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(GodotTransformConfig::two_way())
@@ -27,7 +30,12 @@ pub(super) fn plugin(app: &mut App) {
         )
         .add_systems(Update, update_healthbar_animation_system)
         .add_systems(Update, log_scene_tree_on_keypress)
-        .add_observer(exit_game);
+        .add_observer(exit_game)
+        .add_observer(reset_game)
+        .add_plugins(level1::plugin)
+        .add_plugins(menu::plugin)
+        .add_plugins(level_manager::plugin)
+        .add_systems(Startup, init_world);
 }
 fn collision_adapter(collision: On<CollisionStarted>, mut commands: Commands) {
     let event = collision.event();
@@ -221,4 +229,18 @@ fn on_shoot_adapter(
             .entity(message.projectile)
             .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
     }
+}
+
+fn reset_game(_: On<RestartGameEvent>, mut commands: Commands) {
+    commands.trigger(LoadLevelMessage {
+        level_id: crate::level_manager::LevelId::MainMenu
+    });
+    commands.set_state(InGameState::RUNNING);
+}
+
+#[derive(Debug, Event)]
+pub struct ResetSceneEvent(pub Entity);
+
+fn init_world(mut commands: Commands) {
+    commands.trigger(LoadLevelMessage { level_id: MainMenu });
 }
