@@ -92,7 +92,9 @@ pub(super) fn plugin(app: &mut App) {
             Update,
             connect_enter_name_system.run_if(in_state(LevelId::Level1))
         )
-        .add_observer(spawn_score_board);
+        .add_observer(spawn_score_board)
+        .add_observer(on_mouse_enter_button_animation)
+        .add_observer(on_mouse_exit_button_animation);
 }
 fn collision_adapter(collision: On<CollisionStarted>, mut commands: Commands) {
     let event = collision.event();
@@ -325,22 +327,59 @@ pub struct RestartButton {
     pub is_connected: bool
 }
 
+#[derive(Event, Debug, Clone)]
+pub struct ButtonEnteredEvent {
+    pub button_handle: GodotNodeHandle
+}
+
+#[derive(Event, Debug, Clone)]
+pub struct ButtonExitedEvent {
+    pub button_handle: GodotNodeHandle
+}
+
+
 fn connect_restart_buttons(
     mut restart_buttons: Query<(&GodotNodeHandle, &mut RestartButton)>,
-    signal: GodotSignals<RestartGameEvent>
+    restart_game_signal: GodotSignals<RestartGameEvent>,
+    button_entered_signal: GodotSignals<ButtonEnteredEvent>,
+    button_exited_signal: GodotSignals<ButtonExitedEvent>
 ) {
     for (restart_handle, mut restart_button) in &mut restart_buttons {
         if restart_button.is_connected {
             continue;
         }
 
-        signal.connect(
+        restart_game_signal.connect(
             *restart_handle,
             BaseButtonSignals::PRESSED,
             None,
             |_args, _node_handle, _ent| {
                 info!("Restart button pressed");
                 Some(RestartGameEvent)
+            }
+        );
+
+        button_entered_signal.connect(
+            *restart_handle,
+            CollisionObject2DSignals::MOUSE_ENTERED,
+            None,
+            |_args, restart_handle, _ent| {
+                info!("Mouse hovered over button.");
+                Some(ButtonEnteredEvent {
+                    button_handle: restart_handle,
+                })
+            }
+        );
+
+        button_exited_signal.connect(
+            *restart_handle,
+            CollisionObject2DSignals::MOUSE_EXITED,
+            None,
+            |_args, restart_handle, _ent| {
+                info!("Mouse leaving button.");
+                Some(ButtonExitedEvent {
+                    button_handle: restart_handle,
+                })
             }
         );
 
@@ -545,4 +584,48 @@ fn update_score_label(
         "Score: {}\nHigh Score: {}",
         score.count, score.highscore,
     ));
+}
+
+fn on_mouse_enter_button_animation(
+    trigger: On<ButtonEnteredEvent>,
+    mut godot: GodotAccess
+) {
+    let Some(button) = godot.try_get::<Button>(trigger.button_handle) else {
+        info!("No button found for this handle.");
+        return;
+    };
+
+    // sprite of the button
+    let Some(mut nine_patch_rect) = button.try_get_node_as::<NinePatchRect>("RestartSprite") else {
+        info!("No child found of type NinePatchRect");
+        return;
+    };
+
+    // ANIMATE BUTTON
+    // make brighter
+    nine_patch_rect.set_modulate(godot::prelude::Color::from_rgb(1.2, 1.2, 1.2));
+    // increase size of button
+    let size = nine_patch_rect.get_size();
+    nine_patch_rect.set_pivot_offset(size / 2.0);
+    nine_patch_rect.set_scale(Vector2::new(1.05, 1.05));
+}
+
+fn on_mouse_exit_button_animation(
+    trigger: On<ButtonExitedEvent>
+    , mut godot: GodotAccess
+) {
+    let Some(button) = godot.try_get::<Button>(trigger.button_handle) else {
+        info!("No button found for this handle.");
+        return;
+    };
+
+    // sprite of the button
+    let Some(mut nine_patch_rect) = button.try_get_node_as::<NinePatchRect>("RestartSprite") else {
+        info!("No child found of type NinePatchRect");
+        return;
+    };
+
+    // RESET ANIMATION
+    nine_patch_rect.set_modulate(godot::prelude::Color::from_rgb(1.0, 1.0, 1.0));
+    nine_patch_rect.set_scale(Vector2::new(1., 1.));
 }

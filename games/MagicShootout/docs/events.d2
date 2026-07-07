@@ -1,5 +1,7 @@
 direction: right
 
+"ButtonEnteredEvent": { shape: parallelogram }
+"ButtonExitedEvent": { shape: parallelogram }
 "CollisionStarted": { shape: parallelogram }
 "ExitGameEvent": { shape: parallelogram }
 "ExitPauseGameEvent": { shape: parallelogram }
@@ -23,6 +25,8 @@ direction: right
 "init_world": { shape: rectangle }
 "level_state_change_system": { shape: rectangle }
 "on_load_level_request": { shape: rectangle }
+"on_mouse_enter_button_animation": { shape: rectangle }
+"on_mouse_exit_button_animation": { shape: rectangle }
 "on_scene_changed": { shape: rectangle }
 "pause_game_on_event": { shape: rectangle }
 "reset_game": { shape: rectangle }
@@ -45,6 +49,8 @@ direction: right
 "init_world" -> "LoadLevelMessage": triggers
 "LoadLevelMessage" -> "level_state_change_system": reads
 "LoadLevelMessage" -> "on_load_level_request": reads
+"ButtonEnteredEvent" -> "on_mouse_enter_button_animation": reads
+"ButtonExitedEvent" -> "on_mouse_exit_button_animation": reads
 "SceneChanged" -> "on_scene_changed": reads
 "PauseGameEvent" -> "pause_game_on_event": reads
 "RestartGameEvent" -> "reset_game": reads
