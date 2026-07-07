@@ -128,3 +128,4 @@ fn spawn_enemy_scene(
             .insert(GodotScene::from_handle(assets.enemy_scene.clone()));
     }
 }
+

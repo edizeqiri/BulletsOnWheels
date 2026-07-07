@@ -17,6 +17,7 @@ mod enemy_ai;
 mod gamepad;
 mod gamestate;
 mod godot_adapter;
+mod godot_adapter2;
 mod input;
 mod keyboard;
 mod level1;
