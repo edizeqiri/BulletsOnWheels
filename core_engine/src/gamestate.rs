@@ -8,8 +8,6 @@ use bevy::ecs::system::Query;
 use bevy::log::info;
 use bevy::prelude::{Message, MessageReader, MessageWriter, Res, State, States};
 
-use crate::level_manager::LevelId;
-
 pub(super) fn plugin(app: &mut App) {
     app;
     //.add_systems(FixedUpdate, log_state);
@@ -21,7 +19,7 @@ pub(crate) enum AppState {
     #[default]
     RUNNING, // character movement
     PAUSE,   // menu
-    EXIT     // exit
+    EXIT,    // exit
 }
 
 #[derive(States, Debug, Default, Clone, Eq, PartialEq, Hash)]
@@ -29,25 +27,19 @@ pub(crate) enum InGameState {
     PAUSED,
     #[default]
     RUNNING,
-    DEFEAT
+    DEFEAT,
 }
 
 #[derive(Message)]
 pub struct CharacterDeathMessage {
     pub source: Entity,
-    pub target: Entity
+    pub target: Entity,
 }
 
 #[derive(Event, Debug, Clone)]
 pub struct ExitGameEvent;
 
-
-fn log_state(
-    appstate: Res<State<AppState>>,
-    ingamestate: Res<State<InGameState>>,
-    levlestate: Res<State<LevelId>>
-) {
+fn log_state(appstate: Res<State<AppState>>, ingamestate: Res<State<InGameState>>) {
     info!("appstate is: {:?}", appstate.get());
     info!("ingamestate is: {:?}", ingamestate.get());
-    info!("levlestate is: {:?}", levlestate.get());
 }

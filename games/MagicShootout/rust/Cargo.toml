@@ -41,4 +41,4 @@ godot-bevy = { git = "https://github.com/edizeqiri/godot-bevy", rev = "929d252",
 godot = { version = "0.5", features = ["experimental-wasm", "experimental-wasm-nothreads"] }
 wasm-bindgen = "=0.2.108"
 
-core = { path = "../../../core" }
+core_engine = { path = "../../../core_engine" }

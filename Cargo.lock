@@ -712,6 +712,7 @@ dependencies = [
  "bevy",
  "bevy_asset_loader",
  "cargo-godot-lib",
+ "core_engine",
  "enum_delegate",
  "glam 0.30.10",
  "godot",
@@ -720,18 +721,6 @@ dependencies = [
  "rand 0.9.4",
  "test-case",
  "wasm-bindgen",
-]
-
-[[package]]
-name = "bullets_on_wheels_core"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy_asset_loader",
- "enum_delegate",
- "glam 0.30.10",
- "rand 0.9.4",
- "test-case",
 ]
 
 [[package]]
@@ -919,6 +908,18 @@ name = "core-foundation-sys"
 version = "0.8.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
+
+[[package]]
+name = "core_engine"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_asset_loader",
+ "enum_delegate",
+ "glam 0.30.10",
+ "rand 0.9.4",
+ "test-case",
+]
 
 [[package]]
 name = "cpufeatures"

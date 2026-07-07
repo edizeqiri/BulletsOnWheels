@@ -1,5 +1,5 @@
 [package]
-name = "bullets_on_wheels_core"
+name = "core_engine"
 version = "0.1.0"
 edition = "2024"
 

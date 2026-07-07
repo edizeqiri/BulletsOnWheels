@@ -14,7 +14,7 @@ mod weapon_impl;
 mod world;
 
 #[bevy_app]
-fn build_app(app: &mut App) {
+pub fn build_app(app: &mut App) {
     app.add_plugins(world::plugin)
         .add_plugins(weapon::plugin)
         .add_plugins(character::plugin)

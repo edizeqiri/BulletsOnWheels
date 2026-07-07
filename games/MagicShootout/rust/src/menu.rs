@@ -5,9 +5,7 @@ use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 
-use crate::gamestate::{AppState, ExitGameEvent, InGameState};
 use crate::level_manager::CurrentLevel;
-use crate::world::{ExitPauseGameEvent, PauseGameEvent, RestartGameEvent};
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(AppState::RUNNING).load_collection::<MenuAssets>())
