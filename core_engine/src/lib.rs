@@ -5,7 +5,7 @@ use crate::gamestate::{AppState, InGameState};
 mod character;
 mod enemy;
 mod enemy_ai;
-mod gamestate;
+pub mod gamestate;
 mod player;
 mod projectile;
 mod score;

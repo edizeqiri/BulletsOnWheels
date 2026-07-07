@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 bevy = { version = "0.19", default-features = false, features = ["bevy_state","bevy_asset","bevy_log"] }

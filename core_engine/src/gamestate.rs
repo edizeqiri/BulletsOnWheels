@@ -14,7 +14,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(States, Debug, Clone, Eq, PartialEq, Hash, Default)]
-pub(crate) enum AppState {
+pub enum AppState {
     LOADING, // asset loading & level transition
     #[default]
     RUNNING, // character movement
@@ -23,7 +23,7 @@ pub(crate) enum AppState {
 }
 
 #[derive(States, Debug, Default, Clone, Eq, PartialEq, Hash)]
-pub(crate) enum InGameState {
+pub enum InGameState {
     PAUSED,
     #[default]
     RUNNING,
