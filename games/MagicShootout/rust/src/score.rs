@@ -9,17 +9,16 @@ use crate::level_manager::{CurrentLevel, LevelId};
 use crate::player::Player;
 
 pub(crate) fn plugin(app: &mut App) {
-    app
-    .insert_resource(load_score_board())
-    .insert_resource(ScoreBoard::default())
-    .add_systems(
-        Update,
-        (init_score, score_tracker)
-            .run_if(in_state(LevelId::Level1))
-            .run_if(in_state(InGameState::RUNNING))
-    )
-    .add_observer(save_score_board)
-    .add_observer(despawn_ask_for_player_name_system);
+    app.insert_resource(load_score_board())
+        .insert_resource(ScoreBoard::default())
+        .add_systems(
+            Update,
+            (init_score, score_tracker)
+                .run_if(in_state(LevelId::Level1))
+                .run_if(in_state(InGameState::RUNNING))
+        )
+        .add_observer(save_score_board)
+        .add_observer(despawn_ask_for_player_name_system);
 }
 
 #[derive(Event, Clone, Default)]
@@ -179,7 +178,6 @@ fn load_score_board() -> ScoreBoard {
     }
 }
 
-
 #[derive(Component)]
 pub struct DeathHighscoreScene;
 
@@ -194,5 +192,3 @@ fn despawn_ask_for_player_name_system(
     };
     commands.entity(deaht_high_score_scene).despawn();
 }
-
-

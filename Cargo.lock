@@ -723,6 +723,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "bullets_on_wheels_core"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_asset_loader",
+ "enum_delegate",
+ "glam 0.30.10",
+ "rand 0.9.4",
+ "test-case",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.20.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

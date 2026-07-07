@@ -10,8 +10,7 @@ use crate::level_manager::LevelId;
 use crate::score;
 
 pub(crate) fn plugin(app: &mut App) {
-    app.add_plugins(score::plugin)
-        .insert_resource(SpawnTimer(Timer::from_seconds(0.5, TimerMode::Repeating)))
+    app.insert_resource(SpawnTimer(Timer::from_seconds(0.5, TimerMode::Repeating)))
         .add_systems(
             Update,
             spawn_enemies_after_time
