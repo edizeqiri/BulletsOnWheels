@@ -29,7 +29,6 @@ mod score;
 mod weapon;
 mod weapon_impl;
 mod world;
-mod ui;
 
 #[bevy_app]
 fn build_app(app: &mut App) {
@@ -47,7 +46,6 @@ fn build_app(app: &mut App) {
         .add_plugins(main_menu::plugin)
         .add_plugins(score::plugin)
         .add_plugins(gamestate::plugin)
-        .add_plugins(ui::plugin)
         .add_plugins(StatesPlugin)
         .init_state::<AppState>()
         .init_state::<InGameState>()
