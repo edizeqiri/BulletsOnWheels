@@ -10,9 +10,9 @@ use godot::classes::{Label, RichTextLabel};
 use godot_bevy::prelude::*;
 
 use crate::gamestate::{AppState, CharacterDeathMessage, InGameState};
-use crate::level_manager::{CurrentLevel, LevelId, Score};
+use crate::level_manager::{CurrentLevel, LevelId};
 use crate::player::Player;
-use crate::world::NameEnteredEvent;
+use crate::world::WorldAssets;
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_loading_state(
@@ -32,8 +32,40 @@ pub(crate) fn plugin(app: &mut App) {
             .run_if(in_state(InGameState::DEFEAT))
             .run_if(in_state(LevelId::Level1))
     )
+    .add_systems(
+        OnEnter(InGameState::DEFEAT),
+        spawn_ask_for_player_name_system.run_if(in_state(LevelId::Level1))
+    )
+    .add_systems(
+        Update,
+        connect_enter_name_system.run_if(in_state(LevelId::Level1))
+    )
     .add_observer(save_score_board)
-    .add_observer(spawn_score_board);
+    .add_observer(spawn_score_board)
+    .add_observer(despawn_ask_for_player_name_system);
+}
+
+#[derive(Event, Clone, Default)]
+pub struct NameEnteredEvent {
+    pub name: String
+}
+
+#[derive(Component, GodotNode)]
+#[godot_node(base(Node2D), class_name(RScore))]
+pub struct LiveScore {
+    pub count: i32,
+    pub highscore: i32,
+    pub is_new_highscore: bool
+}
+
+impl Default for LiveScore {
+    fn default() -> Self {
+        Self {
+            count: 0,
+            highscore: -1,
+            is_new_highscore: false
+        }
+    }
 }
 
 const SCORE_BOARD_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/score_board.csv");
@@ -68,7 +100,7 @@ struct ScoreBoardEntry {
     score: i32
 }
 
-fn init_score(mut score_query: Query<&mut Score>, score_board: Res<ScoreBoard>) {
+fn init_score(mut score_query: Query<&mut LiveScore>, score_board: Res<ScoreBoard>) {
     let Ok(mut score) = score_query.single_mut() else {
         return;
     };
@@ -81,7 +113,7 @@ fn init_score(mut score_query: Query<&mut Score>, score_board: Res<ScoreBoard>) 
 fn score_tracker(
     mut death_message_reader: MessageReader<CharacterDeathMessage>,
     player_query: Query<Entity, With<Player>>,
-    mut score_query: Query<&mut Score>
+    mut score_query: Query<&mut LiveScore>
 ) {
     for message in death_message_reader.read() {
         let Ok(player) = player_query.single() else {
@@ -105,7 +137,7 @@ fn score_tracker(
 
 // todo: this function shall be "level state" dependent
 fn update_score_label(
-    score_query: Query<&Score, Changed<Score>>,
+    score_query: Query<&LiveScore, Changed<LiveScore>>,
     current_level: Res<CurrentLevel>,
     mut scene_tree: SceneTreeRef
 ) {
@@ -135,7 +167,7 @@ fn update_score_label(
 
 fn save_score_board(
     trigger: On<NameEnteredEvent>,
-    score_query: Query<&Score>,
+    score_query: Query<&LiveScore>,
     mut score_board: ResMut<ScoreBoard>,
     mut commands: Commands
 ) {
@@ -271,4 +303,62 @@ fn prepare_leader_board_content(score_board: Res<ScoreBoard>) -> String {
 
     text.push_str("[/table]");
     text
+}
+
+#[derive(Component)]
+pub struct DeathHighscoreScene;
+
+fn spawn_ask_for_player_name_system(mut commands: Commands, mut assets: ResMut<WorldAssets>) {
+    commands
+        .spawn_empty()
+        .insert(GodotScene::from_handle(
+            assets.player_death_highscore_scene.clone()
+        ))
+        .insert(DeathHighscoreScene);
+    assets.is_connected = false;
+}
+
+fn despawn_ask_for_player_name_system(
+    _trigger: On<SpawnLeaderBoardEvent>,
+    death_high_score_query: Query<Entity, With<DeathHighscoreScene>>,
+    mut commands: Commands
+) {
+    let Ok(deaht_high_score_scene) = death_high_score_query.single() else {
+        error!("Could not despawn death highscore scene.");
+        return;
+    };
+    commands.entity(deaht_high_score_scene).despawn();
+}
+
+fn connect_enter_name_system(
+    enter_name_field: Query<&GodotNodeHandle, With<LineEditMarker>>,
+    entered_name_signal: GodotSignals<NameEnteredEvent>,
+    world_assets: Option<ResMut<WorldAssets>>
+) {
+    let Some(mut assets) = world_assets else {
+        return;
+    };
+
+    if assets.is_connected {
+        return;
+    }
+    let Ok(enter_name_handler) = enter_name_field.single() else {
+        return;
+    };
+
+    entered_name_signal.connect(
+        *enter_name_handler,
+        LineEditSignals::TEXT_SUBMITTED,
+        None,
+        |args, _node_handle, _ent| {
+            let Some(name) = args.get(0)?.try_to::<String>().ok() else {
+                error!("Name could not be found or parsed");
+                return None;
+            };
+
+            Some(NameEnteredEvent { name })
+        }
+    );
+    info!("enter name signal connected");
+    assets.is_connected = true;
 }
