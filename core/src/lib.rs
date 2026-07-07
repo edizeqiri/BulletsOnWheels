@@ -1,4 +1,14 @@
-use bevy::prelude::*;
+use bevy::{ecs::world, prelude::*, state::app::StatesPlugin};
+
+use crate::gamestate::{AppState, InGameState};
+
+mod character;
+mod enemy;
+mod enemy_ai;
+mod gamestate;
+mod score;
+mod weapon;
+mod world;
 
 #[bevy_app]
 fn build_app(app: &mut App) {
@@ -9,6 +19,5 @@ fn build_app(app: &mut App) {
         .add_plugins(score::plugin)
         .add_plugins(StatesPlugin)
         .init_state::<AppState>()
-        .init_state::<InGameState>()
-        .init_state::<LevelId>();
+        .init_state::<InGameState>();
 }
