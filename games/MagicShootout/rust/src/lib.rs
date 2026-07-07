@@ -16,6 +16,7 @@ mod enemy;
 mod enemy_ai;
 mod gamepad;
 mod gamestate;
+mod godot_adapter;
 mod input;
 mod keyboard;
 mod level1;
@@ -38,6 +39,7 @@ fn build_app(app: &mut App) {
     //     .add_plugins(GodotAudioPlugin)
     //     .add_plugins(BevyInputBridgePlugin);
     app.add_plugins(GodotDefaultPlugins)
+        .add_plugins(godot_adapter::plugin)
         .add_plugins(debug::plugin)
         .add_plugins(world::plugin)
         .add_plugins(weapon::plugin)

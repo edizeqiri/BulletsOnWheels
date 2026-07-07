@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["rust", "tools"]
+members = ["games/MagicShootout/rust", "tools"]
 
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
@@ -15,7 +15,7 @@ opt-level = 3
 # by `bevy_app`'s `std` feature with no way to disable it via features.
 # See rust/crates/ctrlc-stub for details.
 [patch.crates-io]
-ctrlc = { path = "rust/crates/ctrlc-stub" }
+ctrlc = { path = "games/MagicShootout/rust/crates/ctrlc-stub" }
 
 # Vendored Bevy crates patched to treat wasm32-unknown-emscripten (Godot web) as
 # a native/std target rather than a wasm-bindgen browser target. Bevy gates its
@@ -23,5 +23,5 @@ ctrlc = { path = "rust/crates/ctrlc-stub" }
 # into wasm-bindgen/js-sys (stubs that panic at runtime under Godot). The patches
 # add `not(target_os = "emscripten")` so emscripten falls into the std branches
 # (std executor, stderr logging) that already exist. No effect on desktop.
-bevy_platform = { path = "rust/vendor/bevy_platform" }
-bevy_log = { path = "rust/vendor/bevy_log" }
+bevy_platform = { path = "games/MagicShootout/rust/vendor/bevy_platform" }
+bevy_log = { path = "games/MagicShootout/rust/vendor/bevy_log" }

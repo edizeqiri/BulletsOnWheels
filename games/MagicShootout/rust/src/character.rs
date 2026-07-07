@@ -1,7 +1,4 @@
 use bevy::prelude::*;
-use godot::classes::{AnimatedSprite2D, CharacterBody2D};
-use godot::prelude::*;
-use godot_bevy::prelude::*;
 
 use crate::gamestate::{CharacterDeathMessage, InGameState};
 use crate::player::Player;
@@ -15,18 +12,10 @@ pub(super) fn plugin(app: &mut App) {
         .add_message::<CharacterDeathMessage>()
         .add_plugins(enemy_ai::plugin)
         .add_plugins(enemy::plugin)
-        .add_systems(
-            PhysicsUpdate,
-            apply_character_movement.run_if(in_state(InGameState::RUNNING))
-        )
         .add_observer(character_bullet_collision_system.run_if(in_state(InGameState::RUNNING)))
         .add_systems(
             Update,
-            (
-                handle_character_zero_health_system,
-                update_healthbar_animation_system
-            )
-                .run_if(in_state(InGameState::RUNNING))
+            handle_character_zero_health_system.run_if(in_state(InGameState::RUNNING))
         );
 }
 
@@ -89,31 +78,20 @@ pub struct CharacterCore {
 #[derive(Component, Default)]
 pub struct PlayerName(String);
 
-/// Movement Sink, godot style
-/// move_and_slide is needed so that we do not have teleports by just changing
-/// translation in transform
-fn apply_character_movement(
-    query: Query<(&GodotNodeHandle, &MovementDirection, &MovementSpeed)>,
-    mut godot: GodotAccess
-) {
-    for (handle, movement, speed) in &query {
-        let Some(mut body) = godot.try_get::<CharacterBody2D>(*handle) else {
-            continue;
-        };
-        let velocity = Vector2::new(movement.vec.x, movement.vec.y) * speed.0;
-        body.set_velocity(velocity);
-        body.move_and_slide();
-    }
-}
-
 #[derive(Message)]
-struct CharacterHitMessage {
+pub struct CharacterHitMessage {
     pub target: Entity,
     pub health: f32
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Message, Event)]
+pub struct CollisionStartedDomain {
+    pub entity1: Entity,
+    pub entity2: Entity
+}
+
 fn character_bullet_collision_system(
-    collision: On<CollisionStarted>,
+    collision: On<CollisionStartedDomain>,
     mut health_query: Query<&mut Health>,
     projectile_query: Query<&Damage, With<Projectile>>,
     shooter_query: Query<&Shooter>,
@@ -168,26 +146,6 @@ fn character_bullet_collision_system(
             source: shooter.0,
             target: target_entity
         });
-    }
-}
-
-fn update_healthbar_animation_system(
-    mut damage_message: MessageReader<CharacterHitMessage>,
-    characters: Query<&GodotNodeHandle, With<Health>>,
-    mut godot: GodotAccess
-) {
-    for damage in damage_message.read() {
-        if let Ok(handle) = characters.get(damage.target) {
-            let Some(character_body) = godot.try_get::<CharacterBody2D>(*handle) else {
-                return;
-            };
-            let mut sprite = character_body.get_node_as::<AnimatedSprite2D>("Healthbar");
-
-            if damage.health >= 0. && damage.health <= 4. {
-                let number: u32 = damage.health as u32;
-                sprite.play_ex().name(&number.to_string()).done();
-            }
-        }
     }
 }
 

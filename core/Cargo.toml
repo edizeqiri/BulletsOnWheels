@@ -1,0 +1,16 @@
+[package]
+name = "bullets_on_wheels"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+bevy = { version = "0.19", default-features = false, features = ["bevy_state","bevy_asset","bevy_log"] }
+rand = "0.9.2"
+glam = "0.30.9"
+test-case = "3.3.1"
+enum_delegate = "0.2.0"
+cargo-godot-lib = "0.2.1"
+bevy_asset_loader = "0.27.0-rc.1"

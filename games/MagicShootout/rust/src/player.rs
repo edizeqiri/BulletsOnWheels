@@ -20,7 +20,7 @@ pub struct PlayerBundle {
     #[export_fields(value(export_type(f32), default(200.)))]
     speed: MovementSpeed,
 
-    core: CharacterCore
+    core: CharacterCore,
 }
 
 #[derive(Message)]

@@ -2,15 +2,17 @@
 .idea
 .DS_Store
 
-godot/.godot
-godot/rust/target
+games/MagicShootout/godot/.godot
+games/MagicShootout/godot/rust/target
 
-rust/target
-godot/exports
+games/MagicShootout/rust/target/*
+games/MagicShootout/godot/exports
 
-godot/addons/backstitch/
+games/MagicShootout/godot/addons/backstitch/
 /godot_editor/
 .backstitch_version
 godot/.backstitch/
 backstitch.cfg
 rust/resources/score_board.csv
+
+rust/target
