@@ -12,11 +12,11 @@ pub(crate) fn plugin(app: &mut App) {
     app.add_message::<ShootMessage>()
         .add_systems(
             Update,
-            on_shoot_message_system.run_if(in_state(InGameState::RUNNING))
+            on_shoot_message_system.run_if(in_state(InGameState::RUNNING)),
         )
         .add_systems(
             Update,
-            update_projectile_system.run_if(in_state(InGameState::RUNNING))
+            update_projectile_system.run_if(in_state(InGameState::RUNNING)),
         );
 }
 
@@ -25,20 +25,20 @@ pub enum WeaponKind {
     #[default]
     GUN,
     BOW,
-    STAFF
+    STAFF,
 }
 
 #[derive(Component, Debug, Clone, Copy)]
 pub struct Speed {
     pub current: f32,
-    pub max: f32
+    pub max: f32,
 }
 
 impl Default for Speed {
     fn default() -> Self {
         Self {
             current: 0.,
-            max: 150.
+            max: 150.,
         }
     }
 }
@@ -53,7 +53,7 @@ pub struct Weapon {
     damage: Damage,
     pub speed: Speed,
     fire_rate: FireRate,
-    weapon_kind: WeaponKindComponent
+    weapon_kind: WeaponKindComponent,
 }
 
 impl Weapon {
@@ -73,19 +73,19 @@ impl Weapon {
 #[derive(Message)]
 pub struct ShootMessage {
     pub shooter: Entity,
-    pub aim: Aim
+    pub aim: Aim,
 }
 
 #[derive(Component, Clone)]
 pub struct Weapons {
-    pub list: Vec<Weapon>
+    pub list: Vec<Weapon>,
 }
 #[derive(Component)]
 pub struct Shooter(pub Entity);
 
 #[derive(Message)]
 pub struct ProjectileShot {
-    pub projectile: Entity
+    pub projectile: Entity,
 }
 
 pub(crate) fn on_shoot_message_system(
@@ -93,7 +93,7 @@ pub(crate) fn on_shoot_message_system(
     mut shoot_message: MessageReader<ShootMessage>,
     mut shoot_writer: MessageWriter<ProjectileShot>,
     mut shooter_query: Query<(&Transform, &Weapon, &Aim)>,
-    time: Res<Time>
+    time: Res<Time>,
 ) {
     for message in shoot_message.read() {
         if let Ok((transform, weapon, aim)) = shooter_query.get_mut(message.shooter) {
@@ -124,8 +124,8 @@ fn update_projectile_system(
     time: Res<Time>,
     projectile_query: Query<
         (&mut Transform, &Velocity, &SpawnedTime, &mut Speed),
-        With<Projectile>
-    >
+        With<Projectile>,
+    >,
 ) {
     for (mut transform, velocity, _spawned_time, speed) in projectile_query {
         /*/
@@ -147,7 +147,7 @@ impl Default for Weapons {
             list: vec![
                 Weapon::new(1., 1000., 0.5, WeaponKind::BOW),
                 Weapon::new(1., 250., 5., WeaponKind::GUN),
-            ]
+            ],
         }
     }
 }

@@ -15,46 +15,46 @@ pub(super) fn plugin(app: &mut App) {
         .add_observer(character_bullet_collision_system.run_if(in_state(InGameState::RUNNING)))
         .add_systems(
             Update,
-            handle_character_zero_health_system.run_if(in_state(InGameState::RUNNING))
+            handle_character_zero_health_system.run_if(in_state(InGameState::RUNNING)),
         );
 }
 
 #[derive(Component, Reflect)]
 pub struct Health {
     pub current: f32,
-    pub(crate) max: f32
+    pub max: f32,
 }
 
 impl Default for Health {
     fn default() -> Self {
         Self {
             current: 4.,
-            max: 4.
+            max: 4.,
         }
     }
 }
 
 #[derive(Component, Default)]
 pub struct ShootingState {
-    pub(crate) is_shooting: bool
+    pub(crate) is_shooting: bool,
 }
 
 #[derive(Component, Copy, Clone)]
 pub struct Aim {
-    pub vec: Vec2
+    pub vec: Vec2,
 }
 
 impl Default for Aim {
     fn default() -> Self {
         Self {
-            vec: Vec2::new(0., 0.)
+            vec: Vec2::new(0., 0.),
         }
     }
 }
 
 #[derive(Component, Copy, Clone, Default)]
 pub struct MovementDirection {
-    pub vec: Vec2
+    pub vec: Vec2,
 }
 
 #[derive(Component, Reflect, Copy, Clone)]
@@ -72,7 +72,7 @@ pub struct CharacterCore {
     aim: Aim,
     movement: MovementDirection,
     shooting_state: ShootingState,
-    player_name: PlayerName
+    player_name: PlayerName,
 }
 
 #[derive(Component, Default)]
@@ -81,13 +81,13 @@ pub struct PlayerName(String);
 #[derive(Message)]
 pub struct CharacterHitMessage {
     pub target: Entity,
-    pub health: f32
+    pub health: f32,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Message, Event)]
 pub struct CollisionStartedDomain {
     pub entity1: Entity,
-    pub entity2: Entity
+    pub entity2: Entity,
 }
 
 fn character_bullet_collision_system(
@@ -96,7 +96,7 @@ fn character_bullet_collision_system(
     projectile_query: Query<&Damage, With<Projectile>>,
     shooter_query: Query<&Shooter>,
     mut hit_writer: MessageWriter<CharacterHitMessage>,
-    mut death_message_writer: MessageWriter<CharacterDeathMessage>
+    mut death_message_writer: MessageWriter<CharacterDeathMessage>,
 ) {
     let event = collision.event();
 
@@ -137,14 +137,14 @@ fn character_bullet_collision_system(
     health.current -= damage.0;
     hit_writer.write(CharacterHitMessage {
         target: target_entity,
-        health: health.current
+        health: health.current,
     });
 
     let character_is_dead = health.current <= 0.;
     if character_is_dead {
         death_message_writer.write(CharacterDeathMessage {
             source: shooter.0,
-            target: target_entity
+            target: target_entity,
         });
     }
 }
@@ -152,7 +152,7 @@ fn character_bullet_collision_system(
 fn handle_character_zero_health_system(
     mut commands: Commands,
     mut character_death_messages: MessageReader<CharacterDeathMessage>,
-    player_query: Query<Entity, With<Player>>
+    player_query: Query<Entity, With<Player>>,
 ) {
     for message in character_death_messages.read() {
         let Ok(player) = player_query.single() else {

@@ -10,10 +10,10 @@ pub struct PlayerBundle {
     player: Player,
     health: Health,
     speed: MovementSpeed,
-    core: CharacterCore
+    core: CharacterCore,
 }
 
 #[derive(Message)]
 pub struct PlayerDeathMessage {
-    pub entity: Entity
+    pub entity: Entity,
 }

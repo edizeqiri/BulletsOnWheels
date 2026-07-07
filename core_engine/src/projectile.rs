@@ -8,7 +8,7 @@ pub struct ProjectileBundle {
     projectile: Projectile,
     damage: Damage,
     velocity: Velocity,
-    speed: Speed
+    speed: Speed,
 }
 
 #[derive(Component, Default)]
@@ -23,6 +23,6 @@ pub fn create_projectile(damage: Damage, speed: Speed, direction: Vec2) -> Proje
         damage: damage,
         // TODO(bug): it should be only normalize
         velocity: Velocity(direction.normalize_or_zero()),
-        speed: speed
+        speed: speed,
     }
 }

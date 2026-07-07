@@ -1,13 +1,13 @@
 use bevy::prelude::*;
+use core_engine::enemy::CreateEnemyMessage;
+use core_engine::gamestate::InGameState;
+use core_engine::score::{self, LiveScore};
 use godot::classes::{CollisionShape2D, RectangleShape2D};
 use godot_bevy::prelude::*;
 use godot_bevy_macros::GodotNode;
 use rand::Rng;
 
-use crate::enemy::CreateEnemyMessage;
-use crate::gamestate::InGameState;
 use crate::level_manager::LevelId;
-use crate::score::{self, LiveScore};
 
 pub(crate) fn plugin(app: &mut App) {
     app.insert_resource(SpawnTimer(Timer::from_seconds(0.5, TimerMode::Repeating)))

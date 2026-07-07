@@ -1,13 +1,13 @@
 use bevy::prelude::*;
+use core_engine::character::{MovementDirection, MovementSpeed};
+use core_engine::gamestate::InGameState;
+use core_engine::projectile::Projectile;
 use godot::classes::CharacterBody2D;
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 use rand::Rng;
 
-use crate::character::{MovementDirection, MovementSpeed};
-use crate::gamestate::InGameState;
 use crate::level_manager::{LevelId, LoadLevelMessage};
-use crate::projectile::Projectile;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_observer(handle_button_system)

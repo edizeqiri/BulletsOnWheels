@@ -2,6 +2,8 @@ use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use bevy_asset_loader::loading_state::config::ConfigureLoadingState;
 use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
+use core_engine::gamestate::{AppState, ExitGameEvent, InGameState};
+use core_engine::world::{ExitPauseGameEvent, PauseGameEvent, RestartGameEvent};
 use godot::prelude::*;
 use godot_bevy::prelude::*;
 

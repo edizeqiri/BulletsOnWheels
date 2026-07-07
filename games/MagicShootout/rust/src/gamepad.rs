@@ -1,12 +1,11 @@
 use bevy::prelude::*;
+use core_engine::character::{Aim, MovementDirection};
+use core_engine::gamestate::ExitGameEvent;
+use core_engine::player::Player;
+use core_engine::weapon_impl::ShootMessage;
 use godot::classes::Input;
 use godot::global::JoyAxis;
 use godot_bevy::prelude::*;
-
-use core_engine::character::{Aim, MovementDirection};
-use crate::gamestate::ExitGameEvent;
-use crate::player::Player;
-use crate::weapon_impl::ShootMessage;
 
 const DEADZONE: f32 = 0.05;
 

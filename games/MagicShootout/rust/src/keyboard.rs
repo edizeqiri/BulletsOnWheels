@@ -1,12 +1,11 @@
 use bevy::prelude::*;
+use core_engine::character::MovementDirection;
+use core_engine::gamestate::{ExitGameEvent, InGameState};
+use core_engine::player::Player;
+use core_engine::world::{ExitPauseGameEvent, PauseGameEvent};
 use godot::classes::Input;
 use godot::global::Key;
 use godot_bevy::prelude::*;
-
-use crate::character::MovementDirection;
-use crate::gamestate::{ExitGameEvent, InGameState};
-use crate::player::Player;
-use crate::world::{ExitPauseGameEvent, PauseGameEvent};
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_systems(Update, handle_keyboard_system);

@@ -6,7 +6,24 @@ use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use bevy_asset_loader::loading_state::config::ConfigureLoadingState;
 use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
-use godot::classes::{AnimatedSprite2D, CharacterBody2D, Input, Label, RichTextLabel};
+use core_engine::character::{
+    CharacterCore, CharacterHitMessage, CollisionStartedDomain, Health, MovementDirection,
+    MovementSpeed
+};
+use core_engine::enemy::{Enemy, EnemySpawnedMessage};
+#[cfg(not(target_arch = "wasm32"))]
+use core_engine::gamestate::ExitGameEvent;
+use core_engine::gamestate::{AppState, InGameState};
+use core_engine::player::Player;
+use core_engine::score::{
+    DeathHighscoreScene, LiveScore, NameEnteredEvent, ScoreBoard, SpawnLeaderBoardEvent
+};
+use core_engine::weapon::Damage;
+use core_engine::weapon_impl::{FireRate, ProjectileShot, Speed};
+use core_engine::world::RestartGameEvent;
+use godot::classes::{
+    AnimatedSprite2D, Button, CharacterBody2D, Input, Label, NinePatchRect, RichTextLabel
+};
 use godot::global::Key;
 use godot::prelude::*;
 use godot_bevy::interop::{BaseButtonSignals, GodotNodeHandle};
@@ -14,23 +31,8 @@ use godot_bevy::plugins::signals::GodotSignals;
 use godot_bevy::prelude::*;
 use godot_bevy_macros::GodotNode;
 
-use crate::character::{
-    CharacterCore, CharacterHitMessage, CollisionStartedDomain, Health, MovementDirection,
-    MovementSpeed
-};
-use crate::enemy::{Enemy, EnemySpawnedMessage};
-#[cfg(not(target_arch = "wasm32"))]
-use crate::gamestate::ExitGameEvent;
-use crate::gamestate::{AppState, InGameState};
 use crate::level_manager::LevelId::{self, Level1, MainMenu};
 use crate::level_manager::{CurrentLevel, LoadLevelMessage};
-use crate::player::Player;
-use crate::score::{
-    DeathHighscoreScene, LiveScore, NameEnteredEvent, ScoreBoard, SpawnLeaderBoardEvent
-};
-use crate::weapon::Damage;
-use crate::weapon_impl::{FireRate, ProjectileShot, Speed, WeaponKindComponent};
-use crate::world::RestartGameEvent;
 use crate::{input, level_manager, level1, main_menu, menu};
 
 pub(super) fn plugin(app: &mut App) {
@@ -247,10 +249,7 @@ pub struct Weapon {
     pub speed: Speed,
 
     #[export_fields(value(export_type(f32), default(0.)))]
-    fire_rate: FireRate,
-
-    #[export_fields(value(export_type(WeaponKind), default(WeaponKind::GUN)))]
-    weapon_kind: WeaponKindComponent
+    fire_rate: FireRate
 }
 
 #[derive(GodotConvert, Var, Export, Default, Clone)]
@@ -337,7 +336,6 @@ pub struct ButtonExitedEvent {
     pub button_handle: GodotNodeHandle
 }
 
-
 fn connect_restart_buttons(
     mut restart_buttons: Query<(&GodotNodeHandle, &mut RestartButton)>,
     restart_game_signal: GodotSignals<RestartGameEvent>,
@@ -366,7 +364,7 @@ fn connect_restart_buttons(
             |_args, restart_handle, _ent| {
                 info!("Mouse hovered over button.");
                 Some(ButtonEnteredEvent {
-                    button_handle: restart_handle,
+                    button_handle: restart_handle
                 })
             }
         );
@@ -378,7 +376,7 @@ fn connect_restart_buttons(
             |_args, restart_handle, _ent| {
                 info!("Mouse leaving button.");
                 Some(ButtonExitedEvent {
-                    button_handle: restart_handle,
+                    button_handle: restart_handle
                 })
             }
         );
@@ -586,10 +584,7 @@ fn update_score_label(
     ));
 }
 
-fn on_mouse_enter_button_animation(
-    trigger: On<ButtonEnteredEvent>,
-    mut godot: GodotAccess
-) {
+fn on_mouse_enter_button_animation(trigger: On<ButtonEnteredEvent>, mut godot: GodotAccess) {
     let Some(button) = godot.try_get::<Button>(trigger.button_handle) else {
         info!("No button found for this handle.");
         return;
@@ -610,10 +605,7 @@ fn on_mouse_enter_button_animation(
     nine_patch_rect.set_scale(Vector2::new(1.05, 1.05));
 }
 
-fn on_mouse_exit_button_animation(
-    trigger: On<ButtonExitedEvent>
-    , mut godot: GodotAccess
-) {
+fn on_mouse_exit_button_animation(trigger: On<ButtonExitedEvent>, mut godot: GodotAccess) {
     let Some(button) = godot.try_get::<Button>(trigger.button_handle) else {
         info!("No button found for this handle.");
         return;
