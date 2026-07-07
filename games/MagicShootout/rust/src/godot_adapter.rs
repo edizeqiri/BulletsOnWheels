@@ -13,10 +13,13 @@ use crate::enemy::{Enemy, EnemySpawnedMessage};
 #[cfg(not(target_arch = "wasm32"))]
 use crate::gamestate::ExitGameEvent;
 use crate::gamestate::InGameState;
-use crate::level_manager::CurrentLevel;
+use crate::input;
+use crate::weapon::Damage;
+use crate::weapon_impl::{FireRate, ProjectileShot, Speed, WeaponKindComponent};
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(GodotTransformConfig::two_way())
+        .add_plugins(input::plugin)
         .add_observer(collision_adapter)
         .add_systems(
             PhysicsUpdate,
@@ -165,4 +168,57 @@ fn exit_game(
         return;
     };
     label.set_visible(true);
+}
+
+#[derive(Component, GodotNode, Default, Clone)]
+#[godot_node(base(Node2D), class_name(RWeapon2D))]
+pub struct Weapon {
+    #[export_fields(value(export_type(f32), default(1.)))]
+    damage: Damage,
+
+    // TODO(bug): this export is somehow not working
+    pub speed: Speed,
+
+    #[export_fields(value(export_type(f32), default(0.)))]
+    fire_rate: FireRate,
+
+    #[export_fields(value(export_type(WeaponKind), default(WeaponKind::GUN)))]
+    weapon_kind: WeaponKindComponent
+}
+
+#[derive(GodotConvert, Var, Export, Default, Clone)]
+#[godot(via = GString)] // provides enum as string
+pub enum WeaponKind {
+    #[default]
+    GUN,
+    BOW,
+    STAFF
+}
+
+#[derive(AssetCollection, Resource)]
+pub(crate) struct ProjectileAssets {
+    #[asset(path = "scenes/characters/projectile.tscn")]
+    pub projectile_scene: Handle<GodotResource>
+}
+
+fn on_shoot_adapter(
+    mut commands: Commands,
+    mut shoot_message: MessageReader<ProjectileShot>,
+    assets: Option<Res<ProjectileAssets>>
+) {
+    // If the projectile assets are not yet loaded/inserted, consume any queued
+    // shoot messages (to avoid a burst once assets arrive) and skip spawning
+    // projectiles.
+    let assets = match assets {
+        Some(a) => a,
+        None => {
+            for _ in shoot_message.read() { /* drop events until assets are ready */ }
+            return;
+        }
+    };
+    for message in shoot_message.read() {
+        commands
+            .entity(message.projectile)
+            .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
+    }
 }
