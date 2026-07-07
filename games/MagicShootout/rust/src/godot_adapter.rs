@@ -15,14 +15,19 @@ use crate::gamestate::ExitGameEvent;
 use crate::gamestate::InGameState;
 use crate::level_manager::LevelId::MainMenu;
 use crate::level_manager::LoadLevelMessage;
+use crate::player::Player;
 use crate::weapon::Damage;
 use crate::weapon_impl::{FireRate, ProjectileShot, Speed, WeaponKindComponent};
 use crate::world::RestartGameEvent;
-use crate::{input, level_manager, level1, menu};
+use crate::{input, level_manager, level1, main_menu, menu};
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(GodotTransformConfig::two_way())
         .add_plugins(input::plugin)
+        .add_plugins(level1::plugin)
+        .add_plugins(menu::plugin)
+        .add_plugins(level_manager::plugin)
+        .add_plugins(main_menu::plugin)
         .add_observer(collision_adapter)
         .add_systems(
             PhysicsUpdate,
@@ -32,9 +37,6 @@ pub(super) fn plugin(app: &mut App) {
         .add_systems(Update, log_scene_tree_on_keypress)
         .add_observer(exit_game)
         .add_observer(reset_game)
-        .add_plugins(level1::plugin)
-        .add_plugins(menu::plugin)
-        .add_plugins(level_manager::plugin)
         .add_systems(Startup, init_world);
 }
 fn collision_adapter(collision: On<CollisionStarted>, mut commands: Commands) {
@@ -243,4 +245,21 @@ pub struct ResetSceneEvent(pub Entity);
 
 fn init_world(mut commands: Commands) {
     commands.trigger(LoadLevelMessage { level_id: MainMenu });
+}
+
+#[derive(Bundle, GodotNode)]
+#[godot_node(base(CharacterBody2D), class_name(RPlayer2D))]
+pub struct PlayerBundle {
+    player: Player,
+
+    #[export_fields(
+        current(export_type(f32), default(10.)),
+        max(export_type(f32), default(10.))
+    )]
+    health: Health,
+
+    #[export_fields(value(export_type(f32), default(200.)))]
+    speed: MovementSpeed,
+
+    core: CharacterCore,
 }
