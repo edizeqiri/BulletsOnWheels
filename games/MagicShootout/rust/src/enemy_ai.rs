@@ -1,6 +1,5 @@
 // move to player
 use bevy::prelude::*;
-use godot_bevy::prelude::*;
 
 use crate::character::{Aim, MovementDirection};
 use crate::enemy::Enemy;
@@ -11,8 +10,7 @@ use crate::weapon_impl::ShootMessage;
 // use crate::world::LevelState;
 // use crate::world::map::map::Level;
 pub(crate) fn plugin(app: &mut App) {
-    app.insert_resource(GodotTransformConfig::two_way())
-        .insert_resource(Time::<Fixed>::from_seconds(1.5))
+    app.insert_resource(Time::<Fixed>::from_seconds(1.5))
         .add_systems(FixedUpdate, shoot_at_player_system)
         .add_systems(Update, enemy_move_system)
         .add_systems(Update, set_all_fugitive_system);

@@ -4,9 +4,7 @@ use bevy_asset_loader::asset_collection::AssetCollection;
 use crate::character::{CharacterCore, Health, MovementSpeed};
 use crate::gamestate::InGameState;
 use crate::level_manager::{CurrentLevel, LevelId};
-// use crate::gamestate::EnemyResource; 
-// use crate::weapon::Weapons;
-// use crate::world::map::map::Level;
+
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_message::<EnemySpawnedMessage>()

@@ -14,7 +14,8 @@ use crate::gamestate::InGameState;
 use crate::level_manager::CurrentLevel;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_observer(collision_adapter)
+    app.insert_resource(GodotTransformConfig::two_way())
+        .add_observer(collision_adapter)
         .add_systems(
             PhysicsUpdate,
             apply_character_movement.run_if(in_state(InGameState::RUNNING))
