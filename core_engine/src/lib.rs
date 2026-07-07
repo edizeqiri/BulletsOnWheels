@@ -1,4 +1,4 @@
-use bevy::{ecs::world, prelude::*, state::app::StatesPlugin};
+use bevy::{prelude::*, state::app::StatesPlugin};
 
 use crate::gamestate::{AppState, InGameState};
 
@@ -13,8 +13,7 @@ mod weapon;
 mod weapon_impl;
 mod world;
 
-#[bevy_app]
-pub fn build_app(app: &mut App) {
+pub fn plugin(app: &mut App) {
     app.add_plugins(world::plugin)
         .add_plugins(weapon::plugin)
         .add_plugins(character::plugin)

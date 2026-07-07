@@ -5,7 +5,6 @@ use ::std::io::Write;
 use bevy::prelude::*;
 
 use crate::gamestate::{CharacterDeathMessage, InGameState};
-use crate::level_manager::{CurrentLevel, LevelId};
 use crate::player::Player;
 
 pub(crate) fn plugin(app: &mut App) {
@@ -13,9 +12,7 @@ pub(crate) fn plugin(app: &mut App) {
         .insert_resource(ScoreBoard::default())
         .add_systems(
             Update,
-            (init_score, score_tracker)
-                .run_if(in_state(LevelId::Level1))
-                .run_if(in_state(InGameState::RUNNING))
+            (init_score, score_tracker).run_if(in_state(InGameState::RUNNING)),
         )
         .add_observer(save_score_board)
         .add_observer(despawn_ask_for_player_name_system);
@@ -23,14 +20,14 @@ pub(crate) fn plugin(app: &mut App) {
 
 #[derive(Event, Clone, Default)]
 pub struct NameEnteredEvent {
-    pub name: String
+    pub name: String,
 }
 
 #[derive(Component)]
 pub struct LiveScore {
     pub count: i32,
     pub highscore: i32,
-    pub is_new_highscore: bool
+    pub is_new_highscore: bool,
 }
 
 impl Default for LiveScore {
@@ -38,7 +35,7 @@ impl Default for LiveScore {
         Self {
             count: 0,
             highscore: -1,
-            is_new_highscore: false
+            is_new_highscore: false,
         }
     }
 }
@@ -47,7 +44,7 @@ const SCORE_BOARD_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/s
 
 #[derive(Resource, Default)]
 pub struct ScoreBoard {
-    pub entries: Vec<ScoreBoardEntry>
+    pub entries: Vec<ScoreBoardEntry>,
 }
 
 impl ScoreBoard {
@@ -64,7 +61,7 @@ pub struct SpawnLeaderBoardEvent;
 
 pub struct ScoreBoardEntry {
     pub name: String,
-    pub score: i32
+    pub score: i32,
 }
 
 fn init_score(mut score_query: Query<&mut LiveScore>, score_board: Res<ScoreBoard>) {
@@ -80,7 +77,7 @@ fn init_score(mut score_query: Query<&mut LiveScore>, score_board: Res<ScoreBoar
 fn score_tracker(
     mut death_message_reader: MessageReader<CharacterDeathMessage>,
     player_query: Query<Entity, With<Player>>,
-    mut score_query: Query<&mut LiveScore>
+    mut score_query: Query<&mut LiveScore>,
 ) {
     for message in death_message_reader.read() {
         let Ok(player) = player_query.single() else {
@@ -106,7 +103,7 @@ fn save_score_board(
     trigger: On<NameEnteredEvent>,
     score_query: Query<&LiveScore>,
     mut score_board: ResMut<ScoreBoard>,
-    mut commands: Commands
+    mut commands: Commands,
 ) {
     let Ok(score) = score_query.single() else {
         info!("No score found => No high score can be saved.");
@@ -117,7 +114,7 @@ fn save_score_board(
     // todo: limit to 5 and save all entries instead of only one
     score_board.entries.push(ScoreBoardEntry {
         name: entered_name.clone(),
-        score: score.count
+        score: score.count,
     });
 
     score_board.entries.sort_by(|a, b| b.score.cmp(&a.score));
@@ -147,7 +144,7 @@ fn load_score_board() -> ScoreBoard {
     let Ok(score_board_file) = fs::read_to_string(SCORE_BOARD_PATH) else {
         warn!("Could not read high score from file: {}", SCORE_BOARD_PATH);
         return ScoreBoard {
-            entries: Vec::default()
+            entries: Vec::default(),
         };
     };
 
@@ -166,7 +163,7 @@ fn load_score_board() -> ScoreBoard {
 
             Some(ScoreBoardEntry {
                 name: name.trim().to_string(),
-                score: score as i32
+                score: score as i32,
             })
         })
         .collect();
@@ -174,7 +171,7 @@ fn load_score_board() -> ScoreBoard {
     score_board_entries.sort_by(|a, b| b.score.cmp(&a.score));
 
     ScoreBoard {
-        entries: score_board_entries
+        entries: score_board_entries,
     }
 }
 
@@ -184,7 +181,7 @@ pub struct DeathHighscoreScene;
 fn despawn_ask_for_player_name_system(
     _trigger: On<SpawnLeaderBoardEvent>,
     death_high_score_query: Query<Entity, With<DeathHighscoreScene>>,
-    mut commands: Commands
+    mut commands: Commands,
 ) {
     let Ok(deaht_high_score_scene) = death_high_score_query.single() else {
         error!("Could not despawn death highscore scene.");

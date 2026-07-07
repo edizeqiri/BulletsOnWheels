@@ -3,7 +3,7 @@ use godot::classes::Input;
 use godot::global::JoyAxis;
 use godot_bevy::prelude::*;
 
-use crate::character::{Aim, MovementDirection};
+use core_engine::character::{Aim, MovementDirection};
 use crate::gamestate::ExitGameEvent;
 use crate::player::Player;
 use crate::weapon_impl::ShootMessage;
