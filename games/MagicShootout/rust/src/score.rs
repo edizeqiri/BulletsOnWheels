@@ -3,45 +3,22 @@ use std::path::Path;
 
 use ::std::io::Write;
 use bevy::prelude::*;
-use bevy_asset_loader::asset_collection::AssetCollection;
-use bevy_asset_loader::loading_state::LoadingState;
-use bevy_asset_loader::prelude::*;
-use godot::classes::{Label, RichTextLabel};
-use godot_bevy::prelude::*;
 
-use crate::gamestate::{AppState, CharacterDeathMessage, InGameState};
+use crate::gamestate::{CharacterDeathMessage, InGameState};
 use crate::level_manager::{CurrentLevel, LevelId};
 use crate::player::Player;
-use crate::world::WorldAssets;
 
 pub(crate) fn plugin(app: &mut App) {
-    app.add_loading_state(
-        LoadingState::new(AppState::RUNNING).load_collection::<ScoreBoardAssets>()
-    )
+    app
     .insert_resource(load_score_board())
     .insert_resource(ScoreBoard::default())
     .add_systems(
         Update,
-        (init_score, score_tracker, update_score_label)
+        (init_score, score_tracker)
             .run_if(in_state(LevelId::Level1))
             .run_if(in_state(InGameState::RUNNING))
     )
-    .add_systems(
-        Update,
-        update_score_board
-            .run_if(in_state(InGameState::DEFEAT))
-            .run_if(in_state(LevelId::Level1))
-    )
-    .add_systems(
-        OnEnter(InGameState::DEFEAT),
-        spawn_ask_for_player_name_system.run_if(in_state(LevelId::Level1))
-    )
-    .add_systems(
-        Update,
-        connect_enter_name_system.run_if(in_state(LevelId::Level1))
-    )
     .add_observer(save_score_board)
-    .add_observer(spawn_score_board)
     .add_observer(despawn_ask_for_player_name_system);
 }
 
@@ -50,8 +27,7 @@ pub struct NameEnteredEvent {
     pub name: String
 }
 
-#[derive(Component, GodotNode)]
-#[godot_node(base(Node2D), class_name(RScore))]
+#[derive(Component)]
 pub struct LiveScore {
     pub count: i32,
     pub highscore: i32,
@@ -70,17 +46,9 @@ impl Default for LiveScore {
 
 const SCORE_BOARD_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/score_board.csv");
 
-#[derive(AssetCollection, Resource)]
-pub struct ScoreBoardAssets {
-    #[asset(path = "scenes/defeat/score_board.tscn")]
-    pub score_board_scene: Handle<GodotResource>,
-
-    score_board_is_loaded: bool
-}
-
 #[derive(Resource, Default)]
-struct ScoreBoard {
-    entries: Vec<ScoreBoardEntry>
+pub struct ScoreBoard {
+    pub entries: Vec<ScoreBoardEntry>
 }
 
 impl ScoreBoard {
@@ -95,9 +63,9 @@ impl ScoreBoard {
 #[derive(Event)]
 pub struct SpawnLeaderBoardEvent;
 
-struct ScoreBoardEntry {
-    name: String,
-    score: i32
+pub struct ScoreBoardEntry {
+    pub name: String,
+    pub score: i32
 }
 
 fn init_score(mut score_query: Query<&mut LiveScore>, score_board: Res<ScoreBoard>) {
@@ -133,36 +101,6 @@ fn score_tracker(
             score.is_new_highscore = true;
         };
     }
-}
-
-// todo: this function shall be "level state" dependent
-fn update_score_label(
-    score_query: Query<&LiveScore, Changed<LiveScore>>,
-    current_level: Res<CurrentLevel>,
-    mut scene_tree: SceneTreeRef
-) {
-    let level_id = current_level.level_id;
-
-    let Ok(score) = score_query.single() else {
-        return;
-    };
-
-    let score_label_path = format!("{}/ScoreLabel", level_id.root_node_path());
-
-    let Some(root) = scene_tree.get().get_root() else {
-        warn!("no root");
-        return;
-    };
-
-    let Some(mut score_label) = root.try_get_node_as::<Label>(&score_label_path) else {
-        warn!("Could not find Label at {}", score_label_path);
-        return;
-    };
-
-    score_label.set_text(&format!(
-        "Score: {}\nHigh Score: {}",
-        score.count, score.highscore,
-    ));
 }
 
 fn save_score_board(
@@ -241,82 +179,9 @@ fn load_score_board() -> ScoreBoard {
     }
 }
 
-fn spawn_score_board(
-    _trigger: On<SpawnLeaderBoardEvent>,
-    mut commands: Commands,
-    mut assets: ResMut<ScoreBoardAssets>
-) {
-    commands
-        .spawn_empty()
-        .insert(GodotScene::from_handle(assets.score_board_scene.clone()))
-        .insert(DespawnOnEnter(InGameState::RUNNING));
-    assets.score_board_is_loaded = false;
-}
-
-fn update_score_board(
-    score_board: Res<ScoreBoard>,
-    mut scene_tree: SceneTreeRef,
-    mut assets: ResMut<ScoreBoardAssets>
-) {
-    if assets.score_board_is_loaded {
-        return;
-    }
-
-    let content = prepare_leader_board_content(score_board);
-
-    assets.score_board_is_loaded = update_label(&mut scene_tree, "/root/ScoreBoard/Top5", content);
-}
-
-fn update_label(scene_tree: &mut SceneTreeRef, label_path: &str, content: String) -> bool {
-    let Some(root) = scene_tree.get().get_root() else {
-        return false;
-    };
-
-    let Some(mut label) = root.try_get_node_as::<RichTextLabel>(label_path) else {
-        return false;
-    };
-
-    label.set_use_bbcode(true);
-    label.set_text(&content);
-    return true;
-}
-
-fn prepare_leader_board_content(score_board: Res<ScoreBoard>) -> String {
-    let mut text = String::from("[table=3]");
-
-    // Header
-    text.push_str("[cell][left][b]Rank[/b][/left][/cell]");
-    text.push_str("[cell][left][b]Name[/b][/left][/cell]");
-    text.push_str("[cell][right][b]Score[/b][/right][/cell]");
-
-    // Rows
-    for (i, entry) in score_board.entries.iter().take(5).enumerate() {
-        text.push_str(&format!(
-            "[cell][left]{}.[/left][/cell]\
-             [cell][left]{}[/left][/cell]\
-             [cell][right]{}[/right][/cell]",
-            i + 1,
-            entry.name,
-            entry.score
-        ));
-    }
-
-    text.push_str("[/table]");
-    text
-}
 
 #[derive(Component)]
 pub struct DeathHighscoreScene;
-
-fn spawn_ask_for_player_name_system(mut commands: Commands, mut assets: ResMut<WorldAssets>) {
-    commands
-        .spawn_empty()
-        .insert(GodotScene::from_handle(
-            assets.player_death_highscore_scene.clone()
-        ))
-        .insert(DeathHighscoreScene);
-    assets.is_connected = false;
-}
 
 fn despawn_ask_for_player_name_system(
     _trigger: On<SpawnLeaderBoardEvent>,
@@ -330,35 +195,4 @@ fn despawn_ask_for_player_name_system(
     commands.entity(deaht_high_score_scene).despawn();
 }
 
-fn connect_enter_name_system(
-    enter_name_field: Query<&GodotNodeHandle, With<LineEditMarker>>,
-    entered_name_signal: GodotSignals<NameEnteredEvent>,
-    world_assets: Option<ResMut<WorldAssets>>
-) {
-    let Some(mut assets) = world_assets else {
-        return;
-    };
 
-    if assets.is_connected {
-        return;
-    }
-    let Ok(enter_name_handler) = enter_name_field.single() else {
-        return;
-    };
-
-    entered_name_signal.connect(
-        *enter_name_handler,
-        LineEditSignals::TEXT_SUBMITTED,
-        None,
-        |args, _node_handle, _ent| {
-            let Some(name) = args.get(0)?.try_to::<String>().ok() else {
-                error!("Name could not be found or parsed");
-                return None;
-            };
-
-            Some(NameEnteredEvent { name })
-        }
-    );
-    info!("enter name signal connected");
-    assets.is_connected = true;
-}
