@@ -37,7 +37,6 @@ pub(super) fn plugin(app: &mut App) {
                     .or_else(in_state(InGameState::DEFEAT).and_then(in_state(Level1)))
             )
         )
-        .add_observer(despawn_ask_for_player_name_system)
         .add_observer(on_mouse_enter_button_animation)
         .add_observer(on_mouse_exit_button_animation);
 }
