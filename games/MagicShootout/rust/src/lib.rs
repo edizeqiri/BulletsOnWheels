@@ -19,9 +19,6 @@ mod level_manager;
 mod main_menu;
 mod menu;
 mod mouse;
-mod player;
-mod projectile;
-mod weapon_impl;
 
 #[bevy_app]
 fn build_app(app: &mut App) {
