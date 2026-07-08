@@ -11,7 +11,7 @@ use crate::level_manager::CurrentLevel;
 use crate::level_manager::LevelId::{self, Level1};
 
 pub(crate) fn plugin(app: &mut App) {
-    app.insert_resource(SpawnTimer(Timer::from_seconds(0.5, TimerMode::Repeating)))
+    app.insert_resource(SpawnTimer(Timer::from_seconds(2., TimerMode::Repeating)))
         .add_systems(OnEnter(Level1), init_score_board)
         .add_systems(
             Update,
@@ -62,7 +62,9 @@ fn spawn_enemies_after_time(
     };
 
     for handle in spawn_area_query {
+        info!("Got area");
         for _ in 0..(score.count / 5) + 1 {
+            info!("spawing one");
             let mut rng = rand::rng();
             let node = godot.get::<RSpawnPoint2D>(*handle);
 

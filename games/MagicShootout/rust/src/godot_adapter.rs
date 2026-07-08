@@ -100,6 +100,7 @@ pub(super) fn plugin(app: &mut App) {
             Update,
             connect_enter_name_system.run_if(in_state(LevelId::Level1))
         )
+        .add_systems(Update, spawn_enemy_scene)
         .add_systems(Update, on_shoot_adapter)
         .add_observer(spawn_score_board)
         .add_observer(on_mouse_enter_button_animation)
