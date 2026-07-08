@@ -1,5 +1,5 @@
 godot := "godot"
-godot_project := "godot"
+godot_project := "games/MagicShootout/godot"
 
 build:
     cargo build
@@ -47,6 +47,7 @@ export-web: wasm
     {{ godot }} --headless --path {{ godot_project }} --export-debug "Web" exports/BulletsOnWheels.html
 
 # Build the release wasm and export the "Web" preset to godot/exports/.
+
 # Copies to index.html so GitHub Pages serves the game at the site root.
 export-web-release: wasm-release
     mkdir -p {{ godot_project }}/exports
