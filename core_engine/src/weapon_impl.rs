@@ -10,6 +10,7 @@ use crate::weapon::Damage;
 
 pub(crate) fn plugin(app: &mut App) {
     app.add_message::<ShootMessage>()
+        .add_message::<ProjectileShot>()
         .add_systems(
             Update,
             on_shoot_message_system.run_if(in_state(InGameState::RUNNING)),

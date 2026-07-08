@@ -40,7 +40,10 @@ impl Default for LiveScore {
     }
 }
 
-const SCORE_BOARD_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/score_board.csv");
+const SCORE_BOARD_PATH: &str = concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../games/MagicShootout/rust/resources/score_board.csv"
+);
 
 #[derive(Resource, Default)]
 pub struct ScoreBoard {
