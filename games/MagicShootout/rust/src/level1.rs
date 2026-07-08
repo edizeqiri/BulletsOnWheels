@@ -7,6 +7,7 @@ use godot_bevy::prelude::*;
 use godot_bevy_macros::GodotNode;
 use rand::Rng;
 
+use crate::level_manager::CurrentLevel;
 use crate::level_manager::LevelId::{self, Level1};
 
 pub(crate) fn plugin(app: &mut App) {
@@ -26,15 +27,21 @@ struct SpawnTimer(Timer);
 #[godot_node(base(Area2D), class_name(RSpawnPoint2D))]
 struct SpawnArea;
 
-fn init_score_board(mut commands: Commands, score_board: Res<ScoreBoard>) {
+fn init_score_board(
+    mut commands: Commands,
+    score_board: Res<ScoreBoard>,
+    live_score_query: Query<&LiveScore>
+) {
+    if live_score_query.iter().count() >= 1 {
+        return;
+    }
+
     let high_score = score_board.get_high_score();
-    commands.spawn((
-        Transform::default(),
-        LiveScore {
+    commands.spawn(LiveScore {
         count: 0,
         highscore: high_score,
         is_new_highscore: high_score == 0
-    }));
+    });
 }
 
 fn spawn_enemies_after_time(

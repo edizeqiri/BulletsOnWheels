@@ -12,7 +12,7 @@ pub(crate) fn plugin(app: &mut App) {
         .insert_resource(ScoreBoard::default())
         .add_systems(
             Update,
-            (init_score, score_tracker).run_if(in_state(InGameState::RUNNING)),
+            (score_tracker).run_if(in_state(InGameState::RUNNING)),
         )
         .add_observer(save_score_board)
         .add_observer(despawn_ask_for_player_name_system);
