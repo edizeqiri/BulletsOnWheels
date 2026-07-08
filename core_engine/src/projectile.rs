@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::weapon::Damage;
-use crate::weapon_impl::Speed;
+use crate::weapon::Speed;
 
 #[derive(Default, Bundle)]
 pub struct ProjectileBundle {

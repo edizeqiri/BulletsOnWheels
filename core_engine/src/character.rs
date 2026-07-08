@@ -4,7 +4,7 @@ use crate::gamestate::{CharacterDeathMessage, InGameState};
 use crate::player::Player;
 use crate::projectile::Projectile;
 use crate::weapon::Damage;
-use crate::weapon_impl::{Shooter, Weapon};
+use crate::weapon::{Shooter, Weapon};
 use crate::{enemy, enemy_ai};
 
 pub(super) fn plugin(app: &mut App) {

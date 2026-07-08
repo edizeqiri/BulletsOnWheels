@@ -10,7 +10,6 @@ pub mod player;
 pub mod projectile;
 pub mod score;
 pub mod weapon;
-pub mod weapon_impl;
 pub mod world;
 
 pub fn plugin(app: &mut App) {

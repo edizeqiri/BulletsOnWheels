@@ -18,8 +18,7 @@ use core_engine::player::Player;
 use core_engine::score::{
     DeathHighscoreScene, LiveScore, NameEnteredEvent, ScoreBoard, SpawnLeaderBoardEvent
 };
-use core_engine::weapon::Damage;
-use core_engine::weapon_impl::{FireRate, ProjectileShot, Speed};
+use core_engine::weapon::{Damage, FireRate, ProjectileShot, Speed};
 use core_engine::world::RestartGameEvent;
 use godot::classes::{
     AnimatedSprite2D, Button, CharacterBody2D, Input, Label, NinePatchRect, RichTextLabel
