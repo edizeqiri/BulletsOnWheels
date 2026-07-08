@@ -4,13 +4,13 @@ compatibility_minimum = 4.1
 reloadable = true
 
 [libraries]
-linux.debug.x86_64 = "res://../rust/target/debug/libbullets_on_wheels.so"
-linux.release.x86_64 = "res://../rust/target/release/libbullets_on_wheels.so"
-windows.debug.x86_64 = "res://../rust/target/debug/bullets_on_wheels.dll"
-windows.release.x86_64 = "res://../rust/target/release/bullets_on_wheels.dll"
-macos.debug = "res://../rust/target/debug/libbullets_on_wheels.dylib"
-macos.release = "res://../rust/target/release/libbullets_on_wheels.dylib"
-macos.debug.arm64 = "res://../rust/target/debug/libbullets_on_wheels.dylib"
-macos.release.arm64 = "res://../rust/target/release/libbullets_on_wheels.dylib"
-web.debug.wasm32 = "res://../rust/target/wasm32-unknown-emscripten/debug/bullets_on_wheels.wasm"
-web.release.wasm32 = "res://../rust/target/wasm32-unknown-emscripten/release/bullets_on_wheels.wasm"
+linux.debug.x86_64 = "res://../../../rust/target/debug/libbullets_on_wheels.so"
+linux.release.x86_64 = "res://../../../rust/target/release/libbullets_on_wheels.so"
+windows.debug.x86_64 = "res://../../../rust/target/debug/bullets_on_wheels.dll"
+windows.release.x86_64 = "res://../../../rust/target/release/bullets_on_wheels.dll"
+macos.debug = "res://../../../rust/target/debug/libbullets_on_wheels.dylib"
+macos.release = "res://../../../rust/target/release/libbullets_on_wheels.dylib"
+macos.debug.arm64 = "res://../../../rust/target/debug/libbullets_on_wheels.dylib"
+macos.release.arm64 = "res://../../../rust/target/release/libbullets_on_wheels.dylib"
+web.debug.wasm32 = "res://../../../rust/target/wasm32-unknown-emscripten/debug/bullets_on_wheels.wasm"
+web.release.wasm32 = "res://../../../rust/target/wasm32-unknown-emscripten/release/bullets_on_wheels.wasm"
