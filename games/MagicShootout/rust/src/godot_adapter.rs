@@ -65,6 +65,13 @@ pub(super) fn plugin(app: &mut App) {
             )
         )
         .add_systems(
+            Update,
+            connect_exit_buttons.run_if(
+                in_state(InGameState::PAUSED)
+                    .or_else(in_state(InGameState::DEFEAT).and_then(in_state(Level1)))
+            )
+        )
+        .add_systems(
             OnEnter(InGameState::DEFEAT),
             spawn_death_scene_on_player_death.run_if(in_state(LevelId::MainMenu))
         )
@@ -326,6 +333,12 @@ pub struct RestartButton {
     pub is_connected: bool
 }
 
+#[derive(Component, Default, GodotNode)]
+#[godot_node(base(Button), class_name(RExitButton))]
+pub struct ExitButton {
+    pub is_connected: bool
+}
+
 #[derive(Event, Debug, Clone)]
 pub struct ButtonEnteredEvent {
     pub button_handle: GodotNodeHandle
@@ -361,6 +374,55 @@ fn connect_restart_buttons(
             *restart_handle,
             CollisionObject2DSignals::MOUSE_ENTERED,
             None,
+            |_args, node_handle, _ent| {
+                info!("Mouse hovered over button.");
+                Some(ButtonEnteredEvent {
+                    button_handle: node_handle
+                })
+            }
+        );
+
+        button_exited_signal.connect(
+            *restart_handle,
+            CollisionObject2DSignals::MOUSE_EXITED,
+            None,
+            |_args, node_handle, _ent| {
+                info!("Mouse leaving button.");
+                Some(ButtonExitedEvent {
+                    button_handle: node_handle
+                })
+            }
+        );
+
+        restart_button.is_connected = true;
+    }
+}
+
+fn connect_exit_buttons(
+    mut exit_buttons: Query<(&GodotNodeHandle, &mut ExitButton)>,
+    exit_game_signal: GodotSignals<ExitGameEvent>,
+    button_entered_signal: GodotSignals<ButtonEnteredEvent>,
+    button_exited_signal: GodotSignals<ButtonExitedEvent>
+) {
+    for (exit_handle, mut exit_button) in &mut exit_buttons {
+        if exit_button.is_connected {
+            continue;
+        }
+
+        exit_game_signal.connect(
+            *exit_handle,
+            BaseButtonSignals::PRESSED,
+            None,
+            |_args, _node_handle, _ent| {
+                info!("Exit button pressed");
+                Some(ExitGameEvent)
+            }
+        );
+
+        button_entered_signal.connect(
+            *exit_handle,
+            CollisionObject2DSignals::MOUSE_ENTERED,
+            None,
             |_args, restart_handle, _ent| {
                 info!("Mouse hovered over button.");
                 Some(ButtonEnteredEvent {
@@ -370,7 +432,7 @@ fn connect_restart_buttons(
         );
 
         button_exited_signal.connect(
-            *restart_handle,
+            *exit_handle,
             CollisionObject2DSignals::MOUSE_EXITED,
             None,
             |_args, restart_handle, _ent| {
@@ -381,7 +443,7 @@ fn connect_restart_buttons(
             }
         );
 
-        restart_button.is_connected = true;
+        exit_button.is_connected = true;
     }
 }
 
