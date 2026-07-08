@@ -81,6 +81,7 @@ fn score_tracker(
         };
 
         let Ok(mut score) = score_query.single_mut() else {
+            info!("No score found for update.");
             return;
         };
 

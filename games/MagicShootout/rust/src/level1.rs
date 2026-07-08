@@ -28,11 +28,13 @@ struct SpawnArea;
 
 fn init_score_board(mut commands: Commands, score_board: Res<ScoreBoard>) {
     let high_score = score_board.get_high_score();
-    commands.spawn(LiveScore {
+    commands.spawn((
+        Transform::default(),
+        LiveScore {
         count: 0,
         highscore: high_score,
         is_new_highscore: high_score == 0
-    });
+    }));
 }
 
 fn spawn_enemies_after_time(
@@ -40,15 +42,15 @@ fn spawn_enemies_after_time(
     mut timer: ResMut<SpawnTimer>,
     mut enemy_writer: MessageWriter<CreateEnemyMessage>,
     spawn_area_query: Query<&GodotNodeHandle, With<SpawnArea>>,
-    score_board_query: Query<&LiveScore>,
+    live_score_query: Query<&LiveScore>,
     mut godot: GodotAccess
 ) {
     if !timer.0.tick(time.delta()).just_finished() {
         return;
     }
 
-    let Ok(score) = score_board_query.single() else {
-        info!("No Scoreboard!");
+    let Ok(score) = live_score_query.single() else {
+        info!("No Live Score!");
         return;
     };
 
