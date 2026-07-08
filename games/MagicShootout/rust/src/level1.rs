@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use core_engine::enemy::CreateEnemyMessage;
 use core_engine::gamestate::InGameState;
-use core_engine::score::LiveScore;
+use core_engine::score::{LiveScore, ScoreBoard};
 use godot::classes::{CollisionShape2D, RectangleShape2D};
 use godot_bevy::prelude::*;
 use godot_bevy_macros::GodotNode;
@@ -26,8 +26,13 @@ struct SpawnTimer(Timer);
 #[godot_node(base(Area2D), class_name(RSpawnPoint2D))]
 struct SpawnArea;
 
-fn init_score_board(mut commands: Commands) {
-    commands.spawn(LiveScore::default());
+fn init_score_board(mut commands: Commands, score_board: Res<ScoreBoard>) {
+    let high_score = score_board.get_high_score();
+    commands.spawn(LiveScore {
+        count: 0,
+        highscore: high_score,
+        is_new_highscore: high_score == 0
+    });
 }
 
 fn spawn_enemies_after_time(

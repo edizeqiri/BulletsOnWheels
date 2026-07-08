@@ -30,16 +30,6 @@ pub struct LiveScore {
     pub is_new_highscore: bool,
 }
 
-impl Default for LiveScore {
-    fn default() -> Self {
-        Self {
-            count: 0,
-            highscore: -1,
-            is_new_highscore: false,
-        }
-    }
-}
-
 const SCORE_BOARD_PATH: &str = concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/../games/MagicShootout/rust/resources/score_board.csv"
@@ -51,7 +41,7 @@ pub struct ScoreBoard {
 }
 
 impl ScoreBoard {
-    fn get_high_score(&self) -> i32 {
+    pub fn get_high_score(&self) -> i32 {
         let Some(high_score) = self.entries.iter().max_by_key(|e| e.score) else {
             return 0;
         };
