@@ -7,8 +7,8 @@ use godot_bevy::prelude::*;
 use godot_bevy_macros::GodotNode;
 use rand::Rng;
 
-use crate::level_manager::CurrentLevel;
 use crate::level_manager::LevelId::{self, Level1};
+use crate::level1;
 
 pub(crate) fn plugin(app: &mut App) {
     app.insert_resource(SpawnTimer(Timer::from_seconds(2., TimerMode::Repeating)))

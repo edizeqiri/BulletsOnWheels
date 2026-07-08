@@ -9,7 +9,6 @@ use crate::player::Player;
 
 pub(crate) fn plugin(app: &mut App) {
     app.insert_resource(load_score_board())
-        .insert_resource(ScoreBoard::default())
         .add_systems(
             Update,
             (score_tracker).run_if(in_state(InGameState::RUNNING)),
@@ -30,10 +29,7 @@ pub struct LiveScore {
     pub is_new_highscore: bool,
 }
 
-const SCORE_BOARD_PATH: &str = concat!(
-    env!("CARGO_MANIFEST_DIR"),
-    "/../games/MagicShootout/rust/resources/score_board.csv"
-);
+const SCORE_BOARD_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/score_board.csv");
 
 #[derive(Resource, Default)]
 pub struct ScoreBoard {
@@ -55,16 +51,6 @@ pub struct SpawnLeaderBoardEvent;
 pub struct ScoreBoardEntry {
     pub name: String,
     pub score: i32,
-}
-
-fn init_score(mut score_query: Query<&mut LiveScore>, score_board: Res<ScoreBoard>) {
-    let Ok(mut score) = score_query.single_mut() else {
-        return;
-    };
-    if score.highscore != -1 {
-        return;
-    }
-    score.highscore = score_board.get_high_score();
 }
 
 fn score_tracker(

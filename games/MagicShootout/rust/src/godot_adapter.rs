@@ -209,7 +209,8 @@ fn spawn_enemy_scene(
     for message in enemy_spawn_mesage.read() {
         commands
             .entity(message.entity)
-            .insert(GodotScene::from_handle(assets.enemy_scene.clone()));
+            .insert(GodotScene::from_handle(assets.enemy_scene.clone()))
+            .insert(DespawnOnExit(Level1));
     }
 }
 
@@ -290,10 +291,12 @@ fn on_shoot_adapter(
             return;
         }
     };
+
     for message in shoot_message.read() {
         commands
             .entity(message.projectile)
-            .insert(GodotScene::from_handle(assets.projectile_scene.clone()));
+            .insert(GodotScene::from_handle(assets.projectile_scene.clone()))
+            .insert(DespawnOnExit(Level1));
     }
 }
 
