@@ -3,13 +3,13 @@
 [ext_resource type="Texture2D" uid="uid://c31leslhboncs" path="res://assets/pixel_ui/Tiles/Large tiles/Thick outline/tile_0017.png" id="1_1d3br"]
 [ext_resource type="FontFile" uid="uid://cq7eug8jyxw4i" path="res://assets/kenney_fonts/Fonts/Kenney Pixel.ttf" id="2_kqr61"]
 
-[node name="ExitButton" type="Button" unique_id=311503359]
+[node name="ExitButton" type="RExitButton" unique_id=1936089819]
 offset_left = 80.0
 offset_top = 128.0
 offset_right = 188.0
 offset_bottom = 159.0
 
-[node name="ExitSprite" type="NinePatchRect" parent="." unique_id=2025900599]
+[node name="ButtonSprite" type="NinePatchRect" parent="." unique_id=2025900599]
 custom_minimum_size = Vector2(108, 32)
 layout_mode = 0
 offset_right = 108.0
@@ -22,7 +22,7 @@ patch_margin_top = 6
 patch_margin_right = 6
 patch_margin_bottom = 6
 
-[node name="Menu Text" type="Label" parent="ExitSprite" unique_id=1049669964]
+[node name="Menu Text" type="Label" parent="ButtonSprite" unique_id=1049669964]
 layout_mode = 0
 offset_left = 30.0
 offset_top = 10.0

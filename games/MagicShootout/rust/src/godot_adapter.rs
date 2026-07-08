@@ -654,7 +654,7 @@ fn on_mouse_enter_button_animation(trigger: On<ButtonEnteredEvent>, mut godot: G
     };
 
     // sprite of the button
-    let Some(mut nine_patch_rect) = button.try_get_node_as::<NinePatchRect>("RestartSprite") else {
+    let Some(mut nine_patch_rect) = button.try_get_node_as::<NinePatchRect>("ButtonSprite") else {
         info!("No child found of type NinePatchRect");
         return;
     };
@@ -675,7 +675,7 @@ fn on_mouse_exit_button_animation(trigger: On<ButtonExitedEvent>, mut godot: God
     };
 
     // sprite of the button
-    let Some(mut nine_patch_rect) = button.try_get_node_as::<NinePatchRect>("RestartSprite") else {
+    let Some(mut nine_patch_rect) = button.try_get_node_as::<NinePatchRect>("ButtonSprite") else {
         info!("No child found of type NinePatchRect");
         return;
     };

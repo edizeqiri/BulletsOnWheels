@@ -49,11 +49,18 @@ theme_override_font_sizes/font_size = 32
 text = "Paused Game"
 
 [node name="RestartButton" parent="Border" unique_id=1918014682 instance=ExtResource("3_037ec")]
-offset_right = 189.0
-offset_bottom = 110.0
+layout_mode = 0
+offset_left = 81.0
+offset_top = 78.0
+offset_right = 187.0
+offset_bottom = 109.0
 
 [node name="ExitButton" parent="Border" unique_id=311503359 instance=ExtResource("4_037ec")]
 layout_mode = 0
+offset_left = 81.0
+offset_top = 130.0
+offset_right = 189.0
+offset_bottom = 161.0
 
 [node name="RExitGameLabel" type="RExitGameLabel" parent="Border" unique_id=1526727113]
 visible = false

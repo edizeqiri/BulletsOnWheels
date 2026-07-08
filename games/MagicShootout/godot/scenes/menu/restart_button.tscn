@@ -8,7 +8,7 @@ offset_right = 107.0
 offset_bottom = 32.0
 action_mode = 0
 
-[node name="RestartSprite" type="NinePatchRect" parent="." unique_id=1875056185]
+[node name="ButtonSprite" type="NinePatchRect" parent="." unique_id=1875056185]
 custom_minimum_size = Vector2(108, 32)
 layout_mode = 0
 offset_right = 108.0
@@ -21,7 +21,7 @@ patch_margin_top = 6
 patch_margin_right = 6
 patch_margin_bottom = 6
 
-[node name="Menu Text" type="Label" parent="RestartSprite" unique_id=2140287297]
+[node name="Menu Text" type="Label" parent="ButtonSprite" unique_id=2140287297]
 layout_mode = 0
 offset_left = 3.0
 offset_top = 2.0
