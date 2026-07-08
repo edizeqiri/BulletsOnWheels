@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use core_engine::character::Aim;
 use core_engine::player::Player;
-use core_engine::weapon_impl::ShootMessage;
+use core_engine::weapon::ShootMessage;
 use godot_bevy::plugins::input::MouseButton;
 use godot_bevy::prelude::*;
 

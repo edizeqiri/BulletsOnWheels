@@ -5,7 +5,7 @@ use crate::character::{Aim, MovementDirection};
 use crate::enemy::Enemy;
 use crate::enemy_ai::EnemyType::Hunter;
 use crate::player::Player;
-use crate::weapon_impl::ShootMessage;
+use crate::weapon::ShootMessage;
 // use crate::weapon::ShootEvent;
 // use crate::world::LevelState;
 // use crate::world::map::map::Level;
