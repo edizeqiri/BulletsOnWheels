@@ -136,14 +136,14 @@ fn init_menu_assets(mut menu_handles: ResMut<MenuHandles>, mut scene_tree: Scene
 
 fn connect_menu_buttons(
     mut menu_handles: ResMut<MenuHandles>,
-    signals_restart: GodotSignals<RestartGameEvent>,
+    _signals_restart: GodotSignals<RestartGameEvent>,
     signals_exit: GodotSignals<ExitGameEvent>
 ) {
     if menu_handles.signals_connected {
         return;
     };
 
-    let (Some(restart_handle), Some(exit_handle)) =
+    let (Some(_restart_handle), Some(exit_handle)) =
         (menu_handles.restart_button, menu_handles.exit_button)
     else {
         return;

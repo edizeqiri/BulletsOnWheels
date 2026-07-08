@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use core_engine::enemy::CreateEnemyMessage;
 use core_engine::gamestate::InGameState;
-use core_engine::score::{self, LiveScore};
+use core_engine::score::LiveScore;
 use godot::classes::{CollisionShape2D, RectangleShape2D};
 use godot_bevy::prelude::*;
 use godot_bevy_macros::GodotNode;
@@ -48,7 +48,7 @@ fn spawn_enemies_after_time(
 
             let col_shape = node.get_node_as::<CollisionShape2D>("CollisionShape2D");
             let shape = col_shape.get_shape().unwrap().cast::<RectangleShape2D>();
-            let rect = (shape.get_rect().size / 2.0);
+            let rect = shape.get_rect().size / 2.0 ;
             let center = node.get_global_position();
 
             debug!("view: {:?}", rect);

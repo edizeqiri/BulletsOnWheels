@@ -1,7 +1,5 @@
 use bevy::prelude::*;
-use bevy_asset_loader::asset_collection::AssetCollection;
 
-use crate::character::{CharacterCore, Health, MovementSpeed};
 use crate::gamestate::InGameState;
 
 pub(crate) fn plugin(app: &mut App) {

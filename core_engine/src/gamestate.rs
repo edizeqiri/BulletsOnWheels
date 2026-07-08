@@ -1,12 +1,8 @@
-use bevy::app::{App, AppExit, FixedUpdate, Update};
-use bevy::ecs::component::Component;
+use bevy::app::App;
 use bevy::ecs::entity::Entity;
 use bevy::ecs::event::Event;
-use bevy::ecs::observer::On;
-use bevy::ecs::query::With;
-use bevy::ecs::system::Query;
 use bevy::log::info;
-use bevy::prelude::{Message, MessageReader, MessageWriter, Res, State, States};
+use bevy::prelude::{Message, Res, State, States};
 
 pub(super) fn plugin(app: &mut App) {
     app;
