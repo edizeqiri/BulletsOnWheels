@@ -149,18 +149,6 @@ fn connect_menu_buttons(
         return;
     };
 
-    info!("Connecting buttons");
-
-    signals_exit.connect(
-        exit_handle,
-        BaseButtonSignals::PRESSED,
-        None,
-        |_args, _node_handle, _ent| {
-            info!("Exit button pressed");
-            Some(ExitGameEvent)
-        }
-    );
-
     menu_handles.signals_connected = true;
     info!("Buttons connected");
 }
