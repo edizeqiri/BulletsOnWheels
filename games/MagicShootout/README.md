@@ -1,9 +1,9 @@
 # MagicShootout
 
 ## Menu
-![](games/MagicShootout/docs/mainmenu.png)
+![](docs/mainmenu.png)
 ## Level 1
-![](games/MagicShootout/docs/level1.png)
+![](docs/level1.png)
 
 ## Architecture
 
