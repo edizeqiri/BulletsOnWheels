@@ -10,7 +10,7 @@ The engine currently features 2 cores:
 
 ## Games
 
-- ![MagicShootout](games/MagicShootout/README.md)
+- [MagicShootout](games/MagicShootout/README.md)
 
 ## Example Game with 
 ### Menu
