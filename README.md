@@ -4,9 +4,7 @@ Monorepo for the BulletsOnWheels game engine.
 
 ## Core
 
-The engine currently features 2 cores:
-- Rust(Bevy): Bevy used as the main driver with own core and own domain ECS
-- Odin: Custom ECS engine inspired by Bevy with outsourced rendering
+Rust(Bevy): Bevy used as the main driver with own core and own domain ECS
 
 ## Games
 
@@ -36,7 +34,6 @@ rustup override set nightly
 ## Vendors
 
 The Rust integration can use the godot_bevy plugin to use godot as the frontend with Bevy in the backend.
-
 
 ## Architecture
 
