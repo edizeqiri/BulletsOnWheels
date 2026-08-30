@@ -18,7 +18,7 @@ pub fn plugin(app: &mut App) {
         .add_plugins(character::plugin)
         .add_plugins(gamestate::plugin)
         .add_plugins(score::plugin)
-        .add_plugins(StatesPlugin)
+       // .add_plugins(StatesPlugin)
         .init_state::<InGameState>()
         .init_state::<AppState>();
 }

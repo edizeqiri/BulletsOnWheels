@@ -80,7 +80,7 @@ serve-web-6:
 serve-web-public:
     command -v cloudflared >/dev/null || (echo "cloudflared not found. Install with: brew install cloudflared" && exit 1)
     lsof -ti:8060 | xargs kill 2>/dev/null || true
-    python3 -m http.server 8060 --directory {{ godot_project }}/exports &
+
     sleep 1
     cloudflared tunnel --url http://localhost:8060
 
