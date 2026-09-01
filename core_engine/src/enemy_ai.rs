@@ -10,7 +10,8 @@ use crate::weapon::ShootMessage;
 // use crate::world::LevelState;
 // use crate::world::map::map::Level;
 pub(crate) fn plugin(app: &mut App) {
-    app.insert_resource(Time::<Fixed>::from_seconds(1.5))
+    app
+        //.insert_resource(Time::<Fixed>::from_seconds(1.5))
         .add_systems(FixedUpdate, shoot_at_player_system)
         .add_systems(Update, enemy_move_system)
         .add_systems(Update, set_all_fugitive_system);
@@ -32,7 +33,7 @@ pub enum EnemyType {
     // Wants to run away from player
     Fugitive(EnemyFugitive),
     // Wants to go to the exit as soon as possible
-    Seeker(EnemySeeker),
+    Seeker(EnemySeeker)
 }
 impl Default for EnemyType {
     fn default() -> Self {
@@ -68,7 +69,7 @@ impl EnemyAI for EnemyHunter {
 fn shoot_at_player_system(
     mut shoot_event: MessageWriter<ShootMessage>,
     enemy_query: Query<(Entity, &mut Aim, &Transform, &EnemyType), With<Enemy>>,
-    player_query: Query<&Transform, With<Player>>,
+    player_query: Query<&Transform, With<Player>>
 ) {
     let Ok(player) = player_query.single() else {
         return;
@@ -77,14 +78,14 @@ fn shoot_at_player_system(
         aim.vec = enemy_type.shooting(player, enemy_transform);
         shoot_event.write(ShootMessage {
             shooter: enemy,
-            aim: aim.clone(),
+            aim: aim.clone()
         });
     }
 }
 
 fn enemy_move_system(
     player_query: Query<&Transform, (With<Player>, Without<Enemy>)>,
-    enemy_query: Query<(&mut MovementDirection, &Transform, &EnemyType), With<Enemy>>,
+    enemy_query: Query<(&mut MovementDirection, &Transform, &EnemyType), With<Enemy>>
 ) {
     if let Ok(player_transform) = player_query.single() {
         for (mut enemy_direction, enemy_transform, enemy_type) in enemy_query {
