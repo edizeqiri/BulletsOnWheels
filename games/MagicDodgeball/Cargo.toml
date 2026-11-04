@@ -21,3 +21,4 @@ opt-level = 1
 opt-level = 3
 
 [workspace]
+members = ["core", "dev_tools", "game", "systems"]

@@ -2340,6 +2340,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "core"
+version = "0.1.0"
+
+[[package]]
 name = "core-foundation"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2615,6 +2619,10 @@ dependencies = [
  "syn 2.0.119",
  "unicode-xid",
 ]
+
+[[package]]
+name = "dev_tools"
+version = "0.1.0"
 
 [[package]]
 name = "dispatch"
@@ -2997,6 +3005,10 @@ dependencies = [
  "pin-project-lite",
  "slab",
 ]
+
+[[package]]
+name = "game"
+version = "0.1.0"
 
 [[package]]
 name = "gethostname"
@@ -5606,6 +5618,10 @@ dependencies = [
  "objc2-io-kit",
  "windows",
 ]
+
+[[package]]
+name = "systems"
+version = "0.1.0"
 
 [[package]]
 name = "taffy"
