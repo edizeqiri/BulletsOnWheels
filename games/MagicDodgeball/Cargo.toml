@@ -4,14 +4,11 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-avian2d = "0.7.0"
+avian2d = "0.8.0"
 bevy_framepace = "0.22.0"
 
-bevy = { version = "0.19.1", default-features = true, features = [
-  "bevy_dev_tools",
-] }
-core_engine = { path = "../../core_engine" }
-bevy_ecs_ldtk = "0.15.0"
+bevy = { version = "0.20.1", default-features = true} 
+bevy_ecs_ldtk = "0.16.0"
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
 opt-level = 1
@@ -21,4 +18,4 @@ opt-level = 1
 opt-level = 3
 
 [workspace]
-members = ["core", "dev_tools", "game", "systems"]
+members = ["game_core", "dev_tools", "game", "systems"]

@@ -4,12 +4,9 @@ use bevy::asset::UnapprovedPathMode;
 use bevy::camera::ScalingMode;
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
-use core_engine::character::CharacterCore;
 
 use crate::character_controller::{CharacterControllerBundle, CharacterControllerPlugin};
-use crate::debug::fps::FPS;
 mod character_controller;
-mod debug;
 
 fn main() {
     App::new()
@@ -19,11 +16,9 @@ fn main() {
                 .set(AssetPlugin {
                     unapproved_path_mode: UnapprovedPathMode::Allow,
                     ..default()
-                })
+                }),
         )
         .add_plugins(LdtkPlugin)
-        .add_plugins(core_engine::plugin)
-        .add_plugins(FPS)
         .add_plugins(MD)
         .run();
 }
@@ -36,7 +31,6 @@ impl Plugin for MD {
             // Libs
             .add_plugins(PhysicsPlugins::default() )
            // .add_plugins(PhysicsDebugPlugin)
-            .add_plugins(bevy_framepace::FramepacePlugin)
             // Custom
             .add_plugins(CharacterControllerPlugin)
             // Resources
@@ -60,7 +54,7 @@ struct WallBundle {
     wall: Wall,
     collider: Collider,
     rigid_body: RigidBody,
-    collision_margin: CollisionMargin
+    collision_margin: CollisionMargin,
 }
 
 impl Default for WallBundle {
@@ -70,7 +64,7 @@ impl Default for WallBundle {
             collider: Collider::rectangle(8., 8.),
             //            collider: Collider::capsule(Vec2::new(-3., 0.), Vec2::new(3., 0.), 4.),
             rigid_body: RigidBody::Static,
-            collision_margin: CollisionMargin(0.3)
+            collision_margin: CollisionMargin(0.3),
         }
     }
 }
@@ -83,9 +77,8 @@ struct PlayerBundle {
     #[sprite_sheet]
     sprite_sheet: Sprite,
     player: Player,
-    character: CharacterCore,
     character_controller: CharacterControllerBundle,
-    friction: Friction
+    friction: Friction,
 }
 
 impl Default for PlayerBundle {
@@ -93,9 +86,8 @@ impl Default for PlayerBundle {
         Self {
             sprite_sheet: Default::default(),
             player: Default::default(),
-            character: Default::default(),
             character_controller: CharacterControllerBundle::new(Collider::rectangle(6., 6.)),
-            friction: Friction::ZERO
+            friction: Friction::ZERO,
         }
     }
 }
@@ -105,11 +97,11 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         Camera2d,
         Projection::Orthographic(OrthographicProjection {
             scaling_mode: ScalingMode::FixedVertical {
-                viewport_height: 296.0
+                viewport_height: 296.0,
             },
             ..OrthographicProjection::default_2d()
         }),
-        Transform::from_xyz(304.0 / 2.0, 296.0 / 2.0, 0.0)
+        Transform::from_xyz(304.0 / 2.0, 296.0 / 2.0, 0.0),
     ));
 
     commands.spawn(LdtkWorldBundle {
@@ -128,7 +120,7 @@ const DOWN: [KeyCode; 2] = [KeyCode::KeyS, KeyCode::ArrowDown];
 // TODO: Add physics to jump and maybe refactor jump out as an event or smth
 fn simple_controlls(
     keyboard: Res<ButtonInput<KeyCode>>,
-    mut player: Single<&mut Transform, With<Player>>
+    mut player: Single<&mut Transform, With<Player>>,
 ) {
     if keyboard.any_pressed(LEFT) {
         player.translation.x -= PLAYER_SPEED;
