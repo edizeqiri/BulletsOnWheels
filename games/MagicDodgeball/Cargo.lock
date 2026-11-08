@@ -2795,8 +2795,11 @@ dependencies = [
 name = "dev_tools"
 version = "0.1.0"
 dependencies = [
+ "avian2d",
  "bevy",
  "bevy_egui",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

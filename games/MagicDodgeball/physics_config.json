@@ -1,0 +1,10 @@
+{
+  "movement_acceleration": 700.0,
+  "movement_damping": 2.5,
+  "jump_impulse": 80.0,
+  "max_slope_angle": 1.4,
+  "max_acceleration": 450.0,
+  "gravity": 250.0,
+  "ground_cast_distance": 10.0,
+  "collision_margin": 0.3
+}
