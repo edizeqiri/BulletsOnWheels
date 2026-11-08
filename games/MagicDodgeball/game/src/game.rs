@@ -1,8 +1,10 @@
-use bevy::prelude::*;
+use bevy::{camera::ScalingMode, prelude::*};
 use bevy_ecs_ldtk::prelude::*;
 use avian2d::prelude::*;
 
-struct MD;
+use crate::character_controller::*;
+
+pub struct MD;
 
 impl Plugin for MD {
     fn build(&self, app: &mut App) {
@@ -24,8 +26,6 @@ impl Plugin for MD {
         ;
     }
 }
-
-
 
 #[derive(Default, Component)]
 struct Wall;
