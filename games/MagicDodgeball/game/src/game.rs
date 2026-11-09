@@ -1,7 +1,9 @@
-use bevy::{camera::ScalingMode, prelude::*};
+use bevy::camera::ScalingMode;
+use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 use avian2d::prelude::*;
 
+use crate::combat::CombatPlugin;
 use crate::character_controller::*;
 
 pub struct MD;
@@ -14,6 +16,7 @@ impl Plugin for MD {
            // .add_plugins(PhysicsDebugPlugin)
             // Custom
             .add_plugins(CharacterControllerPlugin)
+            .add_plugins(CombatPlugin)
             // Resources
             .insert_resource(LevelSelection::index(0))
             .insert_resource(Gravity(Vec2::NEG_Y * 250.0))
